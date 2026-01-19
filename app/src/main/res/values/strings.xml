@@ -1,3 +1,16 @@
 <resources>
     <string name="app_name">Recipes AI</string>
+    <string name="error_network_unavailable">No internet connection. Please check your settings.</string>
+    <string name="error_server_error">Our servers are having trouble. Please try again later.</string>
+    <string name="error_access_denied">You do not have permission to access this.</string>
+    <string name="error_not_found">The requested item could not be found.</string>
+    <string name="error_unknown">An unexpected error occurred. Please try again.</string>
+    <string name="user_not_logged_in">User is not logged in</string>
+    <string name="error_rate_limit_exceeded">Rate limit exceeded. Please try again later.</string>
+    <string name="error_pet_name_empty">Name cannot be empty</string>
+    <string name="error_pet_age_invalid">Age must be between 1 and 30</string>
+    <string name="error_pet_type_empty">Type cannot be empty</string>
+    <string name="error_invalid_argument">Something is wrong in your request.</string>
+    <string name="error_failed_precondition">Invalid operation.</string>
+    <string name="error_deadline_exceeded">This is taking too much time. Please try again later.</string>
 </resources>
