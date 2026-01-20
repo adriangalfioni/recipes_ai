@@ -2,7 +2,7 @@ package agalfioni.recipesai.core.presentation.theme
 
 import androidx.compose.ui.graphics.Color
 
-val primaryLight = Color(0xFF206A4D)
+val primaryLight = Color(0xFF3EA941)
 val onPrimaryLight = Color(0xFFFFFFFF)
 val primaryContainerLight = Color(0xFFA9F2CD)
 val onPrimaryContainerLight = Color(0xFF005138)
