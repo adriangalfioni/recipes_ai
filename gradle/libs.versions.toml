@@ -15,6 +15,8 @@ ktor = "2.3.7"
 okhttp = "4.12.0"
 kotlinxCoroutines = "1.10.2"
 generativeai = "0.9.0"
+firebase = "34.8.0"
+googleServices = "4.4.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -43,6 +45,7 @@ koin-compose = { group = "io.insert-koin", name = "koin-androidx-compose", versi
 # Navigation 3
 androidx-navigation3-runtime = { group = "androidx.navigation3", name = "navigation3-runtime", version.ref = "nav3" }
 androidx-navigation3-ui = { group = "androidx.navigation3", name = "navigation3-ui", version.ref = "nav3" }
+androidx-viewmodel-navigation3 = { module = "androidx.lifecycle:lifecycle-viewmodel-navigation3", version.ref = "nav3" }
 
 # Ktor
 # Core Ktor Client
@@ -64,9 +67,15 @@ kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-cor
 # Google generative AI - Gemini
 google-generativeai = { module = "com.google.ai.client.generativeai:generativeai", version.ref = "generativeai" }
 
+# Firebase
+# BoM for the Firebase platform
+firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebase" }
+firebase-ai = { module = "com.google.firebase:firebase-ai" }
+
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+google-services = { id = "com.google.gms.google-services", version.ref = "googleServices" }
 # Required for JSON serialization
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }

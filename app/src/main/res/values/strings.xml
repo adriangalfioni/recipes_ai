@@ -13,4 +13,6 @@
     <string name="error_invalid_argument">Something is wrong in your request.</string>
     <string name="error_failed_precondition">Invalid operation.</string>
     <string name="error_deadline_exceeded">This is taking too much time. Please try again later.</string>
+    <string name="confirm_scanned_ingredients">Confirm Scanned Ingredients</string>
+    <string name="ai_scan_completed">AI scan completed</string>
 </resources>

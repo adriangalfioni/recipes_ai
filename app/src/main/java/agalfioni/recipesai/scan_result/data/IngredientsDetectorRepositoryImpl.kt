@@ -1,0 +1,31 @@
+package agalfioni.recipesai.scan_result.data
+
+import agalfioni.recipesai.core.data.helpers.safeAiCall
+import agalfioni.recipesai.core.domain.models.AppResult
+import agalfioni.recipesai.core.domain.models.DataError
+import agalfioni.recipesai.core.domain.models.map
+import agalfioni.recipesai.scan_result.data.utils.ImageProcessor
+import agalfioni.recipesai.scan_result.data.utils.PromptProvider
+import agalfioni.recipesai.scan_result.domain.IngredientsDetectorRepository
+import agalfioni.recipesai.scan_result.domain.IngredientsResult
+import android.net.Uri
+
+class IngredientsDetectorRepositoryImpl(
+    private val aiRemoteDataSource: IngredientsDetectorDataSource,
+    private val imageProcessor: ImageProcessor
+) : IngredientsDetectorRepository {
+    override suspend fun analyzeFridge(uri: Uri): AppResult<IngredientsResult, DataError> {
+        val bitmap = try {
+            imageProcessor.prepareBitmapForAnalysis(uri)
+        } catch (e: IllegalArgumentException) {
+            return AppResult.Error(DataError.INVALID_ARGUMENT)
+        }
+
+        val rawJsonResult = safeAiCall {
+            // Call AI with specific prompt (Business detail)
+            aiRemoteDataSource.generateContent(bitmap, PromptProvider.FRIDGE_ANALYZER_PROMPT)
+        }
+
+        return rawJsonResult.map { rawJson -> parseIngredients(rawJson)}
+    }
+}

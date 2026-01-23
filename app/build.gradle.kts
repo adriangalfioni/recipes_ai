@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.google.services)
 }
 
 android {
@@ -65,6 +66,7 @@ dependencies {
     // Navigation 3
     implementation(libs.androidx.navigation3.runtime)
     implementation(libs.androidx.navigation3.ui)
+    implementation(libs.androidx.viewmodel.navigation3)
 
     // Ktor Client
     implementation(libs.ktor.client.core)
@@ -82,6 +84,10 @@ dependencies {
 
     // Google Generative AI
     implementation(libs.google.generativeai)
+
+    // Firebase
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.ai)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

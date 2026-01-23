@@ -2,7 +2,7 @@ package agalfioni.recipesai.core.domain.models
 
 enum class DataError : AppError {
     NETWORK_UNAVAILABLE, // No internet
-    SERVER_ERROR, // 500 errors or Firestore crashes
+    SERVER_ERROR, // 500 errors
     ACCESS_DENIED, // 403 / Permission denied
     NOT_FOUND, // 404 / Document missing
     UNKNOWN, // Something wildly unexpected

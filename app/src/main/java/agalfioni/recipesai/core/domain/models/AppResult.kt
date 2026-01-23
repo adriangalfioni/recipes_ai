@@ -34,3 +34,26 @@ fun <D, E : AppError> AppResult<D, E>.getDataOrNull(): D? =
         is AppResult.Success -> data
         is AppResult.Error -> null
     }
+
+
+fun <R, D, E : AppError> AppResult<D, E>.map(transform: (D) -> R): AppResult<R, E> =
+    when (this) {
+        is AppResult.Success -> AppResult.Success(transform(data))
+        is AppResult.Error -> AppResult.Error(error)
+
+    }
+
+inline fun <D, E : AppError, R> AppResult<D, E>.mapCatching(
+    onError: (Throwable) -> E,
+    transform: (D) -> R
+): AppResult<R, E> =
+    when (this) {
+        is AppResult.Success ->
+            try {
+                AppResult.Success(transform(data))
+            } catch (t: Throwable) {
+                AppResult.Error(onError(t))
+            }
+
+        is AppResult.Error -> AppResult.Error(error)
+    }
