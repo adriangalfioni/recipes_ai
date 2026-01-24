@@ -1,0 +1,560 @@
+[
+  {
+    "id": "rice",
+    "en": "Rice",
+    "es": "Arroz",
+    "type": "raw"
+  },
+  {
+    "id": "wheat",
+    "en": "Wheat",
+    "es": "Trigo",
+    "type": "raw"
+  },
+  {
+    "id": "corn",
+    "en": "Corn",
+    "es": "Maíz",
+    "type": "raw"
+  },
+  {
+    "id": "oats",
+    "en": "Oats",
+    "es": "Avena",
+    "type": "raw"
+  },
+  {
+    "id": "barley",
+    "en": "Barley",
+    "es": "Cebada",
+    "type": "raw"
+  },
+  {
+    "id": "quinoa",
+    "en": "Quinoa",
+    "es": "Quinoa",
+    "type": "raw"
+  },
+  {
+    "id": "lentils",
+    "en": "Lentils",
+    "es": "Lentejas",
+    "type": "raw"
+  },
+  {
+    "id": "chickpeas",
+    "en": "Chickpeas",
+    "es": "Garbanzos",
+    "type": "raw"
+  },
+  {
+    "id": "black_beans",
+    "en": "Black beans",
+    "es": "Porotos negros",
+    "type": "raw"
+  },
+  {
+    "id": "kidney_beans",
+    "en": "Kidney beans",
+    "es": "Porotos rojos",
+    "type": "raw"
+  },
+  {
+    "id": "soybeans",
+    "en": "Soybeans",
+    "es": "Soja",
+    "type": "raw"
+  },
+  {
+    "id": "peas",
+    "en": "Peas",
+    "es": "Arvejas",
+    "type": "raw"
+  },
+  {
+    "id": "potato",
+    "en": "Potato",
+    "es": "Papa",
+    "type": "raw"
+  },
+  {
+    "id": "sweet_potato",
+    "en": "Sweet potato",
+    "es": "Batata",
+    "type": "raw"
+  },
+  {
+    "id": "carrot",
+    "en": "Carrot",
+    "es": "Zanahoria",
+    "type": "raw"
+  },
+  {
+    "id": "onion",
+    "en": "Onion",
+    "es": "Cebolla",
+    "type": "raw"
+  },
+  {
+    "id": "garlic",
+    "en": "Garlic",
+    "es": "Ajo",
+    "type": "raw"
+  },
+  {
+    "id": "tomato",
+    "en": "Tomato",
+    "es": "Tomate",
+    "type": "raw"
+  },
+  {
+    "id": "lettuce",
+    "en": "Lettuce",
+    "es": "Lechuga",
+    "type": "raw"
+  },
+  {
+    "id": "spinach",
+    "en": "Spinach",
+    "es": "Espinaca",
+    "type": "raw"
+  },
+  {
+    "id": "broccoli",
+    "en": "Broccoli",
+    "es": "Brócoli",
+    "type": "raw"
+  },
+  {
+    "id": "cauliflower",
+    "en": "Cauliflower",
+    "es": "Coliflor",
+    "type": "raw"
+  },
+  {
+    "id": "zucchini",
+    "en": "Zucchini",
+    "es": "Zucchini",
+    "type": "raw"
+  },
+  {
+    "id": "green_pumpkin",
+    "en": "Green pumpkin",
+    "es": "Zapallo Verde",
+    "type": "raw"
+  },
+  {
+    "id": "butternut_squash",
+    "en": "Butternut squash",
+    "es": "Zapallo Anco",
+    "type": "raw"
+  },
+  {
+    "id": "eggplant",
+    "en": "Eggplant",
+    "es": "Berenjena",
+    "type": "raw"
+  },
+  {
+    "id": "bell_pepper",
+    "en": "Bell pepper",
+    "es": "Morrón",
+    "type": "raw"
+  },
+  {
+    "id": "cucumber",
+    "en": "Cucumber",
+    "es": "Pepino",
+    "type": "raw"
+  },
+  {
+    "id": "pumpkin",
+    "en": "Pumpkin",
+    "es": "Calabaza",
+    "type": "raw"
+  },
+  {
+    "id": "apple",
+    "en": "Apple",
+    "es": "Manzana",
+    "type": "raw"
+  },
+  {
+    "id": "banana",
+    "en": "Banana",
+    "es": "Banana",
+    "type": "raw"
+  },
+  {
+    "id": "orange",
+    "en": "Orange",
+    "es": "Naranja",
+    "type": "raw"
+  },
+  {
+    "id": "lemon",
+    "en": "Lemon",
+    "es": "Limón",
+    "type": "raw"
+  },
+  {
+    "id": "lime",
+    "en": "Lime",
+    "es": "Lima",
+    "type": "raw"
+  },
+  {
+    "id": "pear",
+    "en": "Pear",
+    "es": "Pera",
+    "type": "raw"
+  },
+  {
+    "id": "peach",
+    "en": "Peach",
+    "es": "Durazno",
+    "type": "raw"
+  },
+  {
+    "id": "strawberry",
+    "en": "Strawberry",
+    "es": "Frutilla",
+    "type": "raw"
+  },
+  {
+    "id": "blueberry",
+    "en": "Blueberry",
+    "es": "Arándano",
+    "type": "raw"
+  },
+  {
+    "id": "grape",
+    "en": "Grape",
+    "es": "Uva",
+    "type": "raw"
+  },
+  {
+    "id": "pineapple",
+    "en": "Pineapple",
+    "es": "Ananá",
+    "type": "raw"
+  },
+  {
+    "id": "mango",
+    "en": "Mango",
+    "es": "Mango",
+    "type": "raw"
+  },
+  {
+    "id": "avocado",
+    "en": "Avocado",
+    "es": "Palta",
+    "type": "raw"
+  },
+  {
+    "id": "chicken",
+    "en": "Chicken",
+    "es": "Pollo",
+    "type": "raw"
+  },
+  {
+    "id": "beef",
+    "en": "Beef",
+    "es": "Carne vacuna",
+    "type": "raw"
+  },
+  {
+    "id": "pork",
+    "en": "Pork",
+    "es": "Cerdo",
+    "type": "raw"
+  },
+  {
+    "id": "lamb",
+    "en": "Lamb",
+    "es": "Cordero",
+    "type": "raw"
+  },
+  {
+    "id": "fish",
+    "en": "Fish",
+    "es": "Pescado",
+    "type": "raw"
+  },
+  {
+    "id": "salmon",
+    "en": "Salmon",
+    "es": "Salmón",
+    "type": "raw"
+  },
+  {
+    "id": "tuna",
+    "en": "Tuna",
+    "es": "Atún",
+    "type": "raw"
+  },
+  {
+    "id": "shrimp",
+    "en": "Shrimp",
+    "es": "Camarón",
+    "type": "raw"
+  },
+  {
+    "id": "egg",
+    "en": "Egg",
+    "es": "Huevo",
+    "type": "raw"
+  },
+  {
+    "id": "milk",
+    "en": "Milk",
+    "es": "Leche",
+    "type": "raw"
+  },
+  {
+    "id": "butter",
+    "en": "Butter",
+    "es": "Manteca",
+    "type": "raw"
+  },
+  {
+    "id": "cream",
+    "en": "Cream",
+    "es": "Crema",
+    "type": "raw"
+  },
+  {
+    "id": "olive_oil",
+    "en": "Olive oil",
+    "es": "Aceite de oliva",
+    "type": "raw"
+  },
+  {
+    "id": "sunflower_oil",
+    "en": "Sunflower oil",
+    "es": "Aceite de girasol",
+    "type": "raw"
+  },
+  {
+    "id": "salt",
+    "en": "Salt",
+    "es": "Sal",
+    "type": "raw"
+  },
+  {
+    "id": "black_pepper",
+    "en": "Black pepper",
+    "es": "Pimienta negra",
+    "type": "raw"
+  },
+  {
+    "id": "paprika",
+    "en": "Paprika",
+    "es": "Pimentón",
+    "type": "raw"
+  },
+  {
+    "id": "cumin",
+    "en": "Cumin",
+    "es": "Comino",
+    "type": "raw"
+  },
+  {
+    "id": "oregano",
+    "en": "Oregano",
+    "es": "Orégano",
+    "type": "raw"
+  },
+  {
+    "id": "basil",
+    "en": "Basil",
+    "es": "Albahaca",
+    "type": "raw"
+  },
+  {
+    "id": "parsley",
+    "en": "Parsley",
+    "es": "Perejil",
+    "type": "raw"
+  },
+  {
+    "id": "thyme",
+    "en": "Thyme",
+    "es": "Tomillo",
+    "type": "raw"
+  },
+  {
+    "id": "rosemary",
+    "en": "Rosemary",
+    "es": "Romero",
+    "type": "raw"
+  },
+  {
+    "id": "cinnamon",
+    "en": "Cinnamon",
+    "es": "Canela",
+    "type": "raw"
+  },
+  {
+    "id": "ginger",
+    "en": "Ginger",
+    "es": "Jengibre",
+    "type": "raw"
+  },
+  {
+    "id": "bread",
+    "en": "Bread",
+    "es": "Pan",
+    "type": "processed"
+  },
+  {
+    "id": "pasta",
+    "en": "Pasta",
+    "es": "Pasta",
+    "type": "processed"
+  },
+  {
+    "id": "flour",
+    "en": "Flour",
+    "es": "Harina",
+    "type": "processed"
+  },
+  {
+    "id": "sugar",
+    "en": "Sugar",
+    "es": "Azúcar",
+    "type": "processed"
+  },
+  {
+    "id": "brown_sugar",
+    "en": "Brown sugar",
+    "es": "Azúcar moreno",
+    "type": "processed"
+  },
+  {
+    "id": "honey",
+    "en": "Honey",
+    "es": "Miel",
+    "type": "processed"
+  },
+  {
+    "id": "yogurt",
+    "en": "Yogurt",
+    "es": "Yogur",
+    "type": "processed"
+  },
+  {
+    "id": "cheddar_cheese",
+    "en": "Cheddar cheese",
+    "es": "Queso cheddar",
+    "type": "processed"
+  },
+  {
+    "id": "mozzarella_cheese",
+    "en": "Mozzarella cheese",
+    "es": "Queso mozzarella",
+    "type": "processed"
+  },
+  {
+    "id": "parmesan_cheese",
+    "en": "Parmesan cheese",
+    "es": "Queso parmesano",
+    "type": "processed"
+  },
+  {
+    "id": "blue_cheese",
+    "en": "Blue cheese",
+    "es": "Queso azul",
+    "type": "processed"
+  },
+  {
+    "id": "brie_cheese",
+    "en": "Brie cheese",
+    "es": "Queso brie",
+    "type": "processed"
+  },
+  {
+    "id": "goat_cheese",
+    "en": "Goat cheese",
+    "es": "Queso de cabra",
+    "type": "processed"
+  },
+  {
+    "id": "cream_cheese",
+    "en": "Cream cheese",
+    "es": "Queso crema",
+    "type": "processed"
+  },
+  {
+    "id": "ham",
+    "en": "Ham",
+    "es": "Jamón",
+    "type": "processed"
+  },
+  {
+    "id": "bacon",
+    "en": "Bacon",
+    "es": "Panceta",
+    "type": "processed"
+  },
+  {
+    "id": "sausage",
+    "en": "Sausage",
+    "es": "Salchicha",
+    "type": "processed"
+  },
+  {
+    "id": "mayonnaise",
+    "en": "Mayonnaise",
+    "es": "Mayonesa",
+    "type": "processed"
+  },
+  {
+    "id": "ketchup",
+    "en": "Ketchup",
+    "es": "Ketchup",
+    "type": "processed"
+  },
+  {
+    "id": "mustard",
+    "en": "Mustard",
+    "es": "Mostaza",
+    "type": "processed"
+  },
+  {
+    "id": "soy_sauce",
+    "en": "Soy sauce",
+    "es": "Salsa de soja",
+    "type": "processed"
+  },
+  {
+    "id": "vinegar",
+    "en": "Vinegar",
+    "es": "Vinagre",
+    "type": "processed"
+  },
+  {
+    "id": "chocolate",
+    "en": "Chocolate",
+    "es": "Chocolate",
+    "type": "processed"
+  },
+  {
+    "id": "cocoa_powder",
+    "en": "Cocoa powder",
+    "es": "Cacao en polvo",
+    "type": "processed"
+  },
+  {
+    "id": "coffee",
+    "en": "Coffee",
+    "es": "Café",
+    "type": "processed"
+  },
+  {
+    "id": "tea",
+    "en": "Tea",
+    "es": "Té",
+    "type": "processed"
+  }
+]

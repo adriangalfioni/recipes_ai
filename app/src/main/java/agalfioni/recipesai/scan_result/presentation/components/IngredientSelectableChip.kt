@@ -38,7 +38,13 @@ fun IngredientSelectableChip(
     OutlinedButton(
         shape = RoundedCornerShape(10.dp),
         onClick = { onClick(item.item) },
-        colors = colors,
+        colors = colors.copy(
+            containerColor = if (item.isSelected) {
+                MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)
+            } else {
+                MaterialTheme.colorScheme.surface
+            }
+        ),
         border = BorderStroke(
             width = 0.5.dp,
             color = MaterialTheme.colorScheme.outline

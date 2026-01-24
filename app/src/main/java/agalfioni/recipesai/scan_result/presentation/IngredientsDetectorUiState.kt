@@ -7,6 +7,11 @@ import android.net.Uri
 data class IngredientsDetectorUiState(
     val imageUri: Uri,
     val isLoading: Boolean = false,
-    val ingredients: List<Selectable<String>> = listOf(),
-    val error: DataError? = null
+    val detectedIngredients: List<Selectable<String>> = listOf(),
+    val allLocalIngredients: List<String> = listOf(),
+    val error: DataError? = null,
+
+    val query: String = "",
+    val suggestions: List<String> = emptyList(),
+    val showSuggestions: Boolean = false
 )

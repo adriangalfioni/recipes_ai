@@ -1,8 +1,10 @@
 package agalfioni.recipesai.scan_result.data
 
 import agalfioni.recipesai.core.data.helpers.safeAiCall
+import agalfioni.recipesai.core.data.repository.LocalIngredientsLoader
 import agalfioni.recipesai.core.domain.models.AppResult
 import agalfioni.recipesai.core.domain.models.DataError
+import agalfioni.recipesai.core.domain.models.LocalIngredient
 import agalfioni.recipesai.core.domain.models.map
 import agalfioni.recipesai.scan_result.data.utils.ImageProcessor
 import agalfioni.recipesai.scan_result.data.utils.PromptProvider
@@ -12,7 +14,8 @@ import android.net.Uri
 
 class IngredientsDetectorRepositoryImpl(
     private val aiRemoteDataSource: IngredientsDetectorDataSource,
-    private val imageProcessor: ImageProcessor
+    private val imageProcessor: ImageProcessor,
+    private val localIngredientsLoader: LocalIngredientsLoader
 ) : IngredientsDetectorRepository {
     override suspend fun analyzeFridge(uri: Uri): AppResult<IngredientsResult, DataError> {
         val bitmap = try {
@@ -27,5 +30,9 @@ class IngredientsDetectorRepositoryImpl(
         }
 
         return rawJsonResult.map { rawJson -> parseIngredients(rawJson)}
+    }
+
+    override suspend fun getLocalIngredients(): Result<List<LocalIngredient>> {
+        return Result.success(localIngredientsLoader.loadIngredients())
     }
 }

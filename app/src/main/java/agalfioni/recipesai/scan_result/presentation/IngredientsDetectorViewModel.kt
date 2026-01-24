@@ -1,6 +1,7 @@
 package agalfioni.recipesai.scan_result.presentation
 
 import agalfioni.recipesai.core.domain.models.AppResult
+import agalfioni.recipesai.core.presentation.models.selectOrAdd
 import agalfioni.recipesai.core.presentation.models.toSelectableList
 import agalfioni.recipesai.scan_result.domain.IngredientsDetectorRepository
 import agalfioni.recipesai.scan_result.domain.IngredientsResult
@@ -8,11 +9,18 @@ import android.net.Uri
 import androidx.core.net.toUri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.util.Locale
+import kotlin.collections.emptyList
 
 class IngredientsDetectorViewModel(
     private val imageUri: String,
@@ -22,67 +30,88 @@ class IngredientsDetectorViewModel(
     private val _uiState = MutableStateFlow(IngredientsDetectorUiState(imageUri = imageUri.toUri()))
     val uiState: StateFlow<IngredientsDetectorUiState> = _uiState.asStateFlow()
 
+    private val queryFlow = MutableStateFlow("")
+
     private val useIA = false
-
-    fun onEvent(event: IngredientsDetectorEvent) {
-        when (event) {
-            is IngredientsDetectorEvent.onImageToAnalyze -> analyzeFridgeImage(event.imageUri)
-            is IngredientsDetectorEvent.onIngredientSelectionChanged -> {
-                onIngredientSelectionChanged(event.item)
-            }
-        }
-    }
-
-    private fun onIngredientSelectionChanged(itemToToggle: String) {
-        val newList = _uiState.value.ingredients.map { selectable ->
-            selectable.takeIf { it.item != itemToToggle }
-                ?: selectable.copy(isSelected = !selectable.isSelected)
-        }
-
-        _uiState.update { currentState ->
-            currentState.copy(
-                ingredients = newList
-            )
-        }
-    }
 
     init {
         if (useIA) {
             analyzeFridgeImage(imageUri.toUri())
         } else {
+            viewModelScope.launch {
+                ingredientsDetectorRepository
+                    .getLocalIngredients()
+                    .onSuccess { ingredientsList ->
+                        val allLocalIngredients = ingredientsList.map {
+                            if (Locale.getDefault().language == "es") {
+                                it.es
+                            } else {
+                                it.en
+                            }
+                        }
+                        _uiState.update {
+                            it.copy(
+                                allLocalIngredients = allLocalIngredients
+                            )
+                        }
+                    }
+            }
+
             _uiState.update {
                 it.copy(
-                    ingredients = IngredientsResult(
+                    detectedIngredients = IngredientsResult(
                         vegetables = listOf("Tomatoes", "Potatoes", "Carrots"),
                         fruits = listOf("Apples", "Bananas", "Oranges"),
                         dairy = listOf("Milk", "Cheese", "Yogurt"),
                         meat = listOf("Beef", "Chicken", "Pork"),
                         drinks = listOf("Water", "Juice", "Soda")
-                    ).getAllIngredients().toSelectableList(true)
+                    ).getAllIngredients()
+                        .toSelectableList(true)
+                        .sortedBy { it.item }
                 )
             }
+        }
+
+        observeQuery()
+    }
+    fun onEvent(event: IngredientsDetectorEvent) {
+        when (event) {
+            is IngredientsDetectorEvent.OnImageToAnalyze -> analyzeFridgeImage(event.imageUri)
+            is IngredientsDetectorEvent.OnIngredientSelectionChanged -> onIngredientSelectionChanged(event.item)
+            is IngredientsDetectorEvent.OnQueryChanged -> onQueryChanged(event.query)
+            is IngredientsDetectorEvent.OnSuggestionSelected -> onSuggestionSelected(event.suggestedItem)
+        }
+    }
+
+    private fun onIngredientSelectionChanged(itemToToggle: String) {
+        val newList = _uiState.value.detectedIngredients.map { selectable ->
+            selectable.takeIf { it.item != itemToToggle }
+                ?: selectable.copy(isSelected = !selectable.isSelected)
+        }.sortedBy { it.item }
+
+        _uiState.update { currentState ->
+            currentState.copy(
+                detectedIngredients = newList
+            )
         }
     }
 
     fun analyzeFridgeImage(uri: Uri) {
         viewModelScope.launch {
-            // 1. Set loading state
             _uiState.update { it.copy(isLoading = true, error = null) }
 
-            // 2. Call the repository
             val result = ingredientsDetectorRepository.analyzeFridge(uri)
-
-            // 3. Update state based on AppResult
             _uiState.update { currentState ->
                 when (result) {
                     is AppResult.Success -> {
                         val selectedIngredients = result.data
                             .getAllIngredients()
                             .toSelectableList(true)
+                            .sortedBy { it.item }
 
                         currentState.copy(
                             isLoading = false,
-                            ingredients = selectedIngredients,
+                            detectedIngredients = selectedIngredients,
                             error = null
                         )
                     }
@@ -96,6 +125,51 @@ class IngredientsDetectorViewModel(
                 }
             }
         }
+    }
+
+    @OptIn(FlowPreview::class)
+    private fun observeQuery() {
+        queryFlow
+            .debounce(300)
+            .map { query ->
+                if (query.isBlank()) {
+                    emptyList()
+                } else {
+                    _uiState.value.allLocalIngredients
+                        .filter { it.contains(query, ignoreCase = true) }
+                        .take(4)
+                }
+            }
+            .onEach { matches ->
+                _uiState.update { state ->
+                    state.copy(
+                        suggestions = matches,
+                        showSuggestions = matches.isNotEmpty()
+                    )
+                }
+            }
+            .launchIn(viewModelScope)
+    }
+
+    fun onQueryChanged(query: String) {
+        queryFlow.value = query
+        _uiState.update {
+            it.copy(query = query)
+        }
+    }
+
+    fun onSuggestionSelected(item: String) {
+        _uiState.update { state ->
+            state.copy(
+                query = "",
+                showSuggestions = false,
+                detectedIngredients = state
+                    .detectedIngredients
+                    .selectOrAdd(item)
+                    .sortedBy { it.item }
+            )
+        }
+        queryFlow.value = ""
     }
 
 }
