@@ -1,7 +1,7 @@
 package agalfioni.recipesai.core.di
 
-import agalfioni.recipesai.home.presentation.HomeViewModel
-import agalfioni.recipesai.scan_result.presentation.IngredientsDetectorViewModel
+import agalfioni.recipesai.home.presentation.home.HomeViewModel
+import agalfioni.recipesai.home.presentation.scan_result.IngredientsDetectorViewModel
 import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.dsl.module
 

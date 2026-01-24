@@ -1,11 +1,14 @@
 package agalfioni.recipesai.core.navigation
 
-import agalfioni.recipesai.home.presentation.HomeScreen
-import agalfioni.recipesai.scan_result.presentation.IngredientDetectorScreen
-import agalfioni.recipesai.scan_result.presentation.IngredientsDetectorViewModel
+import agalfioni.recipesai.home.presentation.home.HomeScreen
+import agalfioni.recipesai.home.presentation.scan_result.IngredientDetectorScreen
+import agalfioni.recipesai.home.presentation.scan_result.IngredientsDetectorViewModel
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.listSaver
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.NavEntry
@@ -19,7 +22,14 @@ import org.koin.core.parameter.parametersOf
 fun NavigationWrapper(
     modifier: Modifier = Modifier
 ) {
-    val backStack = remember { mutableStateListOf<NavKey>(Route.HomeScreen) }
+    val backStack = rememberSaveable(
+        saver = listSaver(
+            save = { it.toList() },
+            restore = { it.toMutableStateList() }
+        )
+    ) {
+        mutableStateListOf<NavKey>(Route.HomeScreen)
+    }
     val resultStore = rememberResultStore()
 
     NavDisplay(

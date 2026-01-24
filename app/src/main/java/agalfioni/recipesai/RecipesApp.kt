@@ -1,7 +1,7 @@
 package agalfioni.recipesai
 
 import agalfioni.recipesai.core.di.appModule
-import agalfioni.recipesai.scan_result.di.aiModule
+import agalfioni.recipesai.home.di.aiModule
 import android.app.Application
 import com.google.firebase.FirebaseApp
 import org.koin.android.ext.koin.androidContext
