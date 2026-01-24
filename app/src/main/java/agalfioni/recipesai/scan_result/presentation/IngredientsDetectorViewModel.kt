@@ -10,6 +10,7 @@ import androidx.core.net.toUri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -35,40 +36,45 @@ class IngredientsDetectorViewModel(
     private val useIA = false
 
     init {
-        if (useIA) {
-            analyzeFridgeImage(imageUri.toUri())
-        } else {
-            viewModelScope.launch {
-                ingredientsDetectorRepository
-                    .getLocalIngredients()
-                    .onSuccess { ingredientsList ->
-                        val allLocalIngredients = ingredientsList.map {
-                            if (Locale.getDefault().language == "es") {
-                                it.es
-                            } else {
-                                it.en
-                            }
-                        }
-                        _uiState.update {
-                            it.copy(
-                                allLocalIngredients = allLocalIngredients
-                            )
+        viewModelScope.launch {
+            ingredientsDetectorRepository
+                .getLocalIngredients()
+                .onSuccess { ingredientsList ->
+                    val allLocalIngredients = ingredientsList.map {
+                        if (Locale.getDefault().language == "es") {
+                            it.es
+                        } else {
+                            it.en
                         }
                     }
-            }
+                    _uiState.update {
+                        it.copy(
+                            allLocalIngredients = allLocalIngredients
+                        )
+                    }
+                }
+        }
 
-            _uiState.update {
-                it.copy(
-                    detectedIngredients = IngredientsResult(
-                        vegetables = listOf("Tomatoes", "Potatoes", "Carrots"),
-                        fruits = listOf("Apples", "Bananas", "Oranges"),
-                        dairy = listOf("Milk", "Cheese", "Yogurt"),
-                        meat = listOf("Beef", "Chicken", "Pork"),
-                        drinks = listOf("Water", "Juice", "Soda")
-                    ).getAllIngredients()
-                        .toSelectableList(true)
-                        .sortedBy { it.item }
-                )
+        viewModelScope.launch {
+            _uiState.update { it.copy(isLoading = true) }
+            delay(8000)
+            _uiState.update { it.copy(isLoading = false) }
+            if (useIA) {
+                analyzeFridgeImage(imageUri.toUri())
+            } else {
+                _uiState.update {
+                    it.copy(
+                        detectedIngredients = IngredientsResult(
+                            vegetables = listOf("Tomatoes", "Potatoes", "Carrots"),
+                            fruits = listOf("Apples", "Bananas", "Oranges"),
+                            dairy = listOf("Milk", "Cheese", "Yogurt"),
+                            meat = listOf("Beef", "Chicken", "Pork"),
+                            drinks = listOf("Water", "Juice", "Soda")
+                        ).getAllIngredients()
+                            .toSelectableList(true)
+                            .sortedBy { it.item }
+                    )
+                }
             }
         }
 
@@ -106,6 +112,7 @@ class IngredientsDetectorViewModel(
                     is AppResult.Success -> {
                         val selectedIngredients = result.data
                             .getAllIngredients()
+                            .map { it.replaceFirstChar { it.titlecase() } }
                             .toSelectableList(true)
                             .sortedBy { it.item }
 

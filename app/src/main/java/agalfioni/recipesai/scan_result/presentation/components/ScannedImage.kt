@@ -2,6 +2,7 @@ package agalfioni.recipesai.scan_result.presentation.components
 
 import agalfioni.recipesai.R
 import agalfioni.recipesai.core.presentation.theme.GreenDot
+import agalfioni.recipesai.core.presentation.theme.OrangeDot
 import agalfioni.recipesai.core.presentation.theme.RecipesAITheme
 import android.net.Uri
 import androidx.compose.foundation.Canvas
@@ -38,6 +39,7 @@ import coil3.compose.SubcomposeAsyncImage
 @Composable
 fun ScannedImage(
     imageUri: Uri,
+    scanCompleted: Boolean,
     modifier: Modifier = Modifier
 ) {
     Box(
@@ -62,9 +64,15 @@ fun ScannedImage(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
-            DrawFilledCircle()
+            DrawFilledCircle(
+                circleColor = if (scanCompleted) GreenDot else OrangeDot
+            )
             Text(
-                text = stringResource(R.string.ai_scan_completed).uppercase(),
+                text = if (scanCompleted) {
+                    stringResource(R.string.ai_scan_completed).uppercase()
+                } else {
+                    stringResource(R.string.ai_scan_in_progress).uppercase()
+                },
                 style = MaterialTheme.typography.labelLarge,
                 color = Color.White,
                 fontFamily = FontFamily.SansSerif
@@ -78,7 +86,8 @@ fun ScannedImage(
 private fun ScannedImagePreview() {
     RecipesAITheme {
         ScannedImage(
-            imageUri = Uri.EMPTY
+            imageUri = Uri.EMPTY,
+            scanCompleted = true
         )
     }
 }
@@ -127,6 +136,7 @@ fun ImageFromUri(
 
 @Composable
 fun DrawFilledCircle(
+    circleColor: Color,
     circleSize: Dp = 12.dp
 ) {
     Canvas(modifier = Modifier.size(circleSize)) {
@@ -135,7 +145,7 @@ fun DrawFilledCircle(
 
         // The drawCircle function draws a filled circle by default
         drawCircle(
-            color = GreenDot, // Specify the fill color
+            color = circleColor, // Specify the fill color
             center = Offset(x = canvasWidth / 2, y = canvasHeight / 2), // Center of the circle
             radius = size.minDimension / 2 // Radius of the circle
         )

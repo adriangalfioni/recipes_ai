@@ -46,7 +46,8 @@ fun NavigationWrapper(
                     }
 
                     IngredientDetectorScreen(
-                        viewModel = viewModel
+                        viewModel = viewModel,
+                        onBackClick = { backStack.removeLastOrNull() }
                     )
                 }
 

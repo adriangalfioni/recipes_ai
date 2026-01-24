@@ -6,9 +6,11 @@ import agalfioni.recipesai.core.presentation.components.SearchableWithSuggestion
 import agalfioni.recipesai.core.presentation.models.toSelectableList
 import agalfioni.recipesai.core.presentation.theme.RecipesAITheme
 import agalfioni.recipesai.scan_result.domain.IngredientsResult
+import agalfioni.recipesai.scan_result.presentation.components.AiLoadingPulse
 import agalfioni.recipesai.scan_result.presentation.components.DetectedIngredientsChips
 import agalfioni.recipesai.scan_result.presentation.components.IngredientsDetectorBottomBar
 import agalfioni.recipesai.scan_result.presentation.components.IngredientsDetectorTopBar
+import agalfioni.recipesai.scan_result.presentation.components.RecipeSkeletonLoader
 import agalfioni.recipesai.scan_result.presentation.components.ScannedImage
 import android.net.Uri
 import androidx.compose.foundation.background
@@ -116,7 +118,10 @@ fun IngredientDetectorRoot(
                 .padding(innerPadding)
                 .padding(16.dp),
         ) {
-            ScannedImage(uiState.imageUri)
+            ScannedImage(
+                imageUri = uiState.imageUri,
+                scanCompleted = !uiState.isLoading
+            )
             Spacer(modifier = Modifier.height(24.dp))
             Text(
                 text = "Detected Ingredients:",
@@ -129,36 +134,40 @@ fun IngredientDetectorRoot(
                 style = MaterialTheme.typography.bodyMedium
             )
             Spacer(modifier = Modifier.height(20.dp))
-            SearchableWithSuggestions(
-                value = uiState.query,
-                placeholder = stringResource(R.string.add_more_ingredients),
-                onValueChange = { onEvent(IngredientsDetectorEvent.OnQueryChanged(it)) },
-                suggestions = uiState.suggestions,
-                onSelectSuggestion = { onEvent(IngredientsDetectorEvent.OnSuggestionSelected(it)) },
-                trailingIcon = Icons.Default.Add,
-                onTrailingClick = { onEvent(IngredientsDetectorEvent.OnSuggestionSelected(it)) },
-                leadingIcon = null,
-                maxSuggestions = 4,
-                modifier = Modifier.padding(end = 8.dp),
-                onFocusedAtY = { yInRoot ->
-                    scope.launch {
-                        val targetScroll = (
-                                scrollState.value +
-                                        yInRoot -
-                                        topOffsetPx
-                                ).toInt().coerceAtLeast(0)
+            if (uiState.isLoading) {
+                AiLoadingPulse()
+            } else {
+                SearchableWithSuggestions(
+                    value = uiState.query,
+                    placeholder = stringResource(R.string.add_more_ingredients),
+                    onValueChange = { onEvent(IngredientsDetectorEvent.OnQueryChanged(it)) },
+                    suggestions = uiState.suggestions,
+                    onSelectSuggestion = { onEvent(IngredientsDetectorEvent.OnSuggestionSelected(it)) },
+                    trailingIcon = Icons.Default.Add,
+                    onTrailingClick = { onEvent(IngredientsDetectorEvent.OnSuggestionSelected(it)) },
+                    leadingIcon = null,
+                    maxSuggestions = 4,
+                    modifier = Modifier.padding(end = 8.dp),
+                    onFocusedAtY = { yInRoot ->
+                        scope.launch {
+                            val targetScroll = (
+                                    scrollState.value +
+                                            yInRoot -
+                                            topOffsetPx
+                                    ).toInt().coerceAtLeast(0)
 
-                        scrollState.animateScrollTo(targetScroll)
+                            scrollState.animateScrollTo(targetScroll)
+                        }
                     }
-                }
-            )
-            Spacer(modifier = Modifier.height(16.dp))
-            DetectedIngredientsChips(
-                ingredients = uiState.detectedIngredients,
-                onIngredientChipCLick = {
-                    onEvent(IngredientsDetectorEvent.OnIngredientSelectionChanged(it))
-                }
-            )
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+                DetectedIngredientsChips(
+                    ingredients = uiState.detectedIngredients,
+                    onIngredientChipCLick = {
+                        onEvent(IngredientsDetectorEvent.OnIngredientSelectionChanged(it))
+                    }
+                )
+            }
             Spacer(modifier = Modifier.height(24.dp))
 
         }

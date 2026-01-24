@@ -3,6 +3,7 @@ package agalfioni.recipesai.scan_result.presentation.components
 import agalfioni.recipesai.R
 import agalfioni.recipesai.core.presentation.theme.PlusJakartaSans
 import agalfioni.recipesai.core.presentation.theme.RecipesAITheme
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.add
@@ -42,6 +43,10 @@ fun IngredientsDetectorTopBar(
         ),
         navigationIcon = {
             Icon(
+                modifier = Modifier.clickable(
+                    interactionSource = null,
+                    onClick = onBackClick
+                ),
                 imageVector = ImageVector.vectorResource(id = R.drawable.ic_arrow_left),
                 contentDescription = "Back",
                 tint = MaterialTheme.colorScheme.outline

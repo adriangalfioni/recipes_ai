@@ -15,5 +15,6 @@
     <string name="error_deadline_exceeded">This is taking too much time. Please try again later.</string>
     <string name="confirm_scanned_ingredients">Confirm Scanned Ingredients</string>
     <string name="ai_scan_completed">AI scan completed</string>
+    <string name="ai_scan_in_progress">AI scan in progress</string>
     <string name="add_more_ingredients">Add more ingredients…</string>
 </resources>
