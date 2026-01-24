@@ -6,12 +6,11 @@ import agalfioni.recipesai.core.presentation.models.toSelectableList
 import agalfioni.recipesai.core.presentation.theme.RecipesAITheme
 import agalfioni.recipesai.home.domain.IngredientsResult
 import agalfioni.recipesai.home.presentation.scan_result.components.AiLoadingPulse
-import agalfioni.recipesai.home.presentation.scan_result.components.DetectedIngredientsChips
+import agalfioni.recipesai.home.presentation.components.DetectedIngredientsChips
 import agalfioni.recipesai.home.presentation.components.GenerateRecipesBottomBar
 import agalfioni.recipesai.home.presentation.scan_result.components.IngredientsDetectorTopBar
 import agalfioni.recipesai.home.presentation.scan_result.components.ScannedImage
 import android.net.Uri
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize

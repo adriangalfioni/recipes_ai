@@ -9,7 +9,7 @@ import agalfioni.recipesai.home.presentation.components.GenerateRecipesBottomBar
 import agalfioni.recipesai.home.presentation.home.components.MediaSourcePickerSheet
 import agalfioni.recipesai.home.presentation.home.components.ScanFridgeCard
 import agalfioni.recipesai.home.presentation.home.models.ImageSource
-import agalfioni.recipesai.home.presentation.scan_result.components.DetectedIngredientsChips
+import agalfioni.recipesai.home.presentation.components.DetectedIngredientsChips
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts

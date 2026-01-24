@@ -1,4 +1,4 @@
-package agalfioni.recipesai.home.presentation.scan_result.components
+package agalfioni.recipesai.home.presentation.components
 
 import agalfioni.recipesai.core.presentation.models.Selectable
 import agalfioni.recipesai.core.presentation.theme.RecipesAITheme
