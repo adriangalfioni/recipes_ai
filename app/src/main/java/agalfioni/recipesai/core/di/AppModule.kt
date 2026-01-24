@@ -1,5 +1,6 @@
 package agalfioni.recipesai.core.di
 
+import agalfioni.recipesai.home.presentation.HomeViewModel
 import agalfioni.recipesai.scan_result.presentation.IngredientsDetectorViewModel
 import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.dsl.module
@@ -14,4 +15,5 @@ val appModule = module {
     // Creates a new instance every time the screen needs it
     //viewModel { IngredientsDetectorViewModel(ingredientsDetectorRepository = get()) }
     viewModelOf(::IngredientsDetectorViewModel)
+    viewModelOf(::HomeViewModel)
 }

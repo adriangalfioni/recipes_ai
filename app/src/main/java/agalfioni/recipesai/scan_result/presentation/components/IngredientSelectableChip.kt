@@ -4,6 +4,7 @@ import agalfioni.recipesai.core.presentation.models.Selectable
 import agalfioni.recipesai.core.presentation.theme.RecipesAITheme
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
@@ -25,9 +26,10 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun IngredientSelectableChip(
-    item: Selectable<String>,
-    onClick: (String) -> Unit,
+    selectableItem: Selectable<String>,
     modifier: Modifier = Modifier,
+    onChipClick: (String) -> Unit = {},
+    onTrailingIconClick: ((String) -> Unit)? = null,
     textColor: Color = MaterialTheme.colorScheme.onPrimaryContainer,
     colors: ButtonColors = ButtonDefaults.buttonColors().copy(
         containerColor = MaterialTheme.colorScheme.primary.copy(
@@ -37,9 +39,9 @@ fun IngredientSelectableChip(
 ) {
     OutlinedButton(
         shape = RoundedCornerShape(10.dp),
-        onClick = { onClick(item.item) },
+        onClick = { onChipClick(selectableItem.item) },
         colors = colors.copy(
-            containerColor = if (item.isSelected) {
+            containerColor = if (selectableItem.isSelected) {
                 MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)
             } else {
                 MaterialTheme.colorScheme.surface
@@ -56,14 +58,19 @@ fun IngredientSelectableChip(
         ) {
             Text(
                 modifier = Modifier.alignByBaseline(),
-                text = item.item,
+                text = selectableItem.item,
                 color = textColor
             )
-            AnimatedVisibility(item.isSelected) {
+            AnimatedVisibility(selectableItem.isSelected) {
                 Icon(
                     modifier = Modifier
                         .size(22.dp)
-                        .align(Alignment.CenterVertically),
+                        .align(Alignment.CenterVertically)
+                        .clickable(
+                            interactionSource = null,
+                            indication = null,
+                            onClick = { onTrailingIconClick?.invoke(selectableItem.item) ?: onChipClick(selectableItem.item) }
+                        ),
                     imageVector = Icons.Default.Close,
                     contentDescription = "Close",
                     tint = MaterialTheme.colorScheme.outline
@@ -78,8 +85,8 @@ fun IngredientSelectableChip(
 private fun IngredientSelectableChipPreview() {
     RecipesAITheme {
         IngredientSelectableChip(
-            item = Selectable("Tomatoes", true),
-            onClick = {},
+            selectableItem = Selectable("Tomatoes", true),
+            onChipClick = {},
 
         )
     }

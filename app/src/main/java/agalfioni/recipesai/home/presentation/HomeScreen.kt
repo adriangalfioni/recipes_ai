@@ -1,149 +1,189 @@
 package agalfioni.recipesai.home.presentation
 
-import agalfioni.recipesai.core.presentation.components.RecipeButton
-import agalfioni.recipesai.core.presentation.components.RecipeOutlinedButton
-import agalfioni.recipesai.core.presentation.components.RecipeSelectableButton
-import agalfioni.recipesai.core.presentation.components.RecipeSelectableOutlinedButton
+import agalfioni.recipesai.R
+import agalfioni.recipesai.core.presentation.components.SearchableWithSuggestions
 import agalfioni.recipesai.core.presentation.components.rememberCameraLauncher
+import agalfioni.recipesai.core.presentation.models.toSelectableList
+import agalfioni.recipesai.core.presentation.theme.RecipesAITheme
+import agalfioni.recipesai.home.presentation.components.MediaSourcePickerSheet
+import agalfioni.recipesai.home.presentation.components.ScanFridgeCard
+import agalfioni.recipesai.home.presentation.models.ImageSource
+import agalfioni.recipesai.scan_result.presentation.IngredientDetectorRoot
 import agalfioni.recipesai.scan_result.presentation.IngredientsDetectorEvent
+import agalfioni.recipesai.scan_result.presentation.IngredientsDetectorViewModel
+import agalfioni.recipesai.scan_result.presentation.components.DetectedIngredientsChips
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
-import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import coil3.compose.AsyncImage
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import kotlinx.coroutines.launch
+import org.koin.androidx.compose.koinViewModel
+
 
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
     onImage: (String) -> Unit,
-    //viewModel: HomeViewModel = koinViewModel()
+    viewModel: HomeViewModel = koinViewModel()
 ) {
-    var secondSelected by remember { mutableStateOf(false) }
-    var secondSelected2 by remember { mutableStateOf(false) }
+    val uiState = viewModel.uiState.collectAsStateWithLifecycle()
+
+    HomeScreenRoot(
+        uiState = uiState.value,
+        onEvent = viewModel::onEvent,
+        onImage = onImage,
+        modifier = modifier
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun HomeScreenRoot(
+    uiState: HomeUiState,
+    onEvent: (event: HomeEvent) -> Unit,
+    modifier: Modifier = Modifier,
+    onImage: (String) -> Unit,
+) {
+    val scrollState = rememberScrollState()
+    val scope = rememberCoroutineScope()
+    val density = LocalDensity.current
+    val topOffsetPx = with(density) { 64.dp.toPx() }
+    var showImageSourceSheet by remember { mutableStateOf(false) }
+
+    val galleryLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) { uri: Uri? ->
+        uri?.let { onImage(uri.toString()) }
+    }
+
+    val cameraLauncher = rememberCameraLauncher(
+        onImageCaptured = { uri ->
+            onImage(uri.toString())
+        }
+    )
 
     Column(
-        modifier = modifier,
+        modifier = modifier
+            .verticalScroll(scrollState)
+            .imePadding()
+            .padding(horizontal = 16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        var imageUri by remember { mutableStateOf<Uri?>(null) }
-        var detectedIngredients by remember { mutableStateOf("No ingredients detected yet.") }
-
-        // 1. Setup the Gallery Launcher
-        val galleryLauncher = rememberLauncherForActivityResult(
-            contract = ActivityResultContracts.GetContent()
-        ) { uri: Uri? ->
-            uri?.let {
-                imageUri = uri
-                onImage(imageUri.toString())
-            }
-        }
-
-        val takePhoto = rememberCameraLauncher(
-            onImageCaptured = { uri ->
-                imageUri = uri
-                onImage(imageUri.toString())
+        Spacer(Modifier.height(36.dp))
+        ScanFridgeCard(
+            onScanClick = {
+                showImageSourceSheet = true
             }
         )
 
-        Column(
-            modifier = modifier
-                .fillMaxSize()
-                .padding(16.dp)
-                .verticalScroll(rememberScrollState()),
-            horizontalAlignment = Alignment.CenterHorizontally
+        if (showImageSourceSheet) {
+            MediaSourcePickerSheet(
+                onDismissRequest = { showImageSourceSheet = false },
+                onSourceSelected = { imageSource ->
+                    showImageSourceSheet = false
+                    when (imageSource) {
+                        ImageSource.CAMERA -> { cameraLauncher() }
+                        ImageSource.GALLERY -> { galleryLauncher.launch("image/*") }
+                    }
+                }
+            )
+        }
+        Spacer(Modifier.height(12.dp))
+        Row(
+            modifier = Modifier.padding(vertical = 16.dp),
+            verticalAlignment = Alignment.Bottom
         ) {
-            // 2. Button to Pick Image
-            Button(
-                onClick = { galleryLauncher.launch("image/*") },
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text("Select Fridge Photo")
-            }
-            Button(
-                onClick = { takePhoto() },
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text("Take Fridge Photo")
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // 3. Display Selected Image
-            imageUri?.let { uri ->
-                AsyncImage(
-                    model = uri,
-                    contentDescription = "Selected Image",
-                    modifier = Modifier
-                        .height(300.dp)
-                        .fillMaxWidth(),
-                    contentScale = ContentScale.Fit
+            Text(
+                modifier = Modifier.weight(1f),
+                text = "Add Ingredients",
+                style = MaterialTheme.typography.titleLarge
+            )
+            Text(
+                text = stringResource(R.string.clear_all),
+                fontWeight = FontWeight.SemiBold,
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.onSurface,
+                modifier = Modifier.clickable(
+                    interactionSource = null,
+                    indication = null,
+                    onClick = { onEvent(HomeEvent.OnClearAll) }
                 )
+            )
+        }
+        SearchableWithSuggestions(
+            value = uiState.query,
+            placeholder = stringResource(R.string.add_more_ingredients),
+            onValueChange = { onEvent(HomeEvent.OnQueryChanged(it)) },
+            suggestions = uiState.suggestions,
+            onSelectSuggestion = { onEvent(HomeEvent.OnSuggestionSelected(it)) },
+            trailingIcon = Icons.Default.Add,
+            onTrailingClick = { onEvent(HomeEvent.OnSuggestionSelected(it)) },
+            leadingIcon = null,
+            maxSuggestions = 4,
+            onFocusedAtY = { yInRoot ->
+                scope.launch {
+                    val targetScroll = (
+                            scrollState.value +
+                                    yInRoot -
+                                    topOffsetPx
+                            ).toInt().coerceAtLeast(0)
+
+                    scrollState.animateScrollTo(targetScroll)
+                }
             }
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+        DetectedIngredientsChips(
+            ingredients = uiState.addedIngredients.toList().toSelectableList(true),
+            onTrailingIconClick = {
+                onEvent(HomeEvent.OnIngredientRemoved(it))
+            }
+        )
+    }
+}
 
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // 4. Display Results
-            Text(
-                text = "Detected Items:",
-                style = MaterialTheme.typography.titleMedium
-            )
-            Text(
-                text = detectedIngredients,
-                style = MaterialTheme.typography.bodyMedium,
-                modifier = Modifier.padding(top = 8.dp)
-            )
-        }
-
-        Text(text = "Hello Koin!")
-        Spacer(modifier = Modifier.height(12.dp))
-        FlowRow(
+@Preview
+@Composable
+private fun HomeScreenPreview() {
+    RecipesAITheme {
+        HomeScreenRoot(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(6.dp),
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
-            RecipeButton("15 mins (easy)", {})
-            RecipeSelectableButton("30 mins (moderate)", {secondSelected = !secondSelected}, secondSelected)
-            RecipeSelectableButton(">45 mins (elaborated)", {}, false)
-        }
-
-        Spacer(modifier = Modifier.height(12.dp))
-        FlowRow(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(6.dp),
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
-            RecipeOutlinedButton("15 mins (easy)", {})
-            RecipeSelectableOutlinedButton("30 mins (moderate)", {
-                secondSelected2 = !secondSelected2
-            }, secondSelected2)
-            RecipeSelectableOutlinedButton(">45 mins (elaborated)", {}, false)
-        }
+                .fillMaxSize()
+                .background(color = MaterialTheme.colorScheme.surface),
+            onImage = {},
+            onEvent = {},
+            uiState = HomeUiState()
+        )
     }
 }

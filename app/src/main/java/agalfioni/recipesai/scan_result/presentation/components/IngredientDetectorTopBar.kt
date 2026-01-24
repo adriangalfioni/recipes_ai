@@ -44,6 +44,7 @@ fun IngredientsDetectorTopBar(
         navigationIcon = {
             Icon(
                 modifier = Modifier.clickable(
+                    indication = null,
                     interactionSource = null,
                     onClick = onBackClick
                 ),

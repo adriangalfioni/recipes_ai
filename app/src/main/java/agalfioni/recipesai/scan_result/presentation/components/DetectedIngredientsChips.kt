@@ -1,6 +1,5 @@
 package agalfioni.recipesai.scan_result.presentation.components
 
-import agalfioni.recipesai.core.presentation.components.RecipeOutlinedButton
 import agalfioni.recipesai.core.presentation.models.Selectable
 import agalfioni.recipesai.core.presentation.models.toSelectableList
 import agalfioni.recipesai.core.presentation.theme.RecipesAITheme
@@ -9,12 +8,9 @@ import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -23,8 +19,9 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun DetectedIngredientsChips(
     ingredients: List<Selectable<String>>,
-    onIngredientChipCLick: (String) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onIngredientChipCLick: (String) -> Unit = {},
+    onTrailingIconClick: ((String) -> Unit)? = null
 ) {
     FlowRow(
         modifier = Modifier
@@ -34,32 +31,11 @@ fun DetectedIngredientsChips(
         horizontalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         ingredients.forEach { selectableIngredient ->
-            IngredientSelectableChip(selectableIngredient, onClick = onIngredientChipCLick)
-        }
-    }
-}
-
-@Composable
-fun IngredientCategoryChips(
-    category: String,
-    ingredients: List<String>,
-    modifier: Modifier = Modifier
-) {
-    Column {
-        Text(
-            text = category,
-            style = MaterialTheme.typography.bodyMedium
-        )
-        FlowRow(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(6.dp),
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
-            ingredients.forEach { ingredient ->
-                RecipeOutlinedButton(ingredient, {})
-            }
+            IngredientSelectableChip(
+                selectableIngredient,
+                onChipClick = onIngredientChipCLick,
+                onTrailingIconClick = onTrailingIconClick
+            )
         }
     }
 }

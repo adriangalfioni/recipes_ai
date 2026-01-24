@@ -147,7 +147,6 @@ fun IngredientDetectorRoot(
                     onTrailingClick = { onEvent(IngredientsDetectorEvent.OnSuggestionSelected(it)) },
                     leadingIcon = null,
                     maxSuggestions = 4,
-                    modifier = Modifier.padding(end = 8.dp),
                     onFocusedAtY = { yInRoot ->
                         scope.launch {
                             val targetScroll = (
