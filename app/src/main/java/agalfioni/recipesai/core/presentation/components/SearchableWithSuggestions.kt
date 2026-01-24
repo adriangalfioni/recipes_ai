@@ -9,9 +9,12 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -44,6 +47,7 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
@@ -70,6 +74,14 @@ fun SearchableWithSuggestions(
         suggestions
             .filter { it.contains(value, ignoreCase = true) }
             .take(maxSuggestions)
+    }
+
+    val handleSelection = remember {
+        { text: String ->
+            onSelectSuggestion(text)
+            focusManager.clearFocus()
+            keyboardController?.hide()
+        }
     }
 
     val isSingleResult = visibleSuggestions.size == 1
@@ -106,9 +118,7 @@ fun SearchableWithSuggestions(
                 trailingIcon = if (isSingleResult && trailingIcon != null) {
                     {
                         IconButton(onClick = {
-                            onSelectSuggestion(visibleSuggestions.first())
-                            focusManager.clearFocus()
-                            keyboardController?.hide()
+                            handleSelection(visibleSuggestions.first())
                         }) {
                             Icon(trailingIcon, contentDescription = null)
                         }
@@ -124,9 +134,7 @@ fun SearchableWithSuggestions(
                 keyboardActions = KeyboardActions(
                     onDone = {
                         if (visibleSuggestions.size == 1) {
-                            onSelectSuggestion(visibleSuggestions.first())
-                            focusManager.clearFocus()
-                            keyboardController?.hide()
+                            handleSelection(visibleSuggestions.first())
                         }
                     }
                 ),
@@ -151,21 +159,51 @@ fun SearchableWithSuggestions(
             )
         }
 
-        // SUGGESTIONS
+        val showAddNew = value.length >= MIN_CHARS_TO_ADD_NEW_INGREDIENT && visibleSuggestions.isEmpty()
         AnimatedVisibility(
-            visible = visibleSuggestions.isNotEmpty()
+            visible = visibleSuggestions.isNotEmpty() || showAddNew
         ) {
-            SuggestionsList(
-                items = visibleSuggestions,
-                onSelect = {
-                    onSelectSuggestion(it)
-                    focusManager.clearFocus()
-                    keyboardController?.hide()
+            if (showAddNew) {
+                Row(
+                    modifier = Modifier
+                        .padding(top = 8.dp) // Spacing from the TextField
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(20.dp))
+                        .background(MaterialTheme.colorScheme.surfaceVariant)
+                        .clickable {
+                            handleSelection(value.replaceFirstChar { it.titlecase() })
+                        }
+                        .padding(horizontal = 16.dp, vertical = 12.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Add,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onPrimaryContainer,
+                        modifier = Modifier.size(20.dp)
+                    )
+                    Spacer(Modifier.width(12.dp))
+                    Text(
+                        text = "Add \"${value.replaceFirstChar { it.titlecase() }}\"",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis // Prevents breaking the UI with long inputs
+                    )
                 }
-            )
+            } else {
+                SuggestionsList(
+                    items = visibleSuggestions,
+                    onSelect = {
+                        handleSelection(it)
+                    }
+                )
+            }
         }
     }
 }
+
+const val MIN_CHARS_TO_ADD_NEW_INGREDIENT = 3
 
 @Composable
 private fun SuggestionsList(
@@ -204,11 +242,11 @@ private fun SuggestionsList(
 private fun SearchableWithSuggestionsPreview() {
     RecipesAITheme {
         SearchableWithSuggestions(
-            value = "",
+            value = "asd",
             placeholder = stringResource(R.string.add_more_ingredients),
             onValueChange = {},
             suggestions = listOf(
-                "Apple", "Carrot", "Milk", "Cheese"
+                /*"Apple", "Carrot", "Milk", "Cheese"*/
             ),
             onSelectSuggestion = {},
             trailingIcon = Icons.Default.Add,
