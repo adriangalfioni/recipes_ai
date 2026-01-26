@@ -15,4 +15,8 @@ sealed interface Route: NavKey, Parcelable {
     @Parcelize
     @Serializable
     data class IngredientsDetectorScreen(val uri: String): Route
+
+    @Parcelize
+    @Serializable
+    object RecipeListScreen: Route
 }

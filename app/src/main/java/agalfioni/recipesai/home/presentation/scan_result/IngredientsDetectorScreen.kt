@@ -41,6 +41,7 @@ import org.koin.androidx.compose.koinViewModel
 fun IngredientDetectorScreen(
     modifier: Modifier = Modifier,
     onBackClick: () -> Unit = {},
+    onGenerateRecipesClick: (List<String>) -> Unit,
     viewModel: IngredientsDetectorViewModel = koinViewModel()
 ) {
     val uiState = viewModel.uiState.collectAsStateWithLifecycle()
@@ -49,6 +50,7 @@ fun IngredientDetectorScreen(
         uiState = uiState.value,
         onEvent = viewModel::onEvent,
         onBackClick = onBackClick,
+        onGenerateRecipesClick = onGenerateRecipesClick,
         modifier = modifier
     )
 }
@@ -59,6 +61,7 @@ fun IngredientDetectorRoot(
     uiState: IngredientsDetectorUiState,
     onEvent: (event: IngredientsDetectorEvent) -> Unit,
     onBackClick: () -> Unit,
+    onGenerateRecipesClick: (List<String>) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Scaffold(
@@ -73,7 +76,7 @@ fun IngredientDetectorRoot(
             GenerateRecipesBottomBar(
                 selectedIngredientsQty = uiState.detectedIngredients.filter { it.isSelected }.size,
                 onGenerateRecipesClick = {
-                    onEvent(IngredientsDetectorEvent.OnImageToAnalyze(uiState.imageUri))
+                    onGenerateRecipesClick(uiState.detectedIngredients.filter { it.isSelected }.map { it.item })
                 }
             )
         },
@@ -196,7 +199,8 @@ private fun IngredientDetectorScreenPreview() {
                 ).getAllIngredients().toSelectableList(true)
             ),
             onEvent = {},
-            onBackClick = {}
+            onBackClick = {},
+            onGenerateRecipesClick = {}
         )
     }
 }

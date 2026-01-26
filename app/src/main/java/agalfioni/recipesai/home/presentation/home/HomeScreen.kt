@@ -1,6 +1,7 @@
 package agalfioni.recipesai.home.presentation.home
 
 import agalfioni.recipesai.R
+import agalfioni.recipesai.core.navigation.ResultStore
 import agalfioni.recipesai.core.presentation.components.SearchableWithSuggestions
 import agalfioni.recipesai.core.presentation.components.rememberCameraLauncher
 import agalfioni.recipesai.core.presentation.models.toSelectableList
@@ -51,8 +52,10 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun HomeScreen(
-    modifier: Modifier = Modifier,
+    resultStore: ResultStore,
     onImage: (String) -> Unit,
+    onGenerateRecipesClick: (List<String>) -> Unit,
+    modifier: Modifier = Modifier,
     viewModel: HomeViewModel = koinViewModel()
 ) {
     val uiState = viewModel.uiState.collectAsStateWithLifecycle()
@@ -61,6 +64,7 @@ fun HomeScreen(
         uiState = uiState.value,
         onEvent = viewModel::onEvent,
         onImage = onImage,
+        onGenerateRecipesClick = onGenerateRecipesClick,
         modifier = modifier
     )
 }
@@ -72,6 +76,7 @@ fun HomeScreenRoot(
     onEvent: (event: HomeEvent) -> Unit,
     modifier: Modifier = Modifier,
     onImage: (String) -> Unit,
+    onGenerateRecipesClick: (List<String>) -> Unit,
 ) {
     Scaffold(
         modifier = Modifier
@@ -80,7 +85,7 @@ fun HomeScreenRoot(
             GenerateRecipesBottomBar(
                 selectedIngredientsQty = uiState.addedIngredients.size,
                 onGenerateRecipesClick = {
-                    onEvent(HomeEvent.OnGenerateRecipes)
+                    onGenerateRecipesClick(uiState.addedIngredients.toList())
                 }
             )
         },
@@ -202,6 +207,7 @@ private fun HomeScreenPreview() {
                 .fillMaxSize()
                 .background(color = MaterialTheme.colorScheme.surface),
             onImage = {},
+            onGenerateRecipesClick = {},
             onEvent = {},
             uiState = HomeUiState()
         )

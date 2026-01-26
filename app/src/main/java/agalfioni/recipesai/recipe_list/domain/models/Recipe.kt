@@ -1,0 +1,18 @@
+package agalfioni.recipesai.recipe_list.domain.models
+
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+
+@Serializable
+data class Recipe(
+    val title: String,
+    val difficulty: Difficulty,
+    @SerialName("minutes_time")
+    val minutesTime: Int,
+    @SerialName("ingredient_coverage")
+    val ingredientCoverage: Double,
+    val confidence: Double,
+    val instructions: List<String>,
+    val nutrition: Nutrition,
+    val ingredients: List<RecipeIngredient>
+)

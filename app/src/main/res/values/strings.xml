@@ -20,5 +20,8 @@
     <string name="camera">Camera</string>
     <string name="gallery">Gallery</string>
     <string name="clear_all">Clear All</string>
+    <string name="recipe_suggestions">Recipe Suggestions\n</string>
+    <string name="generating_your_menu">Generating your menu…</string>
+    <string name="finding_perfect_recipe">Finding the perfect recipes</string>
 
 </resources>

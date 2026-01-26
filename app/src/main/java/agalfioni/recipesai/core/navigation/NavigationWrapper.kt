@@ -3,6 +3,8 @@ package agalfioni.recipesai.core.navigation
 import agalfioni.recipesai.home.presentation.home.HomeScreen
 import agalfioni.recipesai.home.presentation.scan_result.IngredientDetectorScreen
 import agalfioni.recipesai.home.presentation.scan_result.IngredientsDetectorViewModel
+import agalfioni.recipesai.recipe_list.presentation.GenerateRecipesViewModel
+import agalfioni.recipesai.recipe_list.presentation.RecipeListScreen
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
@@ -46,7 +48,12 @@ fun NavigationWrapper(
             when (key) {
                 is Route.HomeScreen -> NavEntry(key) {
                     HomeScreen(
-                        onImage = { backStack.add(Route.IngredientsDetectorScreen(it)) }
+                        resultStore = resultStore,
+                        onImage = { backStack.add(Route.IngredientsDetectorScreen(it)) },
+                        onGenerateRecipesClick = {
+                            resultStore.setResult("Ingredients", it)
+                            backStack.add(Route.RecipeListScreen)
+                        }
                     )
                 }
 
@@ -57,7 +64,23 @@ fun NavigationWrapper(
 
                     IngredientDetectorScreen(
                         viewModel = viewModel,
-                        onBackClick = { backStack.removeLastOrNull() }
+                        onBackClick = { backStack.removeLastOrNull() },
+                        onGenerateRecipesClick = {
+                            resultStore.setResult("Ingredients", it)
+                            backStack.add(Route.RecipeListScreen)
+                        }
+                    )
+                }
+
+                is Route.RecipeListScreen -> NavEntry(key) {
+                    val ingredients = resultStore.getResultAndRemove<List<String>>("Ingredients")
+
+                    val viewModel = koinViewModel<GenerateRecipesViewModel> {
+                        parametersOf(ingredients)
+                    }
+
+                    RecipeListScreen(
+                        generateRecipesViewModel = viewModel
                     )
                 }
 
