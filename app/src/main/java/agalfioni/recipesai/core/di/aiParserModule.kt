@@ -1,4 +1,4 @@
-package agalfioni.recipesai.home.di
+package agalfioni.recipesai.core.di
 
 import agalfioni.recipesai.core.data.helpers.AiJsonParser
 import org.koin.core.qualifier.named

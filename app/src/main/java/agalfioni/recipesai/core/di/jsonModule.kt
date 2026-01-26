@@ -1,4 +1,4 @@
-package agalfioni.recipesai.home.di
+package agalfioni.recipesai.core.di
 
 import kotlinx.serialization.json.Json
 import org.koin.core.qualifier.named

@@ -1,9 +1,9 @@
 package agalfioni.recipesai
 
-import agalfioni.recipesai.core.di.appModule
-import agalfioni.recipesai.home.di.aiModule
-import agalfioni.recipesai.home.di.aiParserModule
-import agalfioni.recipesai.home.di.jsonModule
+import agalfioni.recipesai.core.di.aiModule
+import agalfioni.recipesai.core.di.aiParserModule
+import agalfioni.recipesai.home.di.homeModule
+import agalfioni.recipesai.core.di.jsonModule
 import agalfioni.recipesai.recipe_list.di.generateRecipesModule
 import android.app.Application
 import com.google.firebase.FirebaseApp
@@ -29,11 +29,11 @@ class RecipesApp : Application() {
             androidContext(this@RecipesApp)
             // Load modules
             modules(
-                appModule,
                 aiModule,
                 aiParserModule,
                 generateRecipesModule,
-                jsonModule
+                jsonModule,
+                homeModule
             )
         }
     }

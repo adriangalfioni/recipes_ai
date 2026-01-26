@@ -5,18 +5,15 @@ import agalfioni.recipesai.home.data.IngredientsDetectorDataSource
 import agalfioni.recipesai.home.data.IngredientsDetectorRepositoryImpl
 import agalfioni.recipesai.home.data.utils.ImageProcessor
 import agalfioni.recipesai.home.domain.IngredientsDetectorRepository
-import com.google.firebase.Firebase
-import com.google.firebase.ai.GenerativeModel
-import com.google.firebase.ai.ai
-import com.google.firebase.ai.type.GenerativeBackend
+import agalfioni.recipesai.home.presentation.home.HomeViewModel
+import agalfioni.recipesai.home.presentation.scan_result.IngredientsDetectorViewModel
 import org.koin.android.ext.koin.androidContext
+import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.dsl.module
 
-val aiModule = module {
-    factory<GenerativeModel> {
-        Firebase.ai(backend = GenerativeBackend.googleAI())
-            .generativeModel(modelName = "gemini-2.5-flash")
-    }
+val homeModule = module {
+    viewModelOf(::IngredientsDetectorViewModel)
+    viewModelOf(::HomeViewModel)
 
     factory { ImageProcessor(androidContext()) }
 
