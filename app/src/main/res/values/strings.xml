@@ -20,8 +20,12 @@
     <string name="camera">Camera</string>
     <string name="gallery">Gallery</string>
     <string name="clear_all">Clear All</string>
-    <string name="recipe_suggestions">Recipe Suggestions\n</string>
+    <string name="recipe_suggestions">Recipe Suggestions</string>
     <string name="generating_your_menu">Generating your menu…</string>
     <string name="finding_perfect_recipe">Finding the perfect recipes</string>
+    <string name="difficulty_easy">Easy</string>
+    <string name="difficulty_medium">Moderate</string>
+    <string name="difficulty_hard">Elaborated</string>
+    <string name="percentage_match">%s INGREDIENTS MATCH</string>
 
 </resources>

@@ -1,21 +1,21 @@
 package agalfioni.recipesai.recipe_list.presentation
 
+import agalfioni.recipesai.R
 import agalfioni.recipesai.core.presentation.theme.RecipesAITheme
 import agalfioni.recipesai.recipe_list.presentation.components.AiProgressSection
+import agalfioni.recipesai.recipe_list.presentation.components.RecipeCard
 import agalfioni.recipesai.recipe_list.presentation.components.RecipeListTopBar
-import android.util.Log
+import agalfioni.recipesai.recipe_list.presentation.models.RecipeUi
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -27,6 +27,7 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun RecipeListScreen(
     modifier: Modifier = Modifier,
+    onBackClick: () -> Unit,
     aiProgressViewModel: AiProgressViewModel = koinViewModel(),
     generateRecipesViewModel: GenerateRecipesViewModel = koinViewModel()
 ) {
@@ -34,6 +35,7 @@ fun RecipeListScreen(
     val generateRecipesUiState = generateRecipesViewModel.uiState.collectAsStateWithLifecycle()
 
     RecipeListScreenRoot(
+        onBackClick = onBackClick,
         aiProgressUiState = aiProgressUiState.value,
         generateRecipesUiState = generateRecipesUiState.value,
         modifier = modifier
@@ -42,6 +44,7 @@ fun RecipeListScreen(
 
 @Composable
 fun RecipeListScreenRoot(
+    onBackClick: () -> Unit,
     aiProgressUiState: AiProgressState,
     generateRecipesUiState: GenerateRecipesUiState,
     modifier: Modifier = Modifier,
@@ -52,7 +55,7 @@ fun RecipeListScreenRoot(
             .fillMaxSize(),
         topBar = {
             RecipeListTopBar(
-                onBackClick = {}
+                onBackClick = onBackClick
             )
         },
     ) { innerPadding ->
@@ -76,24 +79,72 @@ fun RecipeListScreenRoot(
                         && generateRecipesUiState.recipes.isNotEmpty()
                         && generateRecipesUiState.error == null
             ) {
+                LazyColumn(
+                    modifier = Modifier.fillMaxSize(),
+                    state = rememberLazyListState()
+                ) {
+                    items(
+                        items = generateRecipesUiState.recipes,
+                        key = { it.title }
+                    ) { recipe ->
+                        RecipeCard(
+                            recipeUi = recipe
+                        )
+                    }
+                }
 
             }
-
         }
     }
-
 }
 
 @Preview
 @Composable
-private fun HomeScreenPreview() {
+private fun RecipeListScreenLoadingPreview() {
     RecipesAITheme {
         RecipeListScreenRoot(
+            onBackClick = {},
             modifier = Modifier
                 .fillMaxSize()
                 .background(color = MaterialTheme.colorScheme.surface),
             aiProgressUiState = AiProgressState(),
             generateRecipesUiState = GenerateRecipesUiState()
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun RecipeListScreenRecipesPreview() {
+    val recipes = listOf(
+        RecipeUi(
+            title = "Spaghetti Bolognese",
+            difficulty = R.string.difficulty_easy,
+            minutesTime = "20 min",
+            ingredientCoveragePercentage = "80%",
+            isMatchHigh = true,
+            totalCalories = "500 kcal"
+        ),
+        RecipeUi(
+            title = "Beef Wellington",
+            difficulty = R.string.difficulty_hard,
+            minutesTime = "120 min",
+            ingredientCoveragePercentage = "30%",
+            isMatchHigh = false,
+            totalCalories = "950 kcal"
+        )
+    )
+
+    RecipesAITheme {
+        RecipeListScreenRoot(
+            onBackClick = {},
+            modifier = Modifier
+                .fillMaxSize()
+                .background(color = MaterialTheme.colorScheme.surface),
+            aiProgressUiState = AiProgressState(hasFinished = true),
+            generateRecipesUiState = GenerateRecipesUiState(
+                recipes = recipes
+            )
         )
     }
 }

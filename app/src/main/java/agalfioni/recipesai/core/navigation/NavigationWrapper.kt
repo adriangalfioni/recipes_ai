@@ -80,6 +80,7 @@ fun NavigationWrapper(
                     }
 
                     RecipeListScreen(
+                        onBackClick = { backStack.keepOnlyFirst() },
                         generateRecipesViewModel = viewModel
                     )
                 }

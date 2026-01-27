@@ -4,6 +4,7 @@ import agalfioni.recipesai.core.domain.models.onFailure
 import agalfioni.recipesai.core.domain.models.onSuccess
 import agalfioni.recipesai.core.presentation.utils.asUiText
 import agalfioni.recipesai.recipe_list.domain.GenerateRecipesRepository
+import agalfioni.recipesai.recipe_list.presentation.mappers.toRecipeUiList
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -51,7 +52,7 @@ class GenerateRecipesViewModel(
                 _uiState.update {
                     it.copy(
                         isLoading = false,
-                        recipes = recipes
+                        recipes = recipes.toRecipeUiList()
                     )
                 }
             }.onFailure { error ->

@@ -11,7 +11,6 @@ data class Recipe(
     val minutesTime: Int,
     @SerialName("ingredient_coverage")
     val ingredientCoverage: Double,
-    val confidence: Double,
     val instructions: List<String>,
     val nutrition: Nutrition,
     val ingredients: List<RecipeIngredient>

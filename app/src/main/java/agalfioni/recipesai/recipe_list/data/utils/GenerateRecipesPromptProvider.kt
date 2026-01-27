@@ -18,12 +18,8 @@ object GenerateRecipesPromptProvider {
     Given this list of available ingredients ($ingredientsString), generate EXACTLY ${recipesQty ?: RECIPE_NUMBER_TO_GENERATE} recipes.
 
     Primary goal:
-    - Maximize usage of the provided ingredients in each recipe.
-    - Each recipe SHOULD aim to use at least 80% of the provided ingredients.
-
-    Fallback behavior:
-    - If 80% usage is not achievable, generate the best possible recipe.
-    - Explicitly reflect lower usage via ingredient_coverage and confidence.
+    - When number of ingredients is 3 or less then maximize usage of the provided ingredients
+    - When number of ingredients is more than 3, is ok to use less ingredients.
 
     Ingredient rules:
     - Recipes MAY include additional ingredients not listed.
@@ -40,27 +36,16 @@ object GenerateRecipesPromptProvider {
     
 
     Output format:
-    Return a JSON array of 10 objects.
-    Each object MUST strictly follow this schema:
+    Return a JSON array, each object MUST strictly follow this schema:
 
     {
         "title": string,
         "difficulty": "easy" | "moderate" | "elaborated",
         "minutes_time": number
         "ingredient_coverage": number,
-        "confidence": number,
         "instructions": string[],
         "nutrition": {
         "calories": number,
-        "total_fat": number,
-        "saturated_fat": number,
-        "protein": number,
-        "sodium": number,
-        "potassium": number,
-        "dietary_fiber": number,
-        "cholesterol": number,
-        "sugars": number,
-        "total_carbohydrate": number
     },
         "ingredients": [
         {
@@ -92,6 +77,13 @@ object GenerateRecipesPromptProvider {
     """
 
     }
+
+    /*"total_fat": number,
+    "saturated_fat": number,
+    "protein": number,
+    "cholesterol": number,
+    "sugars": number,
+    "total_carbohydrate": number*/
 
 }
 

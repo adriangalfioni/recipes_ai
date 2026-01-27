@@ -78,3 +78,5 @@ val surfaceContainerHighestDark = Color(0xFF303632)
 
 val GreenDot = Color(0xFF35964C)
 val OrangeDot = Color(0xF3F85C1D)
+
+val GoodMatch = Color(0xFF004D11)

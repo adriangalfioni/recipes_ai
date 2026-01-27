@@ -5,11 +5,8 @@ import agalfioni.recipesai.core.presentation.theme.PlusJakartaSans
 import agalfioni.recipesai.core.presentation.theme.RecipesAITheme
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.add
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBars
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -69,7 +66,6 @@ fun IngredientsDetectorTopBar(
                 )
             }
         },
-        windowInsets = WindowInsets.statusBars.add(WindowInsets(top = 32.dp)),
     )
 }
 
