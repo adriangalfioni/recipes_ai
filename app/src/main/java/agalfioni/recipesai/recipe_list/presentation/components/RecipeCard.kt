@@ -5,6 +5,7 @@ import agalfioni.recipesai.core.presentation.theme.GoodMatch
 import agalfioni.recipesai.core.presentation.theme.RecipesAITheme
 import agalfioni.recipesai.recipe_list.presentation.models.RecipeUi
 import agalfioni.recipesai.recipe_list.presentation.preview_providers.RecipeUiProvider
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -38,7 +39,8 @@ import androidx.compose.ui.unit.sp
 
 @Composable
 fun RecipeCard(
-    recipeUi: RecipeUi
+    recipeUi: RecipeUi,
+    onClick: () -> Unit = {}
 ) {
     val matchColor = if (recipeUi.isMatchHigh) {
         GoodMatch
@@ -55,7 +57,12 @@ fun RecipeCard(
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(8.dp),
+            .padding(8.dp)
+            .clickable(
+                interactionSource = null,
+                indication = null,
+                onClick = onClick
+            ),
         shape = RoundedCornerShape(32.dp),
         colors = CardDefaults.cardColors(containerColor = cardContainerColor),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)

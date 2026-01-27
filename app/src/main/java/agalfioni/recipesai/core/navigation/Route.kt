@@ -19,4 +19,8 @@ sealed interface Route: NavKey, Parcelable {
     @Parcelize
     @Serializable
     object RecipeListScreen: Route
+
+    @Parcelize
+    @Serializable
+    object RecipeDetailsScreen: Route
 }

@@ -3,11 +3,13 @@ package agalfioni.recipesai.core.navigation
 import agalfioni.recipesai.home.presentation.home.HomeScreen
 import agalfioni.recipesai.home.presentation.scan_result.IngredientDetectorScreen
 import agalfioni.recipesai.home.presentation.scan_result.IngredientsDetectorViewModel
-import agalfioni.recipesai.recipe_list.presentation.GenerateRecipesViewModel
+import agalfioni.recipesai.recipe_details.presentation.RecipeDetailsScreen
+import agalfioni.recipesai.recipe_details.presentation.RecipeDetailsViewModel
+import agalfioni.recipesai.recipe_list.domain.models.Recipe
 import agalfioni.recipesai.recipe_list.presentation.RecipeListScreen
+import agalfioni.recipesai.recipe_list.presentation.RecipesListViewModel
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.listSaver
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.toMutableStateList
@@ -75,13 +77,30 @@ fun NavigationWrapper(
                 is Route.RecipeListScreen -> NavEntry(key) {
                     val ingredients = resultStore.getResultAndRemove<List<String>>("Ingredients")
 
-                    val viewModel = koinViewModel<GenerateRecipesViewModel> {
+                    val viewModel = koinViewModel<RecipesListViewModel> {
                         parametersOf(ingredients)
                     }
 
                     RecipeListScreen(
                         onBackClick = { backStack.keepOnlyFirst() },
-                        generateRecipesViewModel = viewModel
+                        onNavigateToRecipe = { recipe ->
+                            resultStore.setResult("Recipe", recipe)
+                            backStack.add(Route.RecipeDetailsScreen)
+                        },
+                        recipesListViewModel = viewModel
+                    )
+                }
+
+                is Route.RecipeDetailsScreen -> NavEntry(key) {
+                    val recipe = resultStore.getResultAndRemove<Recipe>("Recipe")
+
+                    val viewModel = koinViewModel<RecipeDetailsViewModel> {
+                        parametersOf(recipe)
+                    }
+
+                    RecipeDetailsScreen(
+                        onBackClick = { backStack.removeLastOrNull() },
+                        recipeDetailsViewModel = viewModel
                     )
                 }
 

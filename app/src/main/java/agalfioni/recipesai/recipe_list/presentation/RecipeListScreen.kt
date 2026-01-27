@@ -2,6 +2,7 @@ package agalfioni.recipesai.recipe_list.presentation
 
 import agalfioni.recipesai.R
 import agalfioni.recipesai.core.presentation.theme.RecipesAITheme
+import agalfioni.recipesai.recipe_list.domain.models.Recipe
 import agalfioni.recipesai.recipe_list.presentation.components.AiProgressSection
 import agalfioni.recipesai.recipe_list.presentation.components.RecipeCard
 import agalfioni.recipesai.recipe_list.presentation.components.RecipeListTopBar
@@ -17,6 +18,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -28,16 +30,19 @@ import org.koin.androidx.compose.koinViewModel
 fun RecipeListScreen(
     modifier: Modifier = Modifier,
     onBackClick: () -> Unit,
+    onNavigateToRecipe: (Recipe) -> Unit,
     aiProgressViewModel: AiProgressViewModel = koinViewModel(),
-    generateRecipesViewModel: GenerateRecipesViewModel = koinViewModel()
+    recipesListViewModel: RecipesListViewModel = koinViewModel()
 ) {
     val aiProgressUiState = aiProgressViewModel.uiState.collectAsStateWithLifecycle()
-    val generateRecipesUiState = generateRecipesViewModel.uiState.collectAsStateWithLifecycle()
+    val generateRecipesUiState = recipesListViewModel.uiState.collectAsStateWithLifecycle()
 
     RecipeListScreenRoot(
         onBackClick = onBackClick,
+        onNavigateToRecipe= onNavigateToRecipe,
         aiProgressUiState = aiProgressUiState.value,
         generateRecipesUiState = generateRecipesUiState.value,
+        onEvent = { event -> recipesListViewModel.onEvent(event) },
         modifier = modifier
     )
 }
@@ -45,8 +50,10 @@ fun RecipeListScreen(
 @Composable
 fun RecipeListScreenRoot(
     onBackClick: () -> Unit,
+    onNavigateToRecipe: (Recipe) -> Unit,
     aiProgressUiState: AiProgressState,
     generateRecipesUiState: GenerateRecipesUiState,
+    onEvent: (RecipeListEvent) -> Unit,
     modifier: Modifier = Modifier,
 ) {
 
@@ -59,6 +66,13 @@ fun RecipeListScreenRoot(
             )
         },
     ) { innerPadding ->
+
+        generateRecipesUiState.navigateToRecipe?.let {
+            LaunchedEffect(it) {
+                onNavigateToRecipe(it)
+                onEvent(RecipeListEvent.OnNavigationDone)
+            }
+        }
 
         Column(
             modifier = modifier
@@ -88,7 +102,8 @@ fun RecipeListScreenRoot(
                         key = { it.title }
                     ) { recipe ->
                         RecipeCard(
-                            recipeUi = recipe
+                            recipeUi = recipe,
+                            onClick = { onEvent(RecipeListEvent.OnRecipeClicked(recipe)) }
                         )
                     }
                 }
@@ -104,11 +119,13 @@ private fun RecipeListScreenLoadingPreview() {
     RecipesAITheme {
         RecipeListScreenRoot(
             onBackClick = {},
+            onNavigateToRecipe = {},
             modifier = Modifier
                 .fillMaxSize()
                 .background(color = MaterialTheme.colorScheme.surface),
             aiProgressUiState = AiProgressState(),
-            generateRecipesUiState = GenerateRecipesUiState()
+            generateRecipesUiState = GenerateRecipesUiState(),
+            onEvent = {}
         )
     }
 }
@@ -144,7 +161,9 @@ private fun RecipeListScreenRecipesPreview() {
             aiProgressUiState = AiProgressState(hasFinished = true),
             generateRecipesUiState = GenerateRecipesUiState(
                 recipes = recipes
-            )
+            ),
+            onEvent = {},
+            onNavigateToRecipe = {}
         )
     }
 }

@@ -35,7 +35,8 @@ fun IngredientSelectableChip(
         containerColor = MaterialTheme.colorScheme.primary.copy(
             alpha = 0.1f
         )
-    )
+    ),
+    enabled: Boolean = true
 ) {
     OutlinedButton(
         shape = RoundedCornerShape(10.dp),
@@ -52,6 +53,7 @@ fun IngredientSelectableChip(
             color = MaterialTheme.colorScheme.outline
         ),
         contentPadding = PaddingValues(horizontal = 12.dp, vertical = 8.dp),
+        enabled = enabled
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically

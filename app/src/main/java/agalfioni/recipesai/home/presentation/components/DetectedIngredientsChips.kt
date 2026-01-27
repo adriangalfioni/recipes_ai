@@ -20,7 +20,7 @@ import androidx.compose.ui.unit.dp
 fun DetectedIngredientsChips(
     ingredients: List<Selectable<String>>,
     modifier: Modifier = Modifier,
-    onIngredientChipCLick: (String) -> Unit = {},
+    onIngredientChipClick: (String) -> Unit = {},
     onTrailingIconClick: ((String) -> Unit)? = null
 ) {
     FlowRow(
@@ -33,7 +33,7 @@ fun DetectedIngredientsChips(
         ingredients.forEach { selectableIngredient ->
             IngredientSelectableChip(
                 selectableIngredient,
-                onChipClick = onIngredientChipCLick,
+                onChipClick = onIngredientChipClick,
                 onTrailingIconClick = onTrailingIconClick
             )
         }
@@ -53,7 +53,7 @@ private fun DetectedIngredientsChipsPreview() {
                     meat = listOf("Beef", "Chicken", "Pork"),
                     drinks = listOf("Water", "Juice", "Soda")
                 ).getAllIngredients().toSelectableList(true),
-                onIngredientChipCLick = {}
+                onIngredientChipClick = {},
             )
         }
     }

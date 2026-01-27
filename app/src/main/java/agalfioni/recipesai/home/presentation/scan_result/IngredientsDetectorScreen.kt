@@ -140,7 +140,7 @@ fun IngredientDetectorRoot(
                 Spacer(modifier = Modifier.height(16.dp))
                 DetectedIngredientsChips(
                     ingredients = uiState.detectedIngredients,
-                    onIngredientChipCLick = {
+                    onIngredientChipClick = {
                         onEvent(IngredientsDetectorEvent.OnIngredientSelectionChanged(it))
                     }
                 )

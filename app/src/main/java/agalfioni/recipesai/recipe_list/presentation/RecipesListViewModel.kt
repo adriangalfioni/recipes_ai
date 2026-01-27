@@ -4,6 +4,7 @@ import agalfioni.recipesai.core.domain.models.onFailure
 import agalfioni.recipesai.core.domain.models.onSuccess
 import agalfioni.recipesai.core.presentation.utils.asUiText
 import agalfioni.recipesai.recipe_list.domain.GenerateRecipesRepository
+import agalfioni.recipesai.recipe_list.domain.models.Recipe
 import agalfioni.recipesai.recipe_list.presentation.mappers.toRecipeUiList
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -13,13 +14,15 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class GenerateRecipesViewModel(
+class RecipesListViewModel(
     private val ingredients: List<String>,
     private val generateRecipesRepository: GenerateRecipesRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(GenerateRecipesUiState())
     val uiState: StateFlow<GenerateRecipesUiState> = _uiState.asStateFlow()
+
+    private val receivedRecipes: MutableList<Recipe> = mutableListOf()
 
     companion object {
         private const val NUMBER_OF_RECIPES_TO_GENERATE = 10
@@ -30,6 +33,18 @@ class GenerateRecipesViewModel(
             ingredients = ingredients,
             recipesQty = NUMBER_OF_RECIPES_TO_GENERATE
         )
+    }
+
+    fun onEvent(event: RecipeListEvent) {
+        when (event) {
+            is RecipeListEvent.OnRecipeClicked -> {
+                receivedRecipes.firstOrNull { it.title == event.recipeUi.title }?.let { recipe ->
+                    _uiState.update { it.copy(navigateToRecipe = recipe) }
+                }
+            }
+
+            RecipeListEvent.OnNavigationDone -> _uiState.update { it.copy(navigateToRecipe = null) }
+        }
     }
 
     fun generateRecipes(
@@ -49,6 +64,9 @@ class GenerateRecipesViewModel(
                 recipesQty = recipesQty,
                 ingredients = ingredients
             ).onSuccess { recipes ->
+
+                receivedRecipes.addAll(recipes)
+
                 _uiState.update {
                     it.copy(
                         isLoading = false,
