@@ -7,19 +7,28 @@ import agalfioni.recipesai.recipe_details.presentation.components.AIInsightCard
 import agalfioni.recipesai.recipe_details.presentation.components.IngredientItem
 import agalfioni.recipesai.recipe_details.presentation.components.InstructionItem
 import agalfioni.recipesai.recipe_details.presentation.components.RecipeHeader
-import agalfioni.recipesai.recipe_details.presentation.components.SectionHeader
+import agalfioni.recipesai.recipe_details.presentation.components.IngredientSectionHeader
 import agalfioni.recipesai.recipe_details.presentation.preview_providers.dummyRecipeDetailsUi
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -62,6 +71,7 @@ fun RecipeDetailsScreenRoot(
         }
     ) { innerPadding ->
         val recipeDetailsUi = recipeDetailsState.recipeDetailsUi
+        var isIngredientsExpanded by remember { mutableStateOf(true) }
 
         LazyColumn(
             modifier = Modifier
@@ -71,6 +81,7 @@ fun RecipeDetailsScreenRoot(
             verticalArrangement = Arrangement.spacedBy(12.dp),
             contentPadding = PaddingValues(vertical = 24.dp)
         ) {
+
             recipeDetailsUi?.let {
                 item { RecipeHeader(recipeDetailsUi) }
                 recipeDetailsUi.chefInsight?.let {
@@ -78,13 +89,31 @@ fun RecipeDetailsScreenRoot(
                 }
                 // Ingredients Section
                 item {
-                    SectionHeader(
-                        modifier = Modifier.padding(top = 8.dp),
+                    IngredientSectionHeader(
+                        modifier = Modifier
+                            .padding(top = 8.dp)
+                            .clickable(
+                                interactionSource = null,
+                                indication = null,
+                                onClick = { isIngredientsExpanded = !isIngredientsExpanded }
+                            ),
                         title = "Ingredients",
-                        badgeText = "${recipeDetailsUi.ingredients.size} items")
+                        badgeText = "${recipeDetailsUi.ingredients.size} items",
+                        sectionExpanded = isIngredientsExpanded
+                    )
                 }
-                items(recipeDetailsUi.ingredients) { ingredient ->
-                    IngredientItem(ingredient)
+                item {
+                    AnimatedVisibility(
+                        visible = isIngredientsExpanded,
+                        enter = expandVertically() + fadeIn(),
+                        exit = shrinkVertically() + fadeOut()
+                    ) {
+                        Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                            recipeDetailsUi.ingredients.forEach { ingredient ->
+                                IngredientItem(ingredient)
+                            }
+                        }
+                    }
                 }
 
                 // Instructions Section
