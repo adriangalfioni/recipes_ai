@@ -45,7 +45,12 @@ fun NavigationWrapper(
             // Then add the view model store decorator
             rememberViewModelStoreNavEntryDecorator()
         ),
-        onBack = { backStack.removeLastOrNull() },
+        onBack = {
+            when {
+                backStack.lastOrNull() == Route.RecipeListScreen -> backStack.keepOnlyFirst()
+                else -> backStack.removeLastOrNull()
+            }
+        },
         entryProvider = { key ->
             when (key) {
                 is Route.HomeScreen -> NavEntry(key) {

@@ -2,6 +2,7 @@ package agalfioni.recipesai.recipe_list.presentation
 
 import agalfioni.recipesai.core.domain.models.onFailure
 import agalfioni.recipesai.core.domain.models.onSuccess
+import agalfioni.recipesai.core.presentation.utils.UiOneTimeEvent
 import agalfioni.recipesai.core.presentation.utils.asUiText
 import agalfioni.recipesai.recipe_list.domain.GenerateRecipesRepository
 import agalfioni.recipesai.recipe_list.domain.models.Recipe
@@ -39,11 +40,16 @@ class RecipesListViewModel(
         when (event) {
             is RecipeListEvent.OnRecipeClicked -> {
                 receivedRecipes.firstOrNull { it.title == event.recipeUi.title }?.let { recipe ->
-                    _uiState.update { it.copy(navigateToRecipe = recipe) }
+                    _uiState.update {
+                        it.copy(
+                            navigateToRecipeEvent = UiOneTimeEvent(
+                                payload = recipe,
+                                onEventConsumed = { _uiState.update { it.copy(navigateToRecipeEvent = null) } }
+                            )
+                        )
+                    }
                 }
             }
-
-            RecipeListEvent.OnNavigationDone -> _uiState.update { it.copy(navigateToRecipe = null) }
         }
     }
 

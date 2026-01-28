@@ -67,10 +67,9 @@ fun RecipeListScreenRoot(
         },
     ) { innerPadding ->
 
-        generateRecipesUiState.navigateToRecipe?.let {
+        generateRecipesUiState.navigateToRecipeEvent?.let {
             LaunchedEffect(it) {
-                onNavigateToRecipe(it)
-                onEvent(RecipeListEvent.OnNavigationDone)
+                onNavigateToRecipe(it.consumePayload())
             }
         }
 
