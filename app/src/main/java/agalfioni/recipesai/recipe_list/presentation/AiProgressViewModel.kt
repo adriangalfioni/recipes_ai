@@ -73,7 +73,7 @@ class AiProgressViewModel(
         val delayPerStep = (durationMs / delta).coerceAtLeast(5L)
 
         repeat(delta) {
-            _uiState.update { it.copy(progress = it.progress + 1) }
+            _uiState.update { it.copy(progress = (it.progress + 1).coerceAtMost(100)) }
             delay(delayPerStep)
         }
 
