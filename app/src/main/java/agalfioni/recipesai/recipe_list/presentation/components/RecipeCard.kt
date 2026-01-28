@@ -49,7 +49,7 @@ fun RecipeCard(
     }
 
     val cardContainerColor = if (recipeUi.isMatchHigh) {
-        MaterialTheme.colorScheme.primaryContainer
+        MaterialTheme.colorScheme.secondary
     } else {
         Color.White
     }
@@ -80,7 +80,8 @@ fun RecipeCard(
                     text = recipeUi.title,
                     style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.Bold,
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.weight(1f),
+                    color = Color.Black
                 )
                 Icon(
                     imageVector = Icons.Default.FavoriteBorder,
