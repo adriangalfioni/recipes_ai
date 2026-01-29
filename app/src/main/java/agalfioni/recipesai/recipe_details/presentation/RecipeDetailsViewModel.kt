@@ -1,26 +1,31 @@
 package agalfioni.recipesai.recipe_details.presentation
 
 
+import agalfioni.recipesai.recipe_details.domain.RecipeDetailsRepository
 import agalfioni.recipesai.recipe_details.presentation.mappers.toRecipeDetailsUi
-import agalfioni.recipesai.recipe_list.domain.models.Recipe
 import androidx.lifecycle.ViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 
 class RecipeDetailsViewModel(
-    private val recipe: Recipe
+    recipeId: String,
+    repository: RecipeDetailsRepository
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(RecipeDetailsState())
-    val uiState: StateFlow<RecipeDetailsState> = _uiState.asStateFlow()
-
-
-    init {
-        _uiState.update {
-            it.copy(recipeDetailsUi = recipe.toRecipeDetailsUi())
+    val uiState: StateFlow<RecipeDetailsState> = repository.getRecipeById(recipeId)
+        .map { domainRecipe ->
+            RecipeDetailsState(
+                isLoading = false,
+                recipeDetailsUi = domainRecipe?.toRecipeDetailsUi()
+            )
         }
-    }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = RecipeDetailsState(isLoading = true)
+        )
 
 }

@@ -2,6 +2,7 @@ package agalfioni.recipesai
 
 import agalfioni.recipesai.core.di.aiModule
 import agalfioni.recipesai.core.di.aiParserModule
+import agalfioni.recipesai.core.di.dbModule
 import agalfioni.recipesai.core.di.jsonModule
 import agalfioni.recipesai.home.di.homeModule
 import agalfioni.recipesai.recipe_details.presentation.di.recipeDetailsModule
@@ -33,6 +34,7 @@ class RecipesApp : Application() {
                 aiModule,
                 aiParserModule,
                 jsonModule,
+                dbModule,
                 // Features modules
                 recipeDetailsModule,
                 homeModule,

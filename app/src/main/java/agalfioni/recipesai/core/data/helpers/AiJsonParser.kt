@@ -9,7 +9,10 @@ class AiJsonParser(
     inline fun <reified T> parseOrNull(input: String): T? =
         runCatching {
             json.decodeFromString<T>(input.extractJsonArray())
-        }.getOrNull()
+        }.getOrElse { t ->
+            t.printStackTrace()
+            null
+        }
 
     inline fun <reified T> parseResult(input: String): Result<T> =
         runCatching {

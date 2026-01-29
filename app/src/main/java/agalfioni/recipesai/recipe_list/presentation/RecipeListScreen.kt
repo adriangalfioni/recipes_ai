@@ -30,7 +30,7 @@ import org.koin.androidx.compose.koinViewModel
 fun RecipeListScreen(
     modifier: Modifier = Modifier,
     onBackClick: () -> Unit,
-    onNavigateToRecipe: (Recipe) -> Unit,
+    onNavigateToRecipe: (String) -> Unit,
     aiProgressViewModel: AiProgressViewModel = koinViewModel(),
     recipesListViewModel: RecipesListViewModel = koinViewModel()
 ) {
@@ -39,7 +39,7 @@ fun RecipeListScreen(
 
     RecipeListScreenRoot(
         onBackClick = onBackClick,
-        onNavigateToRecipe= onNavigateToRecipe,
+        onNavigateToRecipe = onNavigateToRecipe,
         aiProgressUiState = aiProgressUiState.value,
         generateRecipesUiState = generateRecipesUiState.value,
         onEvent = { event -> recipesListViewModel.onEvent(event) },
@@ -50,7 +50,7 @@ fun RecipeListScreen(
 @Composable
 fun RecipeListScreenRoot(
     onBackClick: () -> Unit,
-    onNavigateToRecipe: (Recipe) -> Unit,
+    onNavigateToRecipe: (String) -> Unit,
     aiProgressUiState: AiProgressState,
     generateRecipesUiState: GenerateRecipesUiState,
     onEvent: (RecipeListEvent) -> Unit,
@@ -69,7 +69,7 @@ fun RecipeListScreenRoot(
 
         generateRecipesUiState.navigateToRecipeEvent?.let {
             LaunchedEffect(it) {
-                onNavigateToRecipe(it.consumePayload())
+                onNavigateToRecipe(it.consumePayload().id)
             }
         }
 

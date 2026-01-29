@@ -43,7 +43,13 @@ object GenerateRecipesPromptProvider {
         "difficulty": "easy" | "moderate" | "elaborated",
         "minutes_time": number
         "ingredient_coverage": number,
-        "instructions": string[],
+        "instructions": [
+        {
+            "title": string,
+            "description": string,
+        }
+        ]
+    ,
         "nutrition": {
         "calories": number,
     },
@@ -65,13 +71,12 @@ object GenerateRecipesPromptProvider {
     - ingredient_coverage = percentage (0–100) of provided ingredients used
     - Coverage refers ONLY to the provided ingredient list
 
-    Confidence rules:
-    - confidence correlates with ingredient_coverage
-    - confidence ≥ 0.8 when ingredient_coverage ≥ 80
-    - lower coverage → lower confidence
+    Instructions rules:
+    - If possible, each instruction step may include a visual or sensory cue.
+    - Instructions must cover the full lifecycle of the dish.
 
     Validation:
-    - ingredient_coverage and confidence must be logically consistent
+    - ingredient_coverage must be logically consistent
     - Nutrition values must be realistic and non-negative
     - Instructions must be ordered and actionable
     """

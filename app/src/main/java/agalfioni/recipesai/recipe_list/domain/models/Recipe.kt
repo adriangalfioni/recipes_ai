@@ -5,13 +5,14 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class Recipe(
+    val id: String = "",
     val title: String,
     val difficulty: Difficulty,
     @SerialName("minutes_time")
     val minutesTime: Int,
     @SerialName("ingredient_coverage")
     val ingredientCoverage: Double,
-    val instructions: List<String>,
+    val instructions: List<RecipeInstruction>,
     val nutrition: Nutrition,
     val ingredients: List<RecipeIngredient>
 )

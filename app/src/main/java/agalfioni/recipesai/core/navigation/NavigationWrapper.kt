@@ -88,19 +88,16 @@ fun NavigationWrapper(
 
                     RecipeListScreen(
                         onBackClick = { backStack.keepOnlyFirst() },
-                        onNavigateToRecipe = { recipe ->
-                            resultStore.setResult("Recipe", recipe)
-                            backStack.add(Route.RecipeDetailsScreen)
+                        onNavigateToRecipe = { recipeId ->
+                            backStack.add(Route.RecipeDetailsScreen(recipeId))
                         },
                         recipesListViewModel = viewModel
                     )
                 }
 
                 is Route.RecipeDetailsScreen -> NavEntry(key) {
-                    val recipe = resultStore.getResultAndRemove<Recipe>("Recipe")
-
                     val viewModel = koinViewModel<RecipeDetailsViewModel> {
-                        parametersOf(recipe)
+                        parametersOf(key.recipeId)
                     }
 
                     RecipeDetailsScreen(

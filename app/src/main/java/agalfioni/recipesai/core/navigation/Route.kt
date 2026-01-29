@@ -22,5 +22,5 @@ sealed interface Route: NavKey, Parcelable {
 
     @Parcelize
     @Serializable
-    object RecipeDetailsScreen: Route
+    data class RecipeDetailsScreen(val recipeId: String): Route
 }
