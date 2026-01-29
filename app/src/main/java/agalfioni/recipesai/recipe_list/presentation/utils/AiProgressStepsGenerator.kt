@@ -8,8 +8,8 @@ object AiProgressStepsGenerator {
         AiStep("Analyzing ingredients…", 5),
         AiStep("Normalizing ingredient names…", 15),
         AiStep("Checking ingredient compatibility…", 25),
-        AiStep("Searching recipe combinations…", 40),
-        AiStep("Scoring ingredient coverage…", 55),
+        AiStep("Scoring ingredient coverage…", 40),
+        AiStep("Searching recipe combinations…", 50),
         AiStep("Selecting best recipe matches…", 70),
         AiStep("Estimating nutritional values…", 85),
         AiStep("Finalizing recipes…", 100)

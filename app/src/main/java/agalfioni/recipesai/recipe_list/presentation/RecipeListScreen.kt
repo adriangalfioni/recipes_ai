@@ -2,13 +2,14 @@ package agalfioni.recipesai.recipe_list.presentation
 
 import agalfioni.recipesai.R
 import agalfioni.recipesai.core.presentation.theme.RecipesAITheme
-import agalfioni.recipesai.recipe_list.domain.models.Recipe
 import agalfioni.recipesai.recipe_list.presentation.components.AiProgressSection
+import agalfioni.recipesai.core.presentation.components.LottieAnimation
 import agalfioni.recipesai.recipe_list.presentation.components.RecipeCard
 import agalfioni.recipesai.recipe_list.presentation.components.RecipeListTopBar
 import agalfioni.recipesai.recipe_list.presentation.models.RecipeUi
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -22,6 +23,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import org.koin.androidx.compose.koinViewModel
 
@@ -73,41 +75,48 @@ fun RecipeListScreenRoot(
             }
         }
 
-        Column(
-            modifier = modifier
-                .fillMaxSize()
-                .padding(innerPadding),
-            horizontalAlignment = Alignment.CenterHorizontally
+        AnimatedVisibility(
+            visible = !aiProgressUiState.hasFinished
         ) {
-            AnimatedVisibility(
-                visible = !aiProgressUiState.hasFinished
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding)
+                    .padding(bottom = 72.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
             ) {
+                LottieAnimation(
+                    animationRes = R.raw.ingredients_animation
+                )
                 AiProgressSection(
                     aiProgressUiState = aiProgressUiState
                 )
             }
+        }
 
-            AnimatedVisibility(
-                visible = aiProgressUiState.hasFinished
-                        && generateRecipesUiState.recipes.isNotEmpty()
-                        && generateRecipesUiState.error == null
+        AnimatedVisibility(
+            visible = aiProgressUiState.hasFinished
+                    && generateRecipesUiState.recipes.isNotEmpty()
+                    && generateRecipesUiState.error == null
+        ) {
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding),
+                state = rememberLazyListState()
             ) {
-                LazyColumn(
-                    modifier = Modifier.fillMaxSize(),
-                    state = rememberLazyListState()
-                ) {
-                    items(
-                        items = generateRecipesUiState.recipes,
-                        key = { it.title }
-                    ) { recipe ->
-                        RecipeCard(
-                            recipeUi = recipe,
-                            onClick = { onEvent(RecipeListEvent.OnRecipeClicked(recipe)) }
-                        )
-                    }
+                items(
+                    items = generateRecipesUiState.recipes,
+                    key = { it.title }
+                ) { recipe ->
+                    RecipeCard(
+                        recipeUi = recipe,
+                        onClick = { onEvent(RecipeListEvent.OnRecipeClicked(recipe)) }
+                    )
                 }
-
             }
+
         }
     }
 }

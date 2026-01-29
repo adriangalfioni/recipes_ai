@@ -1,5 +1,6 @@
 package agalfioni.recipesai.recipe_list.presentation.components
 
+import agalfioni.recipesai.core.presentation.theme.RecipesAITheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -16,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 @Composable
@@ -37,13 +39,14 @@ fun AiProgressBar(
         ) {
             Text(
                 text = message,
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurface
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onSurface,
+                fontWeight = FontWeight.SemiBold
             )
 
             Text(
                 text = "$progress%",
-                style = MaterialTheme.typography.bodyMedium,
+                style = MaterialTheme.typography.bodyLarge,
                 fontWeight = FontWeight.SemiBold
             )
         }
@@ -56,6 +59,19 @@ fun AiProgressBar(
                 .clip(RoundedCornerShape(50)),
             color = Color(0xFF2EE6A6),
             trackColor = Color(0xFF2EE6A6).copy(alpha = 0.25f)
+        )
+    }
+}
+
+@Preview(
+    showBackground = true
+)
+@Composable
+private fun AiProgressBarPreview() {
+    RecipesAITheme {
+        AiProgressBar(
+            progress = 20,
+            message = "Analyzing ingredients..."
         )
     }
 }
