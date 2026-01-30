@@ -3,6 +3,7 @@ package agalfioni.recipesai.recipe_list.presentation.models
 import androidx.annotation.StringRes
 
 data class RecipeUi(
+    val id: String,
     val title: String,
     @StringRes val difficulty: Int,
     val minutesTime: String,

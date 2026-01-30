@@ -12,9 +12,14 @@ import agalfioni.recipesai.recipe_list.data.utils.GenerateRecipesPromptProvider
 import agalfioni.recipesai.recipe_list.domain.GenerateRecipesRepository
 import agalfioni.recipesai.recipe_list.domain.RecipeGenerationEvent
 import agalfioni.recipesai.recipe_list.domain.models.Recipe
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.withContext
+import kotlinx.coroutines.yield
 import java.util.UUID
 
 class GenerateRecipesRepositoryImpl(
@@ -38,31 +43,45 @@ class GenerateRecipesRepositoryImpl(
     ): AppResult<List<Recipe>, DataError> {
         _generationEvents.emit(RecipeGenerationEvent.Started)
 
-        val rawJsonResult = safeAiCall {
-            aiRecipeGeneratorDataSource.generateRecipes(
-                prompt = GenerateRecipesPromptProvider.generateRecipePrompt(
-                    ingredients = ingredients,
-                    recipesQty = recipesQty
+        try {
+            val rawJsonResult = safeAiCall {
+                aiRecipeGeneratorDataSource.generateRecipes(
+                    prompt = GenerateRecipesPromptProvider.generateRecipePrompt(
+                        ingredients = ingredients,
+                        recipesQty = recipesQty
+                    )
                 )
-            )
-        }
+            }
 
-        val result =  rawJsonResult.map { rawJson ->
-            (aiJsonParser.parseOrNull<List<Recipe>>(rawJson) ?: emptyList()).map {
-                it.copy(id = UUID.randomUUID().toString())
+            val result = withContext(Dispatchers.Default) {
+                yield()
+                rawJsonResult.map { rawJson ->
+                    val parsedRecipes = aiJsonParser.parseOrNull<List<Recipe>>(rawJson) ?: emptyList()
+
+                    parsedRecipes.map {
+                        it.copy(id = UUID.randomUUID().toString())
+                    }
+                }}
+
+            result.onSuccess { recipes ->
+                saveRecipesToDb(recipes)
+            }
+
+            return result
+        } finally {
+            // This runs even if a TimeoutCancellationException occurs!
+            // You might want to check if the coroutine was cancelled to emit an Error event
+            if (currentCoroutineContext().isActive.not()) {
+                _generationEvents.emit(RecipeGenerationEvent.Error)
+            } else {
+                _generationEvents.emit(RecipeGenerationEvent.Completed)
             }
         }
-
-        result.onSuccess { recipes ->
-            saveRecipesToDb(recipes)
-        }
-        _generationEvents.emit(RecipeGenerationEvent.Completed)
-
-        return result
     }
 
     private suspend fun saveRecipesToDb(recipes: List<Recipe>) {
         recipes.forEach { recipe ->
+            yield() // If a timeout happens while you are halfway through saving recipes, yield() will stop the loop immediately.
             recipeDao.saveFullRecipe(recipe)
         }
     }

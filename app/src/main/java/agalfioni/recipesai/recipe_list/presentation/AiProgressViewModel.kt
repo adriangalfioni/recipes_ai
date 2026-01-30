@@ -5,6 +5,7 @@ import agalfioni.recipesai.recipe_list.domain.RecipeGenerationEvent
 import agalfioni.recipesai.recipe_list.presentation.utils.AiProgressStepsGenerator
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -19,6 +20,8 @@ class AiProgressViewModel(
     private val _uiState = MutableStateFlow(AiProgressState(steps = AiProgressStepsGenerator.generate()))
     val uiState: StateFlow<AiProgressState> = _uiState.asStateFlow()
 
+    private var progressJob: Job? = null
+
     init {
         viewModelScope.launch {
             repository.generationEvents
@@ -26,16 +29,35 @@ class AiProgressViewModel(
                     when (event) {
                         is RecipeGenerationEvent.Started -> startProgress()
                         is RecipeGenerationEvent.Completed -> accelerateToFinish()
+                        is RecipeGenerationEvent.Error -> setFinished()
                     }
                 }
         }
     }
 
-    fun startProgress() {
-        viewModelScope.launch {
-            for ((index, step) in _uiState.value.steps.withIndex()) {
-                if (_uiState.value.isAccelerating) return@launch
+    private fun setFinished() {
+        progressJob?.cancel()
+        _uiState.update {
+            it.copy(
+                hasFinished = true,
+                progress = 100,
+                isAccelerating = false
+            )
+        }
+    }
 
+    fun startProgress() {
+        progressJob?.cancel()
+        _uiState.update {
+            it.copy(
+                hasFinished = false,
+                progress = 0,
+                isAccelerating = false,
+                stepIndex = 0
+            )
+        }
+        progressJob = viewModelScope.launch {
+            for ((index, step) in _uiState.value.steps.withIndex()) {
                 _uiState.update { it.copy(stepIndex = index) }
                 animateProgressTo(step.targetProgressPercentage, 8_000L)
             }
@@ -43,15 +65,21 @@ class AiProgressViewModel(
     }
 
     fun accelerateToFinish(totalDurationMs: Long = 3_000L) {
-        viewModelScope.launch {
-            val current = _uiState.value.progress
-            if (current >= 100) return@launch
+        val currentProgress = _uiState.value.progress
+        if (currentProgress >= 100) return
 
+        progressJob?.cancel()
+        progressJob = viewModelScope.launch {
             _uiState.update { it.copy(isAccelerating = true) }
 
             val remainingSteps = _uiState.value.steps
                 .withIndex()
-                .filter { it.value.targetProgressPercentage > current }
+                .filter { it.value.targetProgressPercentage > currentProgress }
+
+            if (remainingSteps.isEmpty()) {
+                animateProgressTo(100, totalDurationMs)
+                return@launch
+            }
 
             val perStepDuration = totalDurationMs / remainingSteps.size
 
