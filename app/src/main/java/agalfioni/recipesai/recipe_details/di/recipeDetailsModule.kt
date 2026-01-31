@@ -1,4 +1,4 @@
-package agalfioni.recipesai.recipe_details.presentation.di
+package agalfioni.recipesai.recipe_details.di
 
 import agalfioni.recipesai.recipe_details.data.RecipeDetailsRepositoryImpl
 import agalfioni.recipesai.recipe_details.domain.RecipeDetailsRepository

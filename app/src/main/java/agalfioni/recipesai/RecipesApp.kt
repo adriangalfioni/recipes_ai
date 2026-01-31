@@ -5,7 +5,7 @@ import agalfioni.recipesai.core.di.aiParserModule
 import agalfioni.recipesai.core.di.dbModule
 import agalfioni.recipesai.core.di.jsonModule
 import agalfioni.recipesai.home.di.homeModule
-import agalfioni.recipesai.recipe_details.presentation.di.recipeDetailsModule
+import agalfioni.recipesai.recipe_details.di.recipeDetailsModule
 import agalfioni.recipesai.recipe_list.di.generateRecipesModule
 import android.app.Application
 import com.google.firebase.FirebaseApp
