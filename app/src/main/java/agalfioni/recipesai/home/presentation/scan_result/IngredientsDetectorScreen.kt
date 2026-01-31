@@ -89,10 +89,10 @@ fun IngredientDetectorRoot(
 
         Column(
             modifier = Modifier
+                .imePadding()
                 .verticalScroll(scrollState)
                 .fillMaxSize()
                 /*.background(color = MaterialTheme.colorScheme.surface)*/
-                .imePadding()
                 .padding(innerPadding)
                 .padding(16.dp),
         ) {

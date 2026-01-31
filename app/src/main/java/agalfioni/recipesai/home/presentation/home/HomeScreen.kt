@@ -92,9 +92,7 @@ fun HomeScreenRoot(
     ) { innerPadding ->
 
         val scrollState = rememberScrollState()
-        val scope = rememberCoroutineScope()
         val density = LocalDensity.current
-        val topOffsetPx = with(density) { 64.dp.toPx() }
         var showImageSourceSheet by remember { mutableStateOf(false) }
 
         val galleryLauncher = rememberLauncherForActivityResult(
@@ -111,8 +109,8 @@ fun HomeScreenRoot(
 
         Column(
             modifier = modifier
-                .verticalScroll(scrollState)
                 .imePadding()
+                .verticalScroll(scrollState)
                 .padding(horizontal = 16.dp)
                 .padding(innerPadding),
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -174,17 +172,6 @@ fun HomeScreenRoot(
                 onTrailingClick = { onEvent(HomeEvent.OnSuggestionSelected(it)) },
                 leadingIcon = null,
                 maxSuggestions = 4,
-                onFocusedAtY = { yInRoot ->
-                    scope.launch {
-                        val targetScroll = (
-                                scrollState.value +
-                                        yInRoot -
-                                        topOffsetPx
-                                ).toInt().coerceAtLeast(0)
-
-                        scrollState.animateScrollTo(targetScroll)
-                    }
-                }
             )
             Spacer(modifier = Modifier.height(16.dp))
             DetectedIngredientsChips(

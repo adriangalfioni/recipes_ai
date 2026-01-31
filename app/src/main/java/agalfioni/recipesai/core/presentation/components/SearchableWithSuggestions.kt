@@ -11,12 +11,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.relocation.BringIntoViewRequester
+import androidx.compose.foundation.relocation.bringIntoViewRequester
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -30,26 +29,29 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.focusTarget
 import androidx.compose.ui.focus.onFocusEvent
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.layout.positionInRoot
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @Composable
 fun SearchableWithSuggestions(
@@ -65,15 +67,29 @@ fun SearchableWithSuggestions(
     onTrailingClick: ((String) -> Unit)? = null,
     maxSuggestions: Int = 5,
 ) {
-
-    var yInRoot by remember { mutableFloatStateOf(0f) }
-
     val keyboardController = LocalSoftwareKeyboardController.current
     val focusManager = LocalFocusManager.current
+    val focusRequester = remember { FocusRequester() }
+    val bringIntoViewRequester = remember { BringIntoViewRequester() }
+    val scope = rememberCoroutineScope()
+
+    var isFocused by remember { mutableStateOf(false) }
+
     val visibleSuggestions = remember(value, suggestions) {
         suggestions
             .filter { it.contains(value, ignoreCase = true) }
             .take(maxSuggestions)
+    }
+    val showAddNew = value.length >= MIN_CHARS_TO_ADD_NEW_INGREDIENT && visibleSuggestions.isEmpty()
+
+    val hasContentToShow = visibleSuggestions.isNotEmpty() || showAddNew
+    LaunchedEffect(hasContentToShow, isFocused) {
+        if (isFocused && hasContentToShow) {
+            // We need a delay to let the AnimatedVisibility finish
+            // its "expand" so the height is fully calculated.
+            delay(250)
+            bringIntoViewRequester.bringIntoView()
+        }
     }
 
     val handleSelection = remember {
@@ -87,14 +103,13 @@ fun SearchableWithSuggestions(
     val isSingleResult = visibleSuggestions.size == 1
 
     Column(
-        modifier
-            .heightIn(max = 500.dp)
-            .focusTarget() // Allows the Column to receive focus
+        modifier = modifier
+            .bringIntoViewRequester(bringIntoViewRequester)
+            .focusTarget()
             .clickable(
                 interactionSource = remember { MutableInteractionSource() },
-                indication = null // Removes the ripple effect
+                indication = null
             ) {
-                // Tapping outside will now naturally clear focus
                 focusManager.clearFocus()
                 keyboardController?.hide()
             }
@@ -108,18 +123,12 @@ fun SearchableWithSuggestions(
             TextField(
                 value = value,
                 onValueChange = onValueChange,
-                placeholder = {
-                    Text(placeholder)
-                },
+                placeholder = { Text(placeholder) },
                 singleLine = true,
-                leadingIcon = leadingIcon?.let {
-                    { Icon(it, contentDescription = null) }
-                },
+                leadingIcon = leadingIcon?.let { { Icon(it, contentDescription = null) } },
                 trailingIcon = if (isSingleResult && trailingIcon != null) {
                     {
-                        IconButton(onClick = {
-                            handleSelection(visibleSuggestions.first())
-                        }) {
+                        IconButton(onClick = { handleSelection(visibleSuggestions.first()) }) {
                             Icon(trailingIcon, contentDescription = null)
                         }
                     }
@@ -129,75 +138,49 @@ fun SearchableWithSuggestions(
                     unfocusedIndicatorColor = Color.Transparent,
                 ),
                 keyboardOptions = KeyboardOptions(
-                    imeAction = if (isSingleResult) ImeAction.Done else ImeAction.Default
+                    imeAction = if (isSingleResult || showAddNew) ImeAction.Done else ImeAction.Default
                 ),
                 keyboardActions = KeyboardActions(
                     onDone = {
-                        if (visibleSuggestions.size == 1) {
-                            handleSelection(visibleSuggestions.first())
-                        }
+                        if (visibleSuggestions.size == 1) handleSelection(visibleSuggestions.first())
+                        if (showAddNew) handleSelection(value.replaceFirstChar { it.titlecase() })
                     }
                 ),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .then(
-                        if (onFocusedAtY != null) {
-                            Modifier
-                                .onGloballyPositioned { coordinates ->
-                                    yInRoot = coordinates.positionInRoot().y
-                                }
-                                .onFocusEvent { focus ->
-                                    if (focus.isFocused) {
-                                        onFocusedAtY(yInRoot)
-                                    }
-                                }
-                        } else {
-                            Modifier
+                    .focusRequester(focusRequester)
+                    .onFocusEvent { focus ->
+                        isFocused = focus.isFocused
+                        if (focus.isFocused) {
+                            scope.launch {
+                                delay(300)
+                                bringIntoViewRequester.bringIntoView()
+                            }
                         }
-                    )
-
+                    }
             )
         }
 
-        val showAddNew = value.length >= MIN_CHARS_TO_ADD_NEW_INGREDIENT && visibleSuggestions.isEmpty()
-        AnimatedVisibility(
-            visible = visibleSuggestions.isNotEmpty() || showAddNew
-        ) {
-            if (showAddNew) {
-                Row(
-                    modifier = Modifier
-                        .padding(top = 8.dp) // Spacing from the TextField
-                        .fillMaxWidth()
-                        .clip(RoundedCornerShape(20.dp))
-                        .background(MaterialTheme.colorScheme.surfaceVariant)
-                        .clickable {
-                            handleSelection(value.replaceFirstChar { it.titlecase() })
-                        }
-                        .padding(horizontal = 16.dp, vertical = 12.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Add,
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.onPrimaryContainer,
-                        modifier = Modifier.size(20.dp)
-                    )
-                    Spacer(Modifier.width(12.dp))
-                    Text(
-                        text = "Add \"${value.replaceFirstChar { it.titlecase() }}\"",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onPrimaryContainer,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis // Prevents breaking the UI with long inputs
-                    )
-                }
-            } else {
-                SuggestionsList(
-                    items = visibleSuggestions,
-                    onSelect = {
-                        handleSelection(it)
+        AnimatedVisibility(visible = visibleSuggestions.isNotEmpty() || showAddNew) {
+            Column {
+                if (showAddNew) {
+                    Row(
+                        modifier = Modifier
+                            .padding(top = 8.dp)
+                            .fillMaxWidth()
+                            .clip(RoundedCornerShape(20.dp))
+                            .background(MaterialTheme.colorScheme.surfaceVariant)
+                            .clickable { handleSelection(value.replaceFirstChar { it.titlecase() }) }
+                            .padding(horizontal = 16.dp, vertical = 12.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(Icons.Default.Add, null, tint = MaterialTheme.colorScheme.onPrimaryContainer, modifier = Modifier.size(20.dp))
+                        Spacer(Modifier.width(12.dp))
+                        Text("Add \"${value.replaceFirstChar { it.titlecase() }}\"", color = MaterialTheme.colorScheme.onPrimaryContainer)
                     }
-                )
+                } else {
+                    SuggestionsList(items = visibleSuggestions, onSelect = { handleSelection(it) })
+                }
             }
         }
     }
@@ -210,17 +193,14 @@ private fun SuggestionsList(
     items: List<String>,
     onSelect: (String) -> Unit
 ) {
-    LazyColumn(
+    Column(
         modifier = Modifier
             .animateContentSize()
             .padding(top = 8.dp)
             .clip(RoundedCornerShape(20.dp))
             .background(MaterialTheme.colorScheme.surfaceVariant)
     ) {
-        items(
-            items = items,
-            key = { it }
-        ) { item ->
+        items.forEach { item ->
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -246,8 +226,25 @@ private fun SearchableWithSuggestionsPreview() {
             placeholder = stringResource(R.string.add_more_ingredients),
             onValueChange = {},
             suggestions = listOf(
-                /*"Apple", "Carrot", "Milk", "Cheese"*/
+                "Apple", "Carrot", "Milk", "Cheese"
             ),
+            onSelectSuggestion = {},
+            trailingIcon = Icons.Default.Add,
+            onTrailingClick = {},
+            onFocusedAtY = null
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun SearchableWithAddOptionPreview() {
+    RecipesAITheme {
+        SearchableWithSuggestions(
+            value = "asd",
+            placeholder = stringResource(R.string.add_more_ingredients),
+            onValueChange = {},
+            suggestions = listOf(),
             onSelectSuggestion = {},
             trailingIcon = Icons.Default.Add,
             onTrailingClick = {},
