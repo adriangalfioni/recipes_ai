@@ -7,8 +7,10 @@ import com.google.firebase.ai.type.GenerativeBackend
 import org.koin.dsl.module
 
 val aiModule = module {
-    factory<GenerativeModel> {
-        Firebase.ai(backend = GenerativeBackend.googleAI())
-            .generativeModel(modelName = "gemini-2.5-flash")
-    }
+    single { provideGenerativeModel() }
 }
+
+private fun provideGenerativeModel(): GenerativeModel =
+    Firebase
+        .ai(backend = GenerativeBackend.googleAI())
+        .generativeModel(modelName = "gemini-2.5-flash")

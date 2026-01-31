@@ -1,6 +1,6 @@
 package agalfioni.recipesai.recipe_list.presentation
 
-import agalfioni.recipesai.recipe_list.domain.GenerateRecipesRepository
+import agalfioni.recipesai.recipe_list.domain.GenerationTracker
 import agalfioni.recipesai.recipe_list.domain.RecipeGenerationEvent
 import agalfioni.recipesai.recipe_list.presentation.utils.AiProgressStepsGenerator
 import androidx.lifecycle.ViewModel
@@ -14,7 +14,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class AiProgressViewModel(
-    repository: GenerateRecipesRepository
+    private val generationTracker: GenerationTracker
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(AiProgressState(steps = AiProgressStepsGenerator.generate()))
@@ -24,14 +24,27 @@ class AiProgressViewModel(
 
     init {
         viewModelScope.launch {
-            repository.generationEvents
+            generationTracker.status
                 .collect { event ->
                     when (event) {
                         is RecipeGenerationEvent.Started -> startProgress()
                         is RecipeGenerationEvent.Completed -> accelerateToFinish()
                         is RecipeGenerationEvent.Error -> setFinished()
+                        is RecipeGenerationEvent.Idle -> resetProgress()
                     }
                 }
+        }
+    }
+
+    private fun resetProgress() {
+        progressJob?.cancel()
+        _uiState.update {
+            it.copy(
+                hasFinished = false,
+                progress = 0,
+                stepIndex = 0,
+                isAccelerating = false
+            )
         }
     }
 
@@ -110,5 +123,10 @@ class AiProgressViewModel(
                 it.copy(hasFinished = true)
             }
         }
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        generationTracker.reset()
     }
 }

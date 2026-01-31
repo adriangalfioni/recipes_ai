@@ -28,5 +28,5 @@
     <string name="difficulty_hard">Elaborated</string>
     <string name="percentage_match">%s INGREDIENTS MATCH</string>
     <string name="recipe_details">Recipe Details</string>
-
+    <string name="recipe_not_found">Recipe not found</string>
 </resources>

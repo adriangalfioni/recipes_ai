@@ -17,9 +17,9 @@ val homeModule = module {
 
     factory { ImageProcessor(androidContext()) }
 
-    factory { IngredientsDetectorDataSource(get()) }
+    single { IngredientsDetectorDataSource(get()) }
 
-    factory { LocalIngredientsLoader(androidContext().assets) }
+    single { LocalIngredientsLoader(androidContext().assets) }
 
-    factory<IngredientsDetectorRepository> { IngredientsDetectorRepositoryImpl(get(), get(), get()) }
+    single<IngredientsDetectorRepository> { IngredientsDetectorRepositoryImpl(get(), get(), get()) }
 }
