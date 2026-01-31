@@ -1,7 +1,9 @@
 package agalfioni.recipesai.recipe_details.presentation
 
 
+import agalfioni.recipesai.recipe_details.domain.RecipeDetailsError
 import agalfioni.recipesai.recipe_details.domain.RecipeDetailsRepository
+import agalfioni.recipesai.recipe_details.presentation.mappers.asUiText
 import agalfioni.recipesai.recipe_details.presentation.mappers.toRecipeDetailsUi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -19,7 +21,8 @@ class RecipeDetailsViewModel(
         .map { domainRecipe ->
             RecipeDetailsState(
                 isLoading = false,
-                recipeDetailsUi = domainRecipe?.toRecipeDetailsUi()
+                recipeDetailsUi = domainRecipe?.toRecipeDetailsUi(),
+                error = if (domainRecipe == null) RecipeDetailsError.RECIPE_NOT_FOUND.asUiText() else null
             )
         }
         .stateIn(
