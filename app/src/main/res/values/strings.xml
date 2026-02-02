@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Recipes AI</string>
+    <string name="app_name">ChefLab AI</string>
     <string name="error_network_unavailable">No internet connection. Please check your settings.</string>
     <string name="error_server_error">Our servers are having trouble. Please try again later.</string>
     <string name="error_access_denied">You do not have permission to access this.</string>
