@@ -1,7 +1,7 @@
 package agalfioni.recipesai.core.presentation.components
 
 import agalfioni.recipesai.R
-import agalfioni.recipesai.core.presentation.theme.PlusJakartaSans
+import agalfioni.recipesai.core.presentation.theme.GoogleSans
 import agalfioni.recipesai.core.presentation.theme.RecipesAITheme
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -59,7 +59,7 @@ fun RecipesAiTopBar(
             ) {
                 Text(
                     text = title,
-                    fontFamily = PlusJakartaSans,
+                    fontFamily = GoogleSans,
                     fontWeight = FontWeight.SemiBold,
                     fontSize = 18.sp,
                     color = MaterialTheme.colorScheme.onBackground

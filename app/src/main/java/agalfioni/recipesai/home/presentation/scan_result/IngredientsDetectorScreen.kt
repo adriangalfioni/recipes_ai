@@ -102,13 +102,13 @@ fun IngredientDetectorRoot(
             )
             Spacer(modifier = Modifier.height(24.dp))
             Text(
-                text = "Detected Ingredients:",
+                text = stringResource(R.string.detected_ingredients),
                 style = MaterialTheme.typography.titleLarge
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
                 modifier = Modifier.padding(end = 8.dp),
-                text = "Check the items detected by AI before adding them to your list.",
+                text = stringResource(R.string.check_detected_by_ai),
                 style = MaterialTheme.typography.bodyMedium
             )
             Spacer(modifier = Modifier.height(20.dp))
@@ -150,36 +150,6 @@ fun IngredientDetectorRoot(
         }
     }
 }
-
-/*@Composable
-fun GlowActionButton(onClick: () -> Unit) {
-    val glowColor = MaterialTheme.colorScheme.primary
-
-    Box(
-        modifier = Modifier
-            .size(72.dp) // Slightly larger to account for the glow spread
-            .drawBehind {
-                // Drawing the "Glow" manually behind the button
-                drawShadow(
-                    color = glowColor.copy(alpha = 0.4f),
-                    borderRadius = 100.dp, // Fully rounded
-                    blurRadius = 20.dp,    // The "spread" of the glow
-                    offsetY = 4.dp
-                )
-            }
-            .background(MaterialTheme.colorScheme.primary, CircleShape)
-            .clip(CircleShape)
-            .clickable { onClick() },
-        contentAlignment = Alignment.Center
-    ) {
-        Icon(
-            painter = painterResource(id = R.drawable.ic_ai_star),
-            contentDescription = "Analyze",
-            tint = Color.White,
-            modifier = Modifier.size(32.dp)
-        )
-    }
-}*/
 
 @Preview(
     showBackground = true

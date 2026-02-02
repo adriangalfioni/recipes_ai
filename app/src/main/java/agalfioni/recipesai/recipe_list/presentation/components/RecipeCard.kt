@@ -83,12 +83,12 @@ fun RecipeCard(
                     modifier = Modifier.weight(1f),
                     color = Color.Black
                 )
-                Icon(
+                /*Icon(
                     imageVector = Icons.Default.FavoriteBorder,
                     contentDescription = "Favorite",
                     tint = Color(0xFF424945),
                     modifier = Modifier.size(28.dp)
-                )
+                )*/
             }
 
             Row(

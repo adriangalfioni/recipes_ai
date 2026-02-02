@@ -34,6 +34,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -100,7 +101,7 @@ fun ScanFridgeCard(
                         )
                         Spacer(Modifier.width(8.dp))
                         Text(
-                            text = "AI-POWERED",
+                            text = stringResource(R.string.ai_powered),
                             style = MaterialTheme.typography.labelSmall,
                             color = Color(0xFF00E676),
                             fontWeight = FontWeight.Bold
@@ -111,7 +112,7 @@ fun ScanFridgeCard(
                 // Text Content
                 Column {
                     Text(
-                        text = "Scan your\nfridge",
+                        text = stringResource(R.string.scan_your_fridge),
                         style = MaterialTheme.typography.displaySmall.copy(
                             fontWeight = FontWeight.Bold,
                             lineHeight = 40.sp
@@ -120,7 +121,7 @@ fun ScanFridgeCard(
                     )
                     Spacer(Modifier.height(12.dp))
                     Text(
-                        text = "Snap a photo of your shelves. Our AI will identify ingredients and craft a recipe instantly.",
+                        text = stringResource(R.string.snap_photo_ai_identify_ingredients),
                         style = MaterialTheme.typography.bodyLarge,
                         color = Color.White.copy(alpha = 0.8f)
                     )
@@ -150,7 +151,7 @@ fun ScanFridgeCard(
                                 )
                                 Spacer(Modifier.width(12.dp))
                                 Text(
-                                    text = "Start Scanning",
+                                    text = stringResource(R.string.start_scanning),
                                     style = MaterialTheme.typography.titleMedium.copy(
                                         fontWeight = FontWeight.Bold
                                     ),

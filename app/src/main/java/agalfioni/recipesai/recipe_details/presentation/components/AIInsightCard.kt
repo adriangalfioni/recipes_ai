@@ -1,5 +1,6 @@
 package agalfioni.recipesai.recipe_details.presentation.components
 
+import agalfioni.recipesai.R
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -21,6 +22,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 
@@ -46,7 +48,7 @@ fun AIInsightCard(insight: String) {
         }
         Spacer(Modifier.width(16.dp))
         Column {
-            Text("AI Chef Insight", fontWeight = FontWeight.Bold, color = Color(0xFF1B5E20))
+            Text(stringResource(R.string.ai_chef_insight), fontWeight = FontWeight.Bold, color = Color(0xFF1B5E20))
             Text(insight, style = MaterialTheme.typography.bodyMedium, color = Color.DarkGray)
         }
     }

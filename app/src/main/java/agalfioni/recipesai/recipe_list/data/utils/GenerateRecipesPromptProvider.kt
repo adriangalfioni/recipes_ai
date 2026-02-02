@@ -2,11 +2,12 @@ package agalfioni.recipesai.recipe_list.data.utils
 
 object GenerateRecipesPromptProvider {
 
-    const val RECIPE_NUMBER_TO_GENERATE = 4
+    const val DEFAULT_RECIPE_NUMBER_TO_GENERATE = 4
 
     // Future task: use Firebase Remote Config
 
     fun generateRecipePrompt(
+        language: String,
         ingredients: List<String>,
         recipesQty: Int? = null
     ): String {
@@ -15,7 +16,8 @@ object GenerateRecipesPromptProvider {
     You are a structured recipe generation engine.
 
     Task:
-    Given this list of available ingredients ($ingredientsString), generate EXACTLY ${recipesQty ?: RECIPE_NUMBER_TO_GENERATE} recipes.
+    Given this list of available ingredients ($ingredientsString), generate EXACTLY ${recipesQty ?: DEFAULT_RECIPE_NUMBER_TO_GENERATE} recipes.
+    The response MUST be in the language specified: $language.
 
     Primary goal:
     - When number of ingredients is 3 or less then maximize usage of the provided ingredients
@@ -82,13 +84,6 @@ object GenerateRecipesPromptProvider {
     """
 
     }
-
-    /*"total_fat": number,
-    "saturated_fat": number,
-    "protein": number,
-    "cholesterol": number,
-    "sugars": number,
-    "total_carbohydrate": number*/
 
 }
 

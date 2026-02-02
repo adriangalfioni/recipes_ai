@@ -4,11 +4,16 @@ object PromptProvider {
 
     // Future task: use Firebase Remote Config
 
-    const val FRIDGE_ANALYZER_PROMPT = """
+    fun generateFridgeAnalyzerPrompt(
+        language: String
+    ): String {
+        return """
 You are an expert food recognition system.
 
 Analyze the image of a refrigerator interior.
 Identify ONLY food items that are clearly visible.
+
+The response MUST be in the language specified: $language.
 
 Return ONLY valid JSON using this schema:
 {
@@ -28,4 +33,5 @@ Rules:
 - No markdown
 - No explanations
 """
+    }
 }

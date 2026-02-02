@@ -16,13 +16,13 @@ val generateRecipesModule = module {
 
     single { AiRecipeGeneratorDataSource(get()) }
 
-    single<AiRecipeGenerator> { AiRecipeGeneratorImpl(get(), get()) }
+    single<AiRecipeGenerator> { AiRecipeGeneratorImpl(get(), get(), get()) }
 
     single<RecipeRepository> { RecipeRepositoryImpl(get()) }
 
     single { GenerationTracker() }
 
-    single<GenerateRecipesUseCase> { GenerateRecipesUseCase(get(), get(), get()) }
+    factory<GenerateRecipesUseCase> { GenerateRecipesUseCase(get(), get(), get()) }
 
     viewModelOf(::AiProgressViewModel)
     viewModelOf(::RecipesListViewModel)

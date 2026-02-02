@@ -2,20 +2,23 @@ package agalfioni.recipesai.recipe_list.data.remote
 
 import agalfioni.recipesai.core.data.helpers.AiJsonParser
 import agalfioni.recipesai.core.data.helpers.safeAiCall
+import agalfioni.recipesai.core.domain.interfaces.LanguageProvider
 import agalfioni.recipesai.core.domain.models.AppResult
 import agalfioni.recipesai.core.domain.models.DataError
 import agalfioni.recipesai.core.domain.models.map
 import agalfioni.recipesai.recipe_list.data.utils.GenerateRecipesPromptProvider
 import agalfioni.recipesai.recipe_list.domain.interfaces.AiRecipeGenerator
 import agalfioni.recipesai.recipe_list.domain.models.Recipe
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import kotlinx.coroutines.yield
 import java.util.UUID
 
 class AiRecipeGeneratorImpl(
     private val aiRecipeGeneratorDataSource: AiRecipeGeneratorDataSource,
-    private val aiJsonParser: AiJsonParser
+    private val aiJsonParser: AiJsonParser,
+    private val languageProvider: LanguageProvider,
+    private val dispatcher: CoroutineDispatcher = Dispatchers.Default
 ): AiRecipeGenerator {
 
     override suspend fun generateRecipes(
@@ -25,14 +28,14 @@ class AiRecipeGeneratorImpl(
         val rawJsonResult = safeAiCall {
             aiRecipeGeneratorDataSource.generateRecipes(
                 prompt = GenerateRecipesPromptProvider.generateRecipePrompt(
+                    language = languageProvider.getLanguage(),
                     ingredients = ingredients,
                     recipesQty = recipesQty
                 )
             )
         }
 
-        return withContext(Dispatchers.Default) {
-            yield()
+        return withContext(dispatcher) {
             rawJsonResult.map { rawJson ->
                 val parsedRecipes = aiJsonParser.parseOrNull<List<Recipe>>(rawJson) ?: emptyList()
 

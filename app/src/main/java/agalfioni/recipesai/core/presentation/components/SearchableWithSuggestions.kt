@@ -176,7 +176,7 @@ fun SearchableWithSuggestions(
                     ) {
                         Icon(Icons.Default.Add, null, tint = MaterialTheme.colorScheme.onPrimaryContainer, modifier = Modifier.size(20.dp))
                         Spacer(Modifier.width(12.dp))
-                        Text("Add \"${value.replaceFirstChar { it.titlecase() }}\"", color = MaterialTheme.colorScheme.onPrimaryContainer)
+                        Text(stringResource(R.string.add, value.replaceFirstChar { it.titlecase() }), color = MaterialTheme.colorScheme.onPrimaryContainer)
                     }
                 } else {
                     SuggestionsList(items = visibleSuggestions, onSelect = { handleSelection(it) })

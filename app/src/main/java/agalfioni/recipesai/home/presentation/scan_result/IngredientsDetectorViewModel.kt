@@ -3,6 +3,7 @@ package agalfioni.recipesai.home.presentation.scan_result
 import agalfioni.recipesai.core.domain.models.AppResult
 import agalfioni.recipesai.core.presentation.models.selectOrAdd
 import agalfioni.recipesai.core.presentation.models.toSelectableList
+import agalfioni.recipesai.core.presentation.utils.removeStressAccents
 import agalfioni.recipesai.home.domain.IngredientsDetectorRepository
 import agalfioni.recipesai.home.domain.IngredientsResult
 import android.net.Uri
@@ -31,9 +32,9 @@ class IngredientsDetectorViewModel(
     private val _uiState = MutableStateFlow(IngredientsDetectorUiState(imageUri = imageUri.toUri()))
     val uiState: StateFlow<IngredientsDetectorUiState> = _uiState.asStateFlow()
 
-    private val queryFlow = MutableStateFlow("")
+    private val _queryFlow = MutableStateFlow("")
 
-    private val useIA = false
+    private val useIA = true
 
     init {
         viewModelScope.launch {
@@ -42,7 +43,7 @@ class IngredientsDetectorViewModel(
                 .onSuccess { ingredientsList ->
                     val allLocalIngredients = ingredientsList.map {
                         if (Locale.getDefault().language == "es") {
-                            it.es
+                            it.es.removeStressAccents()
                         } else {
                             it.en
                         }
@@ -56,14 +57,14 @@ class IngredientsDetectorViewModel(
         }
 
         viewModelScope.launch {
-            _uiState.update { it.copy(isLoading = true) }
-            delay(8000)
-            _uiState.update { it.copy(isLoading = false) }
             if (useIA) {
                 analyzeFridgeImage(imageUri.toUri())
             } else {
+                _uiState.update { it.copy(isLoading = true) }
+                delay(4000)
                 _uiState.update {
                     it.copy(
+                        isLoading = false,
                         detectedIngredients = IngredientsResult(
                             vegetables = listOf("Tomatoes", "Potatoes", "Carrots"),
                             fruits = listOf("Apples", "Bananas", "Oranges"),
@@ -113,6 +114,7 @@ class IngredientsDetectorViewModel(
                         val selectedIngredients = result.data
                             .getAllIngredients()
                             .map { it.replaceFirstChar { it.titlecase() } }
+                            .toSet()
                             .toSelectableList(true)
                             .sortedBy { it.item }
 
@@ -136,14 +138,14 @@ class IngredientsDetectorViewModel(
 
     @OptIn(FlowPreview::class)
     private fun observeQuery() {
-        queryFlow
+        _queryFlow
             .debounce(300)
             .map { query ->
                 if (query.isBlank()) {
                     emptyList()
                 } else {
                     _uiState.value.allLocalIngredients
-                        .filter { it.contains(query, ignoreCase = true) }
+                        .filter { it.removeStressAccents().contains(query, ignoreCase = true) }
                         .take(4)
                 }
             }
@@ -159,7 +161,7 @@ class IngredientsDetectorViewModel(
     }
 
     fun onQueryChanged(query: String) {
-        queryFlow.value = query
+        _queryFlow.value = query
         _uiState.update {
             it.copy(query = query)
         }
@@ -176,7 +178,7 @@ class IngredientsDetectorViewModel(
                     .sortedBy { it.item }
             )
         }
-        queryFlow.value = ""
+        _queryFlow.value = ""
     }
 
 }

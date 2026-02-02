@@ -21,5 +21,5 @@ val homeModule = module {
 
     single { LocalIngredientsLoader(androidContext().assets) }
 
-    single<IngredientsDetectorRepository> { IngredientsDetectorRepositoryImpl(get(), get(), get()) }
+    single<IngredientsDetectorRepository> { IngredientsDetectorRepositoryImpl(get(), get(), get(), get()) }
 }

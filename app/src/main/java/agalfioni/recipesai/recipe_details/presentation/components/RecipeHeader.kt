@@ -14,8 +14,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -25,6 +23,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -43,7 +42,7 @@ fun RecipeHeader(recipe: RecipeDetailsUi) {
         // Horizontal Badges Row
         FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             BadgeItem(icon = ImageVector.vectorResource(id = R.drawable.ic_time), text = recipe.minutesTime)
-            BadgeItem(icon = Icons.Outlined.Info, text = recipe.category)
+            //BadgeItem(icon = Icons.Outlined.Info, text = recipe.category)
             BadgeItem(icon = ImageVector.vectorResource(id = R.drawable.ic_fire_calories), text = recipe.totalCalories)
         }
 
@@ -64,7 +63,7 @@ fun RecipeHeader(recipe: RecipeDetailsUi) {
                 )
                 Spacer(Modifier.width(6.dp))
                 Text(
-                    text = "AI Score: ${recipe.aiScore}%",
+                    text = stringResource(R.string.ai_score, recipe.aiScore),
                     style = MaterialTheme.typography.labelLarge,
                     fontWeight = FontWeight.Bold,
                     color = Color(0xFF1B5E20)

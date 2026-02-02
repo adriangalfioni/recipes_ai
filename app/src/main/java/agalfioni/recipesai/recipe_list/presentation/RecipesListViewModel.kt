@@ -6,6 +6,7 @@ import agalfioni.recipesai.core.domain.models.onSuccess
 import agalfioni.recipesai.core.presentation.utils.asUiText
 import agalfioni.recipesai.recipe_list.domain.usecase.GenerateRecipesUseCase
 import agalfioni.recipesai.recipe_list.presentation.mappers.toRecipeUiList
+import agalfioni.recipesai.recipe_list.presentation.utils.IA_GENERATION_TIMEOUT_MILLIS
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -71,6 +72,5 @@ class RecipesListViewModel(
 
     companion object {
         private const val NUMBER_OF_RECIPES_TO_GENERATE = 10
-        private const val IA_GENERATION_TIMEOUT_MILLIS = 60_000L
     }
 }

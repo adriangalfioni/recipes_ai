@@ -40,7 +40,7 @@ fun AiProgressSection(
         Spacer(modifier = Modifier.height(36.dp))
         AiProgressBar(
             progress = aiProgressUiState.progress,
-            message = aiProgressUiState.steps.getOrNull(aiProgressUiState.stepIndex)?.message.orEmpty()
+            message = aiProgressUiState.steps.getOrNull(aiProgressUiState.stepIndex)?.message?.asString().orEmpty()
         )
     }
 

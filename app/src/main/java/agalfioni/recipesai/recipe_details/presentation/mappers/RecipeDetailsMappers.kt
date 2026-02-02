@@ -13,7 +13,7 @@ fun Recipe.toRecipeDetailsUi(): RecipeDetailsUi {
     return RecipeDetailsUi(
         title = title,
         minutesTime = formatMinutesToHourMinutes(minutesTime),
-        category = "Vegan",
+        category = "",
         totalCalories = formatTotalCalories(nutrition.calories),
         aiScore = ingredientCoverage.roundToInt(),
         chefInsight = null,

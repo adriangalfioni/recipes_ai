@@ -22,6 +22,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 
@@ -85,7 +86,7 @@ fun AiLoadingPulse(
         ) {
             Icon(
                 imageVector = ImageVector.vectorResource(R.drawable.ic_ai_star), // The "AI/Sparkle" icon
-                contentDescription = "AI Processing",
+                contentDescription = stringResource(R.string.ai_processing),
                 tint = MaterialTheme.colorScheme.onPrimary,
                 modifier = Modifier.size(32.dp)
             )

@@ -147,11 +147,11 @@ fun HomeScreenRoot(
             ) {
                 Text(
                     modifier = Modifier.weight(1f),
-                    text = "Add Ingredients",
+                    text = stringResource(R.string.add_ingredients),
                     style = MaterialTheme.typography.titleLarge
                 )
                 Text(
-                    text = "Clear All"/*stringResource(R.string.clear_all)*/,
+                    text = stringResource(R.string.clear_all),
                     fontWeight = FontWeight.SemiBold,
                     style = MaterialTheme.typography.titleMedium,
                     color = MaterialTheme.colorScheme.onSurface,

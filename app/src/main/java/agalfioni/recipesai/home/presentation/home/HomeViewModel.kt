@@ -1,6 +1,7 @@
 package agalfioni.recipesai.home.presentation.home
 
 
+import agalfioni.recipesai.core.presentation.utils.removeStressAccents
 import agalfioni.recipesai.home.domain.IngredientsDetectorRepository
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -33,7 +34,7 @@ class HomeViewModel(
                 .onSuccess { ingredientsList ->
                     val allLocalIngredients = ingredientsList.map {
                         if (Locale.getDefault().language == "es") {
-                            it.es
+                            it.es.removeStressAccents()
                         } else {
                             it.en
                         }
@@ -52,7 +53,7 @@ class HomeViewModel(
                     emptyList()
                 } else {
                     _uiState.value.allLocalIngredients
-                        .filter { it.contains(query, ignoreCase = true) }
+                        .filter { it.removeStressAccents().contains(query, ignoreCase = true) }
                         .take(4)
                 }
             }

@@ -33,7 +33,9 @@ fun IngredientItem(ingredient: Ingredient) {
             text = ingredient.name,
             style = MaterialTheme.typography.titleMedium,
             fontWeight = FontWeight.Bold,
-            modifier = Modifier.alignByBaseline()
+            modifier = Modifier
+                .alignByBaseline()
+                .weight(1f)
         )
         Spacer(Modifier.width(8.dp))
         Text(
@@ -46,7 +48,9 @@ fun IngredientItem(ingredient: Ingredient) {
     }
 }
 
-@Preview
+@Preview(
+    showBackground = true
+)
 @Composable
 private fun IngredientItemPreview() {
     RecipesAITheme {

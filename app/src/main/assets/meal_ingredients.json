@@ -486,6 +486,12 @@
     "type": "processed"
   },
   {
+    "id": "cheese",
+    "en": "Cheese",
+    "es": "Queso",
+    "type": "processed"
+  },
+  {
     "id": "ham",
     "en": "Ham",
     "es": "Jamón",

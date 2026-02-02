@@ -128,8 +128,8 @@ fun RecipeDetailsScreenRoot(
                                         indication = null,
                                         onClick = { isIngredientsExpanded = !isIngredientsExpanded }
                                     ),
-                                title = "Ingredients",
-                                badgeText = "${recipeDetailsUi.ingredients.size} items",
+                                title = stringResource(R.string.ingredients),
+                                badgeText = stringResource(R.string.ingredient_items_count, recipeDetailsUi.ingredients.size),
                                 sectionExpanded = isIngredientsExpanded
                             )
                         }
@@ -150,7 +150,7 @@ fun RecipeDetailsScreenRoot(
                         // Instructions Section
                         item {
                             Text(
-                                "Instructions",
+                                stringResource(R.string.instructions),
                                 style = MaterialTheme.typography.headlineSmall,
                                 fontWeight = FontWeight.Bold
                             )

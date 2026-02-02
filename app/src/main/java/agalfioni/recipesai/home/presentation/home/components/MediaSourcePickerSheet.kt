@@ -31,7 +31,7 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun MediaSourcePickerSheet(
     onDismissRequest: () -> Unit,
-    onSourceSelected: (ImageSource) -> Unit, // true for Camera, false for Gallery
+    onSourceSelected: (ImageSource) -> Unit,
     sheetState: SheetState = rememberModalBottomSheetState()
 ) {
     ModalBottomSheet(
@@ -47,7 +47,7 @@ fun MediaSourcePickerSheet(
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             Text(
-                text = "Select Image Source",
+                text = stringResource(R.string.select_image_source),
                 style = MaterialTheme.typography.titleMedium,
                 modifier = Modifier.padding(bottom = 8.dp)
             )

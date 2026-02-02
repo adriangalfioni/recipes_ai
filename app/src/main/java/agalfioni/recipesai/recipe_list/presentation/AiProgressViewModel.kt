@@ -3,6 +3,7 @@ package agalfioni.recipesai.recipe_list.presentation
 import agalfioni.recipesai.recipe_list.domain.GenerationTracker
 import agalfioni.recipesai.recipe_list.domain.RecipeGenerationEvent
 import agalfioni.recipesai.recipe_list.presentation.utils.AiProgressStepsGenerator
+import agalfioni.recipesai.recipe_list.presentation.utils.IA_GENERATION_TIMEOUT_MILLIS
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Job
@@ -72,9 +73,16 @@ class AiProgressViewModel(
         progressJob = viewModelScope.launch {
             for ((index, step) in _uiState.value.steps.withIndex()) {
                 _uiState.update { it.copy(stepIndex = index) }
-                animateProgressTo(step.targetProgressPercentage, 8_000L)
+                val stepDuration = obtainStepDuration(step.targetProgressPercentage)
+                animateProgressTo(step.targetProgressPercentage, stepDuration)
             }
         }
+    }
+
+    private fun obtainStepDuration(targetProgress: Int): Long {
+        val currentProgress = _uiState.value.progress
+        val delta = targetProgress - currentProgress
+        return delta * IA_GENERATION_TIMEOUT_MILLIS / 100
     }
 
     fun accelerateToFinish(totalDurationMs: Long = 3_000L) {
