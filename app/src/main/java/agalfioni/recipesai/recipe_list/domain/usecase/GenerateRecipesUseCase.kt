@@ -8,8 +8,7 @@ import agalfioni.recipesai.recipe_list.domain.RecipeGenerationEvent
 import agalfioni.recipesai.recipe_list.domain.interfaces.AiRecipeGenerator
 import agalfioni.recipesai.recipe_list.domain.interfaces.RecipeRepository
 import agalfioni.recipesai.recipe_list.domain.models.Recipe
-import kotlinx.coroutines.currentCoroutineContext
-import kotlinx.coroutines.isActive
+import kotlin.coroutines.cancellation.CancellationException
 
 class GenerateRecipesUseCase(
     private val aiRecipeGenerator: AiRecipeGenerator,
@@ -22,6 +21,7 @@ class GenerateRecipesUseCase(
         recipesQty: Int,
     ): AppResult<List<Recipe>, DataError> {
         generationTracker.update(RecipeGenerationEvent.Started)
+        var completedNormally = false
 
         try {
             val recipesResult = aiRecipeGenerator.generateRecipes(
@@ -33,13 +33,13 @@ class GenerateRecipesUseCase(
                 recipeRepository.save(recipes)
             }
 
+            completedNormally = true
             return recipesResult
+        } catch (e: CancellationException) {
+            generationTracker.update(RecipeGenerationEvent.Error)
+            throw e
         } finally {
-            // This runs even if a TimeoutCancellationException occurs!
-            // You might want to check if the coroutine was cancelled to emit an Error event
-            if (currentCoroutineContext().isActive.not()) {
-                generationTracker.update(RecipeGenerationEvent.Error)
-            } else {
+            if (completedNormally) {
                 generationTracker.update(RecipeGenerationEvent.Completed)
             }
         }
