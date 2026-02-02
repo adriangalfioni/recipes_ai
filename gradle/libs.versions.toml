@@ -24,6 +24,7 @@ lottie = "6.4.0"
 junitJupiter = "5.14.0"
 mockk = "1.14.7"
 turbine = "1.1.0"
+crashlyticsPlugin = "3.0.6"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -79,6 +80,8 @@ google-generativeai = { module = "com.google.ai.client.generativeai:generativeai
 # BoM for the Firebase platform
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebase" }
 firebase-ai = { module = "com.google.firebase:firebase-ai" }
+firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics" }
+firebase-crashlytics = { group = "com.google.firebase", name = "firebase-crashlytics" }
 
 # Gson
 gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }
@@ -106,3 +109,4 @@ kotlin-parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize" }
 # Required for JSON serialization
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "crashlyticsPlugin" }

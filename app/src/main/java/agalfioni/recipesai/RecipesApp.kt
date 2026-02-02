@@ -9,7 +9,9 @@ import agalfioni.recipesai.home.di.homeModule
 import agalfioni.recipesai.recipe_details.di.recipeDetailsModule
 import agalfioni.recipesai.recipe_list.di.generateRecipesModule
 import android.app.Application
+import com.google.firebase.Firebase
 import com.google.firebase.FirebaseApp
+import com.google.firebase.crashlytics.crashlytics
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.GlobalContext.startKoin
@@ -24,6 +26,13 @@ class RecipesApp : Application() {
 
         // Optional safety check
         checkNotNull(FirebaseApp.getInstance())
+
+        // Disable Crashlytics collection in Debug mode
+        if (BuildConfig.DEBUG) {
+            Firebase.crashlytics.isCrashlyticsCollectionEnabled = false
+        } else {
+            Firebase.crashlytics.isCrashlyticsCollectionEnabled = true
+        }
 
         startKoin {
             // Log Koin errors/info
