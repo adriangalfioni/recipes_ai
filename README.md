@@ -1,4 +1,8 @@
-# RecipesAI 🍳
+
+https://github.com/user-attachments/assets/ecb97a28-8098-45c2-b0ca-561bd3238df2
+
+
+# ChefLab AI 🍳
 
 An intelligent Android application that leverages Generative AI to help users discover, create, and manage recipes based on available ingredients.
 
