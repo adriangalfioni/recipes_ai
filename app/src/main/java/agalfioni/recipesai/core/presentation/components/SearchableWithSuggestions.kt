@@ -138,7 +138,7 @@ fun SearchableWithSuggestions(
                     unfocusedIndicatorColor = Color.Transparent,
                 ),
                 keyboardOptions = KeyboardOptions(
-                    imeAction = if (isSingleResult || showAddNew) ImeAction.Done else ImeAction.Default
+                    imeAction = ImeAction.Done
                 ),
                 keyboardActions = KeyboardActions(
                     onDone = {
