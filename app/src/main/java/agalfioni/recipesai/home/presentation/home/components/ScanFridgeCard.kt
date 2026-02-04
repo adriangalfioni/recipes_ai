@@ -56,7 +56,7 @@ fun ScanFridgeCard(
         Box(modifier = Modifier.fillMaxSize()) {
             // 1. Background Image
             Image(
-                painter = painterResource(id = R.drawable.fridge_bg), // Replace with your image
+                painter = painterResource(id = R.drawable.fridge_bg),
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier.fillMaxSize()
