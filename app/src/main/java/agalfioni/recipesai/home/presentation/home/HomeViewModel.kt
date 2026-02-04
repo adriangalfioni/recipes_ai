@@ -2,7 +2,7 @@ package agalfioni.recipesai.home.presentation.home
 
 
 import agalfioni.recipesai.core.presentation.utils.removeStressAccents
-import agalfioni.recipesai.home.domain.IngredientsDetectorRepository
+import agalfioni.recipesai.home.domain.interfaces.IngredientsDetectorRepository
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.FlowPreview

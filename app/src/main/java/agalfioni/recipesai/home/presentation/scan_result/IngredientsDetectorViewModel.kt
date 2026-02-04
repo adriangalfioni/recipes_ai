@@ -4,7 +4,7 @@ import agalfioni.recipesai.core.domain.models.AppResult
 import agalfioni.recipesai.core.presentation.models.selectOrAdd
 import agalfioni.recipesai.core.presentation.models.toSelectableList
 import agalfioni.recipesai.core.presentation.utils.removeStressAccents
-import agalfioni.recipesai.home.domain.IngredientsDetectorRepository
+import agalfioni.recipesai.home.domain.interfaces.IngredientsDetectorRepository
 import agalfioni.recipesai.home.domain.IngredientsResult
 import android.net.Uri
 import androidx.core.net.toUri

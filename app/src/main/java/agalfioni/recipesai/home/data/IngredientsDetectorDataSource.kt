@@ -16,4 +16,17 @@ class IngredientsDetectorDataSource(
         )
         return response.text ?: ""
     }
+
+    suspend fun generateContent(compressedBytes: ByteArray, prompt: String): String {
+        val response = model.generateContent(
+            content {
+                inlineData(
+                    bytes = compressedBytes,
+                    mimeType = "image/webp"
+                )
+                text(prompt)
+            }
+        )
+        return response.text ?: ""
+    }
 }

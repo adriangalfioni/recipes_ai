@@ -9,7 +9,7 @@ import agalfioni.recipesai.core.domain.models.LocalIngredient
 import agalfioni.recipesai.core.domain.models.map
 import agalfioni.recipesai.home.data.utils.ImageProcessor
 import agalfioni.recipesai.home.data.utils.PromptProvider
-import agalfioni.recipesai.home.domain.IngredientsDetectorRepository
+import agalfioni.recipesai.home.domain.interfaces.IngredientsDetectorRepository
 import agalfioni.recipesai.home.domain.IngredientsResult
 import android.net.Uri
 
@@ -20,8 +20,8 @@ class IngredientsDetectorRepositoryImpl(
     private val languageProvider: LanguageProvider
 ) : IngredientsDetectorRepository {
     override suspend fun analyzeFridge(uri: Uri): AppResult<IngredientsResult, DataError> {
-        val bitmap = try {
-            imageProcessor.prepareBitmapForAnalysis(uri)
+        val bytearray = try {
+            imageProcessor.compressImageForAi(uri)
         } catch (e: IllegalArgumentException) {
             return AppResult.Error(DataError.INVALID_ARGUMENT)
         }
@@ -29,7 +29,7 @@ class IngredientsDetectorRepositoryImpl(
         val rawJsonResult = safeAiCall {
             // Call AI with specific prompt (Business detail)
             aiRemoteDataSource.generateContent(
-                bitmap,
+                bytearray,
                 PromptProvider.generateFridgeAnalyzerPrompt(
                     languageProvider.getLanguage()
                 )

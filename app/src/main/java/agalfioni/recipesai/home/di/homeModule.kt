@@ -3,8 +3,10 @@ package agalfioni.recipesai.home.di
 import agalfioni.recipesai.core.data.repository.LocalIngredientsLoader
 import agalfioni.recipesai.home.data.IngredientsDetectorDataSource
 import agalfioni.recipesai.home.data.IngredientsDetectorRepositoryImpl
+import agalfioni.recipesai.home.data.LoggingImageObserver
 import agalfioni.recipesai.home.data.utils.ImageProcessor
-import agalfioni.recipesai.home.domain.IngredientsDetectorRepository
+import agalfioni.recipesai.home.domain.interfaces.ImageProcessingObserver
+import agalfioni.recipesai.home.domain.interfaces.IngredientsDetectorRepository
 import agalfioni.recipesai.home.presentation.home.HomeViewModel
 import agalfioni.recipesai.home.presentation.scan_result.IngredientsDetectorViewModel
 import org.koin.android.ext.koin.androidContext
@@ -15,7 +17,9 @@ val homeModule = module {
     viewModelOf(::IngredientsDetectorViewModel)
     viewModelOf(::HomeViewModel)
 
-    factory { ImageProcessor(androidContext()) }
+    single<ImageProcessingObserver> { LoggingImageObserver(get()) }
+
+    factory { ImageProcessor(androidContext(), get()) }
 
     single { IngredientsDetectorDataSource(get()) }
 
