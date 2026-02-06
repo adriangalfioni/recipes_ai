@@ -1,23 +1,23 @@
 package agalfioni.recipesai.home.presentation.home
 
 
+import agalfioni.recipesai.core.presentation.extensions.ingredientsSuggestions
 import agalfioni.recipesai.core.presentation.utils.removeStressAccents
 import agalfioni.recipesai.home.domain.interfaces.IngredientsDetectorRepository
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.util.Locale
 
-@OptIn(FlowPreview::class)
+@OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
 class HomeViewModel(
     private val ingredientsDetectorRepository: IngredientsDetectorRepository
 ) : ViewModel() {
@@ -47,16 +47,8 @@ class HomeViewModel(
                 }
         }
 
-        _queryFlow.debounce(300)
-            .map { query ->
-                if (query.isBlank()) {
-                    emptyList()
-                } else {
-                    _uiState.value.allLocalIngredients
-                        .filter { it.removeStressAccents().contains(query, ignoreCase = true) }
-                        .take(4)
-                }
-            }
+        _queryFlow
+            .ingredientsSuggestions { _uiState.value.allLocalIngredients }
             .onEach { matches ->
                 _uiState.update { state ->
                     state.copy(

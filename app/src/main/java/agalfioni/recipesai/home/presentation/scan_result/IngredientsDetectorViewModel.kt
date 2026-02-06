@@ -1,28 +1,25 @@
 package agalfioni.recipesai.home.presentation.scan_result
 
 import agalfioni.recipesai.core.domain.models.AppResult
+import agalfioni.recipesai.core.presentation.extensions.ingredientsSuggestions
 import agalfioni.recipesai.core.presentation.models.selectOrAdd
 import agalfioni.recipesai.core.presentation.models.toSelectableList
 import agalfioni.recipesai.core.presentation.utils.removeStressAccents
-import agalfioni.recipesai.home.domain.interfaces.IngredientsDetectorRepository
 import agalfioni.recipesai.home.domain.IngredientsResult
+import agalfioni.recipesai.home.domain.interfaces.IngredientsDetectorRepository
 import android.net.Uri
 import androidx.core.net.toUri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.util.Locale
-import kotlin.collections.emptyList
 
 class IngredientsDetectorViewModel(
     private val imageUri: String,
@@ -136,19 +133,10 @@ class IngredientsDetectorViewModel(
         }
     }
 
-    @OptIn(FlowPreview::class)
+
     private fun observeQuery() {
         _queryFlow
-            .debounce(300)
-            .map { query ->
-                if (query.isBlank()) {
-                    emptyList()
-                } else {
-                    _uiState.value.allLocalIngredients
-                        .filter { it.removeStressAccents().contains(query, ignoreCase = true) }
-                        .take(4)
-                }
-            }
+            .ingredientsSuggestions { _uiState.value.allLocalIngredients }
             .onEach { matches ->
                 _uiState.update { state ->
                     state.copy(
