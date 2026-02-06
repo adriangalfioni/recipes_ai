@@ -3,7 +3,7 @@ package agalfioni.recipesai.home.presentation.home
 
 import agalfioni.recipesai.core.presentation.extensions.ingredientsSuggestions
 import agalfioni.recipesai.core.presentation.utils.removeStressAccents
-import agalfioni.recipesai.home.domain.interfaces.IngredientsDetectorRepository
+import agalfioni.recipesai.home.domain.interfaces.IngredientsRepository
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -19,7 +19,7 @@ import java.util.Locale
 
 @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
 class HomeViewModel(
-    private val ingredientsDetectorRepository: IngredientsDetectorRepository
+    private val ingredientsRepository: IngredientsRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(HomeUiState())
@@ -29,7 +29,7 @@ class HomeViewModel(
 
     init {
         viewModelScope.launch {
-            ingredientsDetectorRepository
+            ingredientsRepository
                 .getLocalIngredients()
                 .onSuccess { ingredientsList ->
                     val allLocalIngredients = ingredientsList.map {

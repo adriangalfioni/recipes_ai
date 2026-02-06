@@ -5,9 +5,9 @@ import agalfioni.recipesai.core.presentation.extensions.ingredientsSuggestions
 import agalfioni.recipesai.core.presentation.models.selectOrAdd
 import agalfioni.recipesai.core.presentation.models.toSelectableList
 import agalfioni.recipesai.core.presentation.utils.removeStressAccents
+import agalfioni.recipesai.home.domain.DetectIngredientsUseCase
 import agalfioni.recipesai.home.domain.IngredientsResult
-import agalfioni.recipesai.home.domain.interfaces.IngredientsDetectorRepository
-import android.net.Uri
+import agalfioni.recipesai.home.domain.interfaces.IngredientsRepository
 import androidx.core.net.toUri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -23,7 +23,8 @@ import java.util.Locale
 
 class IngredientsDetectorViewModel(
     private val imageUri: String,
-    private val ingredientsDetectorRepository: IngredientsDetectorRepository
+    private val ingredientsRepository: IngredientsRepository,
+    private val detectIngredientsUseCase: DetectIngredientsUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(IngredientsDetectorUiState(imageUri = imageUri.toUri()))
@@ -35,7 +36,7 @@ class IngredientsDetectorViewModel(
 
     init {
         viewModelScope.launch {
-            ingredientsDetectorRepository
+            ingredientsRepository
                 .getLocalIngredients()
                 .onSuccess { ingredientsList ->
                     val allLocalIngredients = ingredientsList.map {
@@ -55,7 +56,7 @@ class IngredientsDetectorViewModel(
 
         viewModelScope.launch {
             if (useIA) {
-                analyzeFridgeImage(imageUri.toUri())
+                analyzeFridgeImage(imageUri)
             } else {
                 _uiState.update { it.copy(isLoading = true) }
                 delay(4000)
@@ -80,7 +81,6 @@ class IngredientsDetectorViewModel(
     }
     fun onEvent(event: IngredientsDetectorEvent) {
         when (event) {
-            is IngredientsDetectorEvent.OnImageToAnalyze -> analyzeFridgeImage(event.imageUri)
             is IngredientsDetectorEvent.OnIngredientSelectionChanged -> onIngredientSelectionChanged(event.item)
             is IngredientsDetectorEvent.OnQueryChanged -> onQueryChanged(event.query)
             is IngredientsDetectorEvent.OnSuggestionSelected -> onSuggestionSelected(event.suggestedItem)
@@ -100,11 +100,11 @@ class IngredientsDetectorViewModel(
         }
     }
 
-    fun analyzeFridgeImage(uri: Uri) {
+    fun analyzeFridgeImage(uriString: String) {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true, error = null) }
 
-            val result = ingredientsDetectorRepository.analyzeFridge(uri)
+            val result = detectIngredientsUseCase(uriString)
             _uiState.update { currentState ->
                 when (result) {
                     is AppResult.Success -> {

@@ -2,11 +2,14 @@ package agalfioni.recipesai.home.di
 
 import agalfioni.recipesai.core.data.repository.LocalIngredientsLoader
 import agalfioni.recipesai.home.data.IngredientsDetectorDataSource
-import agalfioni.recipesai.home.data.IngredientsDetectorRepositoryImpl
+import agalfioni.recipesai.home.data.IngredientsRepositoryImpl
 import agalfioni.recipesai.home.data.LoggingImageObserver
+import agalfioni.recipesai.home.data.parser.JsonIngredientParser
 import agalfioni.recipesai.home.data.utils.ImageProcessor
+import agalfioni.recipesai.home.domain.DetectIngredientsUseCase
 import agalfioni.recipesai.home.domain.interfaces.ImageProcessingObserver
-import agalfioni.recipesai.home.domain.interfaces.IngredientsDetectorRepository
+import agalfioni.recipesai.home.domain.interfaces.IngredientsParser
+import agalfioni.recipesai.home.domain.interfaces.IngredientsRepository
 import agalfioni.recipesai.home.presentation.home.HomeViewModel
 import agalfioni.recipesai.home.presentation.scan_result.IngredientsDetectorViewModel
 import org.koin.android.ext.koin.androidContext
@@ -25,5 +28,9 @@ val homeModule = module {
 
     single { LocalIngredientsLoader(androidContext().assets) }
 
-    single<IngredientsDetectorRepository> { IngredientsDetectorRepositoryImpl(get(), get(), get(), get()) }
+    factory { DetectIngredientsUseCase(get(), get(), get(), get()) }
+
+    single<IngredientsRepository> { IngredientsRepositoryImpl(get(), get()) }
+
+    single<IngredientsParser> { JsonIngredientParser() }
 }

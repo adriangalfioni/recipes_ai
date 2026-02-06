@@ -10,6 +10,7 @@ import android.provider.OpenableColumns
 import android.util.Log
 import androidx.core.graphics.scale
 import java.io.ByteArrayOutputStream
+import androidx.core.net.toUri
 
 class ImageProcessor(
     private val context: Context,
@@ -47,9 +48,9 @@ class ImageProcessor(
 
 
     fun compressImageForAi(
-        uri: Uri, maxSize: Int = 1024, quality: Int = 70
+        uriString: String, maxSize: Int = 1024, quality: Int = 70
     ): ByteArray {
-
+        val uri = uriString.toUri()
         val resolver = context.contentResolver
 
         // Decode bounds only (no memory allocation)
