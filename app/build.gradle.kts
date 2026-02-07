@@ -60,6 +60,8 @@ android {
         unitTests.all {
             it.useJUnitPlatform()
         }
+
+        unitTests.isIncludeAndroidResources = true
     }
 }
 
@@ -72,6 +74,7 @@ dependencies {
     implementation(libs.androidx.compose.ui.graphics)
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.material3)
+    implementation(libs.test.core.ktx)
 
     // Coil 3
     implementation(libs.coil.compose)
@@ -128,6 +131,8 @@ dependencies {
     testImplementation(libs.junit)
     testImplementation(libs.kotlin.test)
     testImplementation(libs.turbine)
+    testImplementation(libs.robolectric)
+    testImplementation(libs.junit.vintage)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))

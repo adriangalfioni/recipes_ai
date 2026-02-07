@@ -5,9 +5,10 @@ import agalfioni.recipesai.home.data.IngredientsDetectorDataSource
 import agalfioni.recipesai.home.data.IngredientsRepositoryImpl
 import agalfioni.recipesai.home.data.LoggingImageObserver
 import agalfioni.recipesai.home.data.parser.JsonIngredientParser
-import agalfioni.recipesai.home.data.utils.ImageProcessor
+import agalfioni.recipesai.home.data.utils.ImageProcessorImpl
 import agalfioni.recipesai.home.domain.DetectIngredientsUseCase
 import agalfioni.recipesai.home.domain.interfaces.ImageProcessingObserver
+import agalfioni.recipesai.home.domain.interfaces.ImageProcessor
 import agalfioni.recipesai.home.domain.interfaces.IngredientsParser
 import agalfioni.recipesai.home.domain.interfaces.IngredientsRepository
 import agalfioni.recipesai.home.presentation.home.HomeViewModel
@@ -22,7 +23,7 @@ val homeModule = module {
 
     single<ImageProcessingObserver> { LoggingImageObserver(get()) }
 
-    factory { ImageProcessor(androidContext(), get()) }
+    factory<ImageProcessor> { ImageProcessorImpl(androidContext(), get()) }
 
     single { IngredientsDetectorDataSource(get()) }
 

@@ -6,7 +6,7 @@ import agalfioni.recipesai.core.domain.interfaces.LanguageProvider
 import agalfioni.recipesai.core.domain.models.AppResult
 import agalfioni.recipesai.core.domain.models.DataError
 import agalfioni.recipesai.core.domain.models.map
-import agalfioni.recipesai.recipe_list.data.utils.GenerateRecipesPromptProvider
+import agalfioni.recipesai.recipe_list.domain.providers.GenerateRecipesPromptProvider
 import agalfioni.recipesai.recipe_list.domain.interfaces.AiRecipeGenerator
 import agalfioni.recipesai.recipe_list.domain.models.Recipe
 import kotlinx.coroutines.CoroutineDispatcher

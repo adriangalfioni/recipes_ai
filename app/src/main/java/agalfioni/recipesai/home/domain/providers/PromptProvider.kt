@@ -1,4 +1,4 @@
-package agalfioni.recipesai.home.data.utils
+package agalfioni.recipesai.home.domain.providers
 
 object PromptProvider {
 

@@ -105,7 +105,7 @@ class GenerateRecipesUseCaseTest {
     }
 
     @Test
-    fun `Coroutine cancellation tracking 2`() = runTest {
+    fun `Coroutine cancellation tracking`() = runTest {
         // Arrange
         fakeGenerator.aiRecipeGeneratorResultType =
             AiRecipeGeneratorResultType.COROUTINE_CANCELLATION_EXCEPTION

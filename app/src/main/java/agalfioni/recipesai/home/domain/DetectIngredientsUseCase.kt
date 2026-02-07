@@ -4,10 +4,12 @@ import agalfioni.recipesai.core.domain.interfaces.LanguageProvider
 import agalfioni.recipesai.core.domain.models.AppResult
 import agalfioni.recipesai.core.domain.models.DataError
 import agalfioni.recipesai.core.domain.models.map
-import agalfioni.recipesai.home.data.utils.ImageProcessor
-import agalfioni.recipesai.home.data.utils.PromptProvider
-import agalfioni.recipesai.home.domain.interfaces.IngredientsRepository
+import agalfioni.recipesai.home.domain.providers.PromptProvider
+import agalfioni.recipesai.home.domain.interfaces.ImageProcessor
 import agalfioni.recipesai.home.domain.interfaces.IngredientsParser
+import agalfioni.recipesai.home.domain.interfaces.IngredientsRepository
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 class DetectIngredientsUseCase(
     private val repository: IngredientsRepository,

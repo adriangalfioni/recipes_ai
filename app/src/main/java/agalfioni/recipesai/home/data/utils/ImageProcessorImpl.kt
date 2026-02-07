@@ -1,6 +1,7 @@
 package agalfioni.recipesai.home.data.utils
 
 import agalfioni.recipesai.home.domain.interfaces.ImageProcessingObserver
+import agalfioni.recipesai.home.domain.interfaces.ImageProcessor
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -9,58 +10,26 @@ import android.os.Build
 import android.provider.OpenableColumns
 import android.util.Log
 import androidx.core.graphics.scale
-import java.io.ByteArrayOutputStream
 import androidx.core.net.toUri
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import java.io.ByteArrayOutputStream
 
-class ImageProcessor(
+class ImageProcessorImpl(
     private val context: Context,
     private val imageProcessingObserver: ImageProcessingObserver
-) {
+): ImageProcessor {
 
-    fun prepareBitmapForAnalysis(uri: Uri): Bitmap {
-        // 1. Open the stream and decode the full-size image
-        val inputStream = context.contentResolver.openInputStream(uri)
-            ?: throw IllegalArgumentException("Cannot open URI")
-
-        val fullSizeBitmap = BitmapFactory.decodeStream(inputStream)
-        inputStream.close()
-
-        // 2. Calculate scale to fit within 1024px while maintaining aspect ratio
-        val maxSide = 1024
-        val scale = minOf(
-            maxSide.toFloat() / fullSizeBitmap.width,
-            maxSide.toFloat() / fullSizeBitmap.height
-        )
-
-        // 3. Create the resized bitmap
-        val resizedBitmap = fullSizeBitmap.scale(
-            (fullSizeBitmap.width * scale).toInt(),
-            (fullSizeBitmap.height * scale).toInt()
-        )
-
-        // 4. Recycle the original heavy bitmap to free up memory immediately
-        if (fullSizeBitmap != resizedBitmap) {
-            fullSizeBitmap.recycle()
-        }
-
-        return resizedBitmap
-    }
-
-
-    fun compressImageForAi(
-        uriString: String, maxSize: Int = 1024, quality: Int = 70
-    ): ByteArray {
+    override suspend fun compressImageForAi(
+        uriString: String, maxSize: Int, quality: Int
+    ): ByteArray = withContext(Dispatchers.IO) {
         val uri = uriString.toUri()
         val resolver = context.contentResolver
 
-        // Decode bounds only (no memory allocation)
-        val boundsOptions = BitmapFactory.Options().apply {
-            inJustDecodeBounds = true
-        }
-
         // Calculate sample size
         val decodeOptions = BitmapFactory.Options().apply {
-            inSampleSize = calculateInSampleSize(boundsOptions, maxSize)
+            inSampleSize = calculateInSampleSize(BitmapFactory.Options(), maxSize)
             inPreferredConfig = Bitmap.Config.RGB_565 // AI doesn’t need alpha channel, less memory than ARGB_8888
             inJustDecodeBounds = false
         }
@@ -85,13 +54,12 @@ class ImageProcessor(
             getBestCompressFormat(), quality, outputStream
         )
 
-        Log.d("asd", "compressImageForAi: asd asd")
         imageProcessingObserver.onCompressionCompleted(
             originalSizeBytes = getFileSize(uri),
             compressedSizeBytes = outputStream.size().toLong()
         )
 
-        return outputStream.toByteArray()
+        return@withContext outputStream.toByteArray()
     }
 
     private fun calculateInSampleSize(

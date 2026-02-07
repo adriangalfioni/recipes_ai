@@ -1,4 +1,4 @@
-package agalfioni.recipesai.recipe_list.data.utils
+package agalfioni.recipesai.recipe_list.domain.providers
 
 object GenerateRecipesPromptProvider {
 
@@ -86,4 +86,3 @@ object GenerateRecipesPromptProvider {
     }
 
 }
-
