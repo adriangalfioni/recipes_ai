@@ -1,7 +1,7 @@
 package agalfioni.recipesai.recipe_list.data.repository
 
-import agalfioni.recipesai.recipe_list.domain.interfaces.RecipeRepository
-import agalfioni.recipesai.recipe_list.domain.models.Recipe
+import agalfioni.recipesai.core.recipes.domain.interfaces.RecipeRepository
+import agalfioni.recipesai.core.recipes.domain.models.Recipe
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flowOf
@@ -18,6 +18,11 @@ class FakeRecipeRepository : RecipeRepository {
 
     override fun getAllRecipes(): Flow<List<Recipe>> {
         return flowOf(_recipes.value)
+    }
+
+    override fun getRecipeById(id: String): Flow<Recipe?> {
+        return flowOf(_recipes.value.find { it.id == id })
+
     }
 
 }

@@ -1,7 +1,7 @@
 package agalfioni.recipesai.home.presentation.home
 
 import agalfioni.recipesai.core.domain.models.DataError
-import agalfioni.recipesai.recipe_list.presentation.models.RecipeUi
+import agalfioni.recipesai.recipe.recipe_list.presentation.models.RecipeUi
 
 data class HomeUiState(
     val addedIngredients: List<String> = listOf(),

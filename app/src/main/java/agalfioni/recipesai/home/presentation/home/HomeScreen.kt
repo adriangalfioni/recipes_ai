@@ -6,14 +6,14 @@ import agalfioni.recipesai.core.presentation.components.SearchableWithSuggestion
 import agalfioni.recipesai.core.presentation.components.rememberCameraLauncher
 import agalfioni.recipesai.core.presentation.models.toSelectableList
 import agalfioni.recipesai.core.presentation.theme.RecipesAITheme
-import agalfioni.recipesai.home.presentation.components.GenerateRecipesBottomBar
+import agalfioni.recipesai.core.recipes.presentation.mappers.components.GenerateRecipesBottomBar
 import agalfioni.recipesai.home.presentation.home.components.MediaSourcePickerSheet
 import agalfioni.recipesai.home.presentation.home.components.ScanFridgeCard
 import agalfioni.recipesai.home.presentation.home.models.ImageSource
-import agalfioni.recipesai.home.presentation.components.DetectedIngredientsChips
-import agalfioni.recipesai.recipe_list.presentation.components.RecipeCard
-import agalfioni.recipesai.recipe_list.presentation.models.RecipeUi
-import agalfioni.recipesai.recipe_list.presentation.preview_providers.RecipeUiListProvider
+import agalfioni.recipesai.core.recipes.presentation.mappers.components.DetectedIngredientsChips
+import agalfioni.recipesai.recipe.recipe_list.presentation.components.RecipeCard
+import agalfioni.recipesai.recipe.recipe_list.presentation.models.RecipeUi
+import agalfioni.recipesai.recipe.recipe_list.presentation.preview_providers.RecipeUiListProvider
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -54,6 +54,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import org.koin.androidx.compose.koinViewModel
+import kotlin.collections.isNotEmpty
 
 
 @Composable

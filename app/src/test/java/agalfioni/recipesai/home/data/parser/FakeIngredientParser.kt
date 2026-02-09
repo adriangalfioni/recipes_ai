@@ -1,7 +1,7 @@
 package agalfioni.recipesai.home.data.parser
 
-import agalfioni.recipesai.home.domain.IngredientsResult
-import agalfioni.recipesai.home.domain.interfaces.IngredientsParser
+import agalfioni.recipesai.core.scan.domain.model.IngredientsResult
+import agalfioni.recipesai.core.ingredients.domain.interfaces.IngredientsParser
 
 class FakeIngredientParser: IngredientsParser {
 

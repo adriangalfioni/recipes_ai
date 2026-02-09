@@ -4,9 +4,9 @@ package agalfioni.recipesai.home.presentation.home
 
 import agalfioni.recipesai.core.presentation.extensions.ingredientsSuggestionsFlow
 import agalfioni.recipesai.core.presentation.utils.removeStressAccents
-import agalfioni.recipesai.home.domain.interfaces.IngredientsRepository
-import agalfioni.recipesai.recipe_list.domain.interfaces.RecipeRepository
-import agalfioni.recipesai.recipe_list.presentation.mappers.toRecipeUiList
+import agalfioni.recipesai.core.ingredients.domain.interfaces.IngredientsRepository
+import agalfioni.recipesai.core.recipes.domain.interfaces.RecipeRepository
+import agalfioni.recipesai.core.recipes.presentation.mappers.toRecipeUiList
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -18,6 +18,7 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import java.util.Locale
@@ -25,7 +26,7 @@ import java.util.Locale
 @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
 class HomeViewModel(
     private val ingredientsRepository: IngredientsRepository,
-    private val recipeRepository: RecipeRepository
+    recipeRepository: RecipeRepository
 ) : ViewModel() {
 
     // 1. Raw inputs (StateHolders)
@@ -33,7 +34,7 @@ class HomeViewModel(
     private val _addedIngredientsFlow = MutableStateFlow<List<String>>(emptyList())
 
     private val _localIngredientsFlow = flow {
-        ingredientsRepository.getLocalIngredients()
+        ingredientsRepository.getIngredients()
             .onSuccess { ingredientsList ->
                 val allLocalIngredients = ingredientsList.map {
                     if (Locale.getDefault().language == "es") {
@@ -50,6 +51,7 @@ class HomeViewModel(
 
     private val _recentRecipesFlow = recipeRepository.getAllRecipes()
         .map { it.toRecipeUiList() }
+        .onStart { emit(emptyList()) }
         .catch { _ -> emit(emptyList()) }
 
     val uiState: StateFlow<HomeUiState> = combine(

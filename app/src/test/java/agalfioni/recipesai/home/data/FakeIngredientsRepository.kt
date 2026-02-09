@@ -2,14 +2,14 @@ package agalfioni.recipesai.home.data
 
 import agalfioni.recipesai.core.domain.models.AppResult
 import agalfioni.recipesai.core.domain.models.DataError
-import agalfioni.recipesai.core.domain.models.LocalIngredient
-import agalfioni.recipesai.home.domain.interfaces.IngredientsRepository
+import agalfioni.recipesai.core.domain.models.LocalizedIngredient
+import agalfioni.recipesai.core.ingredients.domain.interfaces.IngredientsRepository
 
 class FakeIngredientsRepository: IngredientsRepository {
 
     var ingredientsDetectionResult = IngredientDetectionResult.SUCCESS_NON_EMPTY
 
-    override suspend fun getLocalIngredients(): Result<List<LocalIngredient>> {
+    override suspend fun getIngredients(): Result<List<LocalizedIngredient>> {
         return Result.success(emptyList())
     }
 

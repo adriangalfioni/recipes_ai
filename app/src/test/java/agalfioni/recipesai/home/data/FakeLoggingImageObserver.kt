@@ -1,6 +1,6 @@
 package agalfioni.recipesai.home.data
 
-import agalfioni.recipesai.home.domain.interfaces.ImageProcessingObserver
+import agalfioni.recipesai.shared.image_proccessing.domain.ImageProcessingObserver
 
 class FakeLoggingImageObserver: ImageProcessingObserver {
 

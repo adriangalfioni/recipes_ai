@@ -1,7 +1,8 @@
 package agalfioni.recipesai.home.data.utils
 
 import agalfioni.recipesai.home.data.FakeLoggingImageObserver
-import agalfioni.recipesai.home.domain.interfaces.ImageProcessor
+import agalfioni.recipesai.shared.image_proccessing.domain.ImageProcessor
+import agalfioni.recipesai.shared.image_proccessing.data.ImageProcessorImpl
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas

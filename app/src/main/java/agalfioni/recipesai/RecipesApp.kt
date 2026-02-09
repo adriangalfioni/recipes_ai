@@ -1,14 +1,19 @@
 package agalfioni.recipesai
 
-import agalfioni.recipesai.core.di.aiModule
+import agalfioni.recipesai.core.data.ai.di.aiModule
+import agalfioni.recipesai.core.data.ingredients.di.ingredientsModule
+import agalfioni.recipesai.core.data.recipes.di.recipesModule
+import agalfioni.recipesai.core.di.aiGenerativeModelModule
 import agalfioni.recipesai.core.di.aiParserModule
 import agalfioni.recipesai.core.di.androidLanguageModule
 import agalfioni.recipesai.core.di.dbModule
 import agalfioni.recipesai.core.di.firebaseModule
 import agalfioni.recipesai.core.di.jsonModule
 import agalfioni.recipesai.home.di.homeModule
-import agalfioni.recipesai.recipe_details.di.recipeDetailsModule
-import agalfioni.recipesai.recipe_list.di.generateRecipesModule
+import agalfioni.recipesai.ingredients_detector.presentation.di.ingredientsDetectorModule
+import agalfioni.recipesai.recipe.recipe_details.di.recipeDetailsModule
+import agalfioni.recipesai.recipe.recipe_list.di.recipeListModule
+import agalfioni.recipesai.shared.image_proccessing.di.imageProcessingModule
 import android.app.Application
 import com.google.firebase.Firebase
 import com.google.firebase.FirebaseApp
@@ -48,10 +53,16 @@ class RecipesApp : Application() {
                 dbModule,
                 androidLanguageModule,
                 firebaseModule,
+                ingredientsModule,
+                recipesModule,
+                aiModule,
+                aiGenerativeModelModule,
                 // Features modules
                 recipeDetailsModule,
                 homeModule,
-                generateRecipesModule,
+                ingredientsDetectorModule,
+                recipeListModule,
+                imageProcessingModule
             )
         }
     }

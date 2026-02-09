@@ -2,11 +2,12 @@ package agalfioni.recipesai.recipe_list.domain.usecase
 
 import agalfioni.recipesai.core.domain.models.AppResult
 import agalfioni.recipesai.core.domain.models.DataError
+import agalfioni.recipesai.core.recipes.domain.use_case.GenerateRecipesUseCase
 import agalfioni.recipesai.recipe_list.data.remote.AiRecipeGeneratorResultType
 import agalfioni.recipesai.recipe_list.data.remote.FakeAiRecipeGenerator
 import agalfioni.recipesai.recipe_list.data.repository.FakeRecipeRepository
-import agalfioni.recipesai.recipe_list.domain.GenerationTracker
-import agalfioni.recipesai.recipe_list.domain.RecipeGenerationEvent
+import agalfioni.recipesai.core.recipes.domain.use_case.GenerationTracker
+import agalfioni.recipesai.core.recipes.domain.use_case.RecipeGenerationEvent
 import app.cash.turbine.test
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.launch
@@ -36,7 +37,7 @@ class GenerateRecipesUseCaseTest {
             fakeRepo,
             fakeTracker,
 
-        )
+            )
         fakeTracker.reset() // Ensure clean state
     }
 

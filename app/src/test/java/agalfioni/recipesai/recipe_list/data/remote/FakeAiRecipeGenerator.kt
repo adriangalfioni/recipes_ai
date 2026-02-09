@@ -2,10 +2,10 @@ package agalfioni.recipesai.recipe_list.data.remote
 
 import agalfioni.recipesai.core.domain.models.AppResult
 import agalfioni.recipesai.core.domain.models.DataError
-import agalfioni.recipesai.recipe_list.domain.interfaces.AiRecipeGenerator
-import agalfioni.recipesai.recipe_list.domain.models.Difficulty
-import agalfioni.recipesai.recipe_list.domain.models.Nutrition
-import agalfioni.recipesai.recipe_list.domain.models.Recipe
+import agalfioni.recipesai.core.ai.domain.generator.AiRecipeGenerator
+import agalfioni.recipesai.core.recipes.domain.models.Difficulty
+import agalfioni.recipesai.core.recipes.domain.models.Nutrition
+import agalfioni.recipesai.core.recipes.domain.models.Recipe
 import kotlinx.coroutines.delay
 
 

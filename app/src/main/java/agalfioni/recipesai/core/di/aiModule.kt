@@ -6,7 +6,7 @@ import com.google.firebase.ai.ai
 import com.google.firebase.ai.type.GenerativeBackend
 import org.koin.dsl.module
 
-val aiModule = module {
+val aiGenerativeModelModule = module {
     single { provideGenerativeModel() }
 }
 

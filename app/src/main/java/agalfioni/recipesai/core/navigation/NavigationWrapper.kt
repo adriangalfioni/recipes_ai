@@ -1,13 +1,12 @@
 package agalfioni.recipesai.core.navigation
 
 import agalfioni.recipesai.home.presentation.home.HomeScreen
-import agalfioni.recipesai.home.presentation.scan_result.IngredientDetectorScreen
-import agalfioni.recipesai.home.presentation.scan_result.IngredientsDetectorViewModel
-import agalfioni.recipesai.recipe_details.presentation.RecipeDetailsScreen
-import agalfioni.recipesai.recipe_details.presentation.RecipeDetailsViewModel
-import agalfioni.recipesai.recipe_list.domain.models.Recipe
-import agalfioni.recipesai.recipe_list.presentation.RecipeListScreen
-import agalfioni.recipesai.recipe_list.presentation.RecipesListViewModel
+import agalfioni.recipesai.ingredients_detector.presentation.IngredientDetectorScreen
+import agalfioni.recipesai.ingredients_detector.presentation.IngredientsDetectorViewModel
+import agalfioni.recipesai.recipe.recipe_details.presentation.RecipeDetailsScreen
+import agalfioni.recipesai.recipe.recipe_details.presentation.RecipeDetailsViewModel
+import agalfioni.recipesai.recipe.recipe_list.presentation.RecipeListScreen
+import agalfioni.recipesai.recipe.recipe_list.presentation.RecipesListViewModel
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.saveable.listSaver
