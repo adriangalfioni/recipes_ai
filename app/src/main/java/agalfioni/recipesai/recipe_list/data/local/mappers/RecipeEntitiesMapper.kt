@@ -8,6 +8,9 @@ import agalfioni.recipesai.recipe_list.domain.models.Recipe
 import agalfioni.recipesai.recipe_list.domain.models.RecipeIngredient
 import agalfioni.recipesai.recipe_list.domain.models.RecipeInstruction
 
+fun List<RecipeWithIngredients>.toDomain(): List<Recipe> {
+    return this.map { it.toDomain() }
+}
 
 fun RecipeWithIngredients.toDomain(): Recipe {
     return Recipe(

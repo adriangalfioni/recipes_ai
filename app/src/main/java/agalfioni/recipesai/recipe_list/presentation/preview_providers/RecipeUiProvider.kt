@@ -4,25 +4,31 @@ import agalfioni.recipesai.R
 import agalfioni.recipesai.recipe_list.presentation.models.RecipeUi
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 
-class RecipeUiProvider : PreviewParameterProvider<RecipeUi> {
-    override val values = sequenceOf(
-        RecipeUi(
-            id = "1",
-            title = "Spaghetti Bolognese",
-            difficulty = R.string.difficulty_easy,
-            minutesTime = "20 min",
-            ingredientCoveragePercentage = "80%",
-            isMatchHigh = true,
-            totalCalories = "500 kcal"
-        ),
-        RecipeUi(
-            id = "2",
-            title = "Beef Wellington",
-            difficulty = R.string.difficulty_hard,
-            minutesTime = "120 min",
-            ingredientCoveragePercentage = "30%",
-            isMatchHigh = false,
-            totalCalories = "950 kcal"
-        )
+private val recipes = listOf(
+    RecipeUi(
+        id = "1",
+        title = "Spaghetti Bolognese",
+        difficulty = R.string.difficulty_easy,
+        minutesTime = "20 min",
+        ingredientCoveragePercentage = "80%",
+        isMatchHigh = true,
+        totalCalories = "500 kcal"
+    ),
+    RecipeUi(
+        id = "2",
+        title = "Beef Wellington",
+        difficulty = R.string.difficulty_hard,
+        minutesTime = "120 min",
+        ingredientCoveragePercentage = "30%",
+        isMatchHigh = false,
+        totalCalories = "950 kcal"
     )
+)
+
+class RecipeUiProvider : PreviewParameterProvider<RecipeUi> {
+    override val values = recipes.asSequence()
+}
+
+class RecipeUiListProvider : PreviewParameterProvider<List<RecipeUi>> {
+    override val values = sequenceOf(recipes)
 }

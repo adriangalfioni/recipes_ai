@@ -8,6 +8,7 @@ import agalfioni.recipesai.recipe_list.presentation.preview_providers.RecipeUiPr
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -32,6 +33,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
@@ -40,7 +42,9 @@ import androidx.compose.ui.unit.sp
 @Composable
 fun RecipeCard(
     recipeUi: RecipeUi,
-    onClick: () -> Unit = {}
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit = {},
+    showMatchIndicator: Boolean = true
 ) {
     val matchColor = if (recipeUi.isMatchHigh) {
         GoodMatch
@@ -48,14 +52,14 @@ fun RecipeCard(
         MaterialTheme.colorScheme.outline
     }
 
-    val cardContainerColor = if (recipeUi.isMatchHigh) {
+    val cardContainerColor = if (recipeUi.isMatchHigh && showMatchIndicator) {
         MaterialTheme.colorScheme.secondary
     } else {
         Color.White
     }
 
     Card(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .padding(8.dp)
             .clickable(
@@ -68,7 +72,7 @@ fun RecipeCard(
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Column(
-            modifier = Modifier.padding(24.dp)
+            modifier = Modifier.padding(20.dp)
         ) {
 
             Row(
@@ -81,7 +85,9 @@ fun RecipeCard(
                     style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.weight(1f),
-                    color = Color.Black
+                    color = Color.Black,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis
                 )
                 /*Icon(
                     imageVector = Icons.Default.FavoriteBorder,
@@ -91,30 +97,34 @@ fun RecipeCard(
                 )*/
             }
 
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.padding(vertical = 8.dp)
-            ) {
-                Icon(
-                    imageVector = Icons.Default.CheckCircle,
-                    contentDescription = null,
-                    tint = matchColor,
-                    modifier = Modifier.size(18.dp)
-                )
-                Spacer(modifier = Modifier.width(4.dp))
-                Text(
-                    text = stringResource(id = R.string.percentage_match, recipeUi.ingredientCoveragePercentage),
-                    color = matchColor,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 14.sp
-                )
+            if (showMatchIndicator) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.padding(vertical = 8.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.CheckCircle,
+                        contentDescription = null,
+                        tint = matchColor,
+                        modifier = Modifier.size(18.dp)
+                    )
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Text(
+                        text = stringResource(id = R.string.percentage_match, recipeUi.ingredientCoveragePercentage),
+                        color = matchColor,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 14.sp
+                    )
+                }
+                Spacer(modifier = Modifier.height(16.dp))
+            } else {
+                Spacer(modifier = Modifier.weight(1f))
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
+            FlowRow(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                verticalArrangement = Arrangement.Center,
                 horizontalArrangement = Arrangement.Start
             ) {
                 InfoItem(icon = ImageVector.vectorResource(R.drawable.ic_time), text = recipeUi.minutesTime)

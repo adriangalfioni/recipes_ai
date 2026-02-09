@@ -1,101 +1,99 @@
 package agalfioni.recipesai.home.presentation.home
 
 
-import agalfioni.recipesai.core.presentation.extensions.ingredientsSuggestions
+
+import agalfioni.recipesai.core.presentation.extensions.ingredientsSuggestionsFlow
 import agalfioni.recipesai.core.presentation.utils.removeStressAccents
 import agalfioni.recipesai.home.domain.interfaces.IngredientsRepository
+import agalfioni.recipesai.recipe_list.domain.interfaces.RecipeRepository
+import agalfioni.recipesai.recipe_list.presentation.mappers.toRecipeUiList
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 import java.util.Locale
 
 @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
 class HomeViewModel(
-    private val ingredientsRepository: IngredientsRepository
+    private val ingredientsRepository: IngredientsRepository,
+    private val recipeRepository: RecipeRepository
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(HomeUiState())
-    val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
-
+    // 1. Raw inputs (StateHolders)
     private var _queryFlow = MutableStateFlow("")
+    private val _addedIngredientsFlow = MutableStateFlow<List<String>>(emptyList())
 
-    init {
-        viewModelScope.launch {
-            ingredientsRepository
-                .getLocalIngredients()
-                .onSuccess { ingredientsList ->
-                    val allLocalIngredients = ingredientsList.map {
-                        if (Locale.getDefault().language == "es") {
-                            it.es.removeStressAccents()
-                        } else {
-                            it.en
-                        }
-                    }
-                    _uiState.update {
-                        it.copy(
-                            allLocalIngredients = allLocalIngredients
-                        )
+    private val _localIngredientsFlow = flow {
+        ingredientsRepository.getLocalIngredients()
+            .onSuccess { ingredientsList ->
+                val allLocalIngredients = ingredientsList.map {
+                    if (Locale.getDefault().language == "es") {
+                        it.es.removeStressAccents()
+                    } else {
+                        it.en
                     }
                 }
-        }
-
-        _queryFlow
-            .ingredientsSuggestions { _uiState.value.allLocalIngredients }
-            .onEach { matches ->
-                _uiState.update { state ->
-                    state.copy(
-                        suggestions = matches,
-                        showSuggestions = matches.isNotEmpty()
-                    )
-                }
+                emit(allLocalIngredients)
             }
-            .launchIn(viewModelScope)
-    }
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
+
+    private val _suggestionsFlow = _queryFlow.ingredientsSuggestionsFlow(_localIngredientsFlow)
+
+    private val _recentRecipesFlow = recipeRepository.getAllRecipes()
+        .map { it.toRecipeUiList() }
+        .catch { _ -> emit(emptyList()) }
+
+    val uiState: StateFlow<HomeUiState> = combine(
+        _queryFlow,
+        _addedIngredientsFlow,
+        _localIngredientsFlow,
+        _suggestionsFlow,
+        _recentRecipesFlow
+    ) { query, addedIngredients, allLocalIngredients, suggestions, recentRecipes ->
+        HomeUiState(
+            addedIngredients = addedIngredients,
+            allLocalIngredients = allLocalIngredients,
+            query = query,
+            suggestions = suggestions,
+            showSuggestions = suggestions.isNotEmpty() && query.isNotBlank(),
+            recentRecipes = recentRecipes
+        )
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = HomeUiState()
+    )
+
     fun onEvent(event: HomeEvent) {
         when (event) {
             is HomeEvent.OnIngredientRemoved -> onIngredientRemoved(event.item)
             is HomeEvent.OnQueryChanged -> onQueryChanged(event.query)
             is HomeEvent.OnSuggestionSelected -> onSuggestionSelected(event.suggestedItem)
-            HomeEvent.OnClearAll -> _uiState.update { it.copy(addedIngredients = mutableListOf()) }
+            HomeEvent.OnClearAll -> _addedIngredientsFlow.update { emptyList() }
             HomeEvent.OnGenerateRecipes -> {}
         }
     }
 
     private fun onIngredientRemoved(itemToRemove: String) {
-        _uiState.update { currentState ->
-            val updatedList = currentState.addedIngredients.filter { it != itemToRemove }
-            currentState.copy(addedIngredients = updatedList.toMutableList())
-        }
+        _addedIngredientsFlow.update { it - itemToRemove }
     }
 
     fun onQueryChanged(query: String) {
         _queryFlow.value = query
-        _uiState.update {
-            it.copy(query = query)
-        }
     }
 
     fun onSuggestionSelected(item: String) {
-        _uiState.update { currentState ->
-            val updatedList = currentState.addedIngredients
-                .toSet()
-                .plus(item)
-                .sorted()
-                .toMutableList()
-
-            currentState.copy(
-                query = "",
-                showSuggestions = false,
-                addedIngredients = updatedList
-            )
+        _addedIngredientsFlow.update {
+            it.toSet().plus(item).sorted()
         }
         _queryFlow.value = ""
     }

@@ -26,6 +26,9 @@ interface RecipeDao {
     @Query("SELECT * FROM recipes WHERE id = :recipeId LIMIT 1")
     fun getRecipeById(recipeId: String): Flow<RecipeWithIngredients?>
 
+    @Query("SELECT * FROM recipes")
+    fun getAllRecipes(): Flow<List<RecipeWithIngredients>>
+
     // Helper to save the whole object at once
     @Transaction
     suspend fun saveFullRecipe(recipe: Recipe) {

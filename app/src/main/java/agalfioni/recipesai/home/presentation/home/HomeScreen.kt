@@ -11,6 +11,9 @@ import agalfioni.recipesai.home.presentation.home.components.MediaSourcePickerSh
 import agalfioni.recipesai.home.presentation.home.components.ScanFridgeCard
 import agalfioni.recipesai.home.presentation.home.models.ImageSource
 import agalfioni.recipesai.home.presentation.components.DetectedIngredientsChips
+import agalfioni.recipesai.recipe_list.presentation.components.RecipeCard
+import agalfioni.recipesai.recipe_list.presentation.models.RecipeUi
+import agalfioni.recipesai.recipe_list.presentation.preview_providers.RecipeUiListProvider
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -21,9 +24,13 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -36,7 +43,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -44,9 +50,9 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
 
@@ -55,6 +61,7 @@ fun HomeScreen(
     resultStore: ResultStore,
     onImage: (String) -> Unit,
     onGenerateRecipesClick: (List<String>) -> Unit,
+    onNavigateToRecipe: (String) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: HomeViewModel = koinViewModel()
 ) {
@@ -64,6 +71,7 @@ fun HomeScreen(
         uiState = uiState.value,
         onEvent = viewModel::onEvent,
         onImage = onImage,
+        onNavigateToRecipe = onNavigateToRecipe,
         onGenerateRecipesClick = onGenerateRecipesClick,
         modifier = modifier
     )
@@ -76,6 +84,7 @@ fun HomeScreenRoot(
     onEvent: (event: HomeEvent) -> Unit,
     modifier: Modifier = Modifier,
     onImage: (String) -> Unit,
+    onNavigateToRecipe: (String) -> Unit,
     onGenerateRecipesClick: (List<String>) -> Unit,
 ) {
     Scaffold(
@@ -150,17 +159,19 @@ fun HomeScreenRoot(
                     text = stringResource(R.string.add_ingredients),
                     style = MaterialTheme.typography.titleLarge
                 )
-                Text(
-                    text = stringResource(R.string.clear_all),
-                    fontWeight = FontWeight.SemiBold,
-                    style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.onSurface,
-                    modifier = Modifier.clickable(
-                        interactionSource = null,
-                        indication = null,
-                        onClick = { onEvent(HomeEvent.OnClearAll) }
+                if (uiState.addedIngredients.isNotEmpty()) {
+                    Text(
+                        text = stringResource(R.string.clear_all),
+                        fontWeight = FontWeight.SemiBold,
+                        style = MaterialTheme.typography.titleMedium,
+                        color = MaterialTheme.colorScheme.onSurface,
+                        modifier = Modifier.clickable(
+                            interactionSource = null,
+                            indication = null,
+                            onClick = { onEvent(HomeEvent.OnClearAll) }
+                        )
                     )
-                )
+                }
             }
             SearchableWithSuggestions(
                 value = uiState.query,
@@ -180,14 +191,78 @@ fun HomeScreenRoot(
                     onEvent(HomeEvent.OnIngredientRemoved(it))
                 }
             )
+
+            RecentRecipes(
+                uiState = uiState,
+                onEvent = onEvent,
+                onRecipeCardClick = onNavigateToRecipe
+            )
         }
     }
 
 }
 
+@Composable
+fun RecentRecipes(
+    uiState: HomeUiState,
+    onEvent: (event: HomeEvent) -> Unit,
+    onRecipeCardClick: (String) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    if (uiState.recentRecipes.isNotEmpty()) {
+        Spacer(modifier = Modifier.height(16.dp))
+        Row(
+            modifier = Modifier.padding(vertical = 16.dp),
+            verticalAlignment = Alignment.Bottom
+        ) {
+            Text(
+                modifier = Modifier.weight(1f),
+                text = stringResource(R.string.recent_recipes),
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.onSurface
+            )
+            /*Text(
+                text = stringResource(R.string.view_history),
+                fontWeight = FontWeight.SemiBold,
+                style = MaterialTheme.typography.titleSmall,
+                color = MaterialTheme.colorScheme.onSurface,
+                modifier = Modifier.clickable(
+                    interactionSource = null,
+                    indication = null,
+                    onClick = {  }
+                )
+            )*/
+        }
+        LazyRow(
+            modifier = Modifier
+                .height(180.dp)
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.Start
+        ) {
+            items(
+                items = uiState.recentRecipes,
+                key = { it.id }
+            ) { recipe ->
+                RecipeCard(
+                    recipeUi = recipe,
+                    modifier = Modifier
+                        .fillParentMaxHeight()
+                        .fillParentMaxWidth(0.85f)
+                        .widthIn(max = 300.dp),
+                    showMatchIndicator = false,
+                    onClick = { onRecipeCardClick(recipe.id) }
+                )
+            }
+        }
+        Spacer(modifier = Modifier.height(16.dp))
+    }
+}
+
 @Preview
 @Composable
-private fun HomeScreenPreview() {
+private fun HomeScreenPreview(
+    @PreviewParameter(RecipeUiListProvider::class) recipes: List<RecipeUi>
+) {
     RecipesAITheme {
         HomeScreenRoot(
             modifier = Modifier
@@ -196,7 +271,10 @@ private fun HomeScreenPreview() {
             onImage = {},
             onGenerateRecipesClick = {},
             onEvent = {},
-            uiState = HomeUiState()
+            onNavigateToRecipe = {},
+            uiState = HomeUiState(
+                recentRecipes = recipes
+            )
         )
     }
 }

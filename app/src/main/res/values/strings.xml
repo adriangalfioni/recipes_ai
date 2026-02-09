@@ -52,4 +52,6 @@
     <string name="instructions">Instructions</string>
     <string name="ai_score">AI Score: %d%%</string>
     <string name="retry">Retry</string>
+    <string name="recent_recipes">Recent Recipes</string>
+    <string name="view_history">View History</string>
 </resources>

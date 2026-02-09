@@ -57,6 +57,9 @@ fun NavigationWrapper(
                     HomeScreen(
                         resultStore = resultStore,
                         onImage = { backStack.add(Route.IngredientsDetectorScreen(it)) },
+                        onNavigateToRecipe = { recipeId ->
+                            backStack.add(Route.RecipeDetailsScreen(recipeId))
+                        },
                         onGenerateRecipesClick = {
                             resultStore.setResult("Ingredients", it)
                             backStack.add(Route.RecipeListScreen)
