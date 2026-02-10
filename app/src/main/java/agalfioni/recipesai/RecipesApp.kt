@@ -7,8 +7,8 @@ import agalfioni.recipesai.core.di.dbModule
 import agalfioni.recipesai.core.di.firebaseModule
 import agalfioni.recipesai.core.di.jsonModule
 import agalfioni.recipesai.home.di.homeModule
-import agalfioni.recipesai.recipe_details.di.recipeDetailsModule
-import agalfioni.recipesai.recipe_list.di.generateRecipesModule
+import agalfioni.recipesai.ingredients_detector.di.ingredientsModule
+import agalfioni.recipesai.recipe.di.recipesModule
 import android.app.Application
 import com.google.firebase.Firebase
 import com.google.firebase.FirebaseApp
@@ -49,9 +49,9 @@ class RecipesApp : Application() {
                 androidLanguageModule,
                 firebaseModule,
                 // Features modules
-                recipeDetailsModule,
                 homeModule,
-                generateRecipesModule,
+                recipesModule,
+                ingredientsModule
             )
         }
     }

@@ -11,9 +11,9 @@ import agalfioni.recipesai.home.presentation.home.components.MediaSourcePickerSh
 import agalfioni.recipesai.home.presentation.home.components.ScanFridgeCard
 import agalfioni.recipesai.home.presentation.home.models.ImageSource
 import agalfioni.recipesai.home.presentation.components.DetectedIngredientsChips
-import agalfioni.recipesai.recipe_list.presentation.components.RecipeCard
-import agalfioni.recipesai.recipe_list.presentation.models.RecipeUi
-import agalfioni.recipesai.recipe_list.presentation.preview_providers.RecipeUiListProvider
+import agalfioni.recipesai.recipe.presentation.recipe_list.components.RecipeCard
+import agalfioni.recipesai.recipe.presentation.recipe_list.models.RecipeUi
+import agalfioni.recipesai.recipe.presentation.recipe_list.preview_providers.RecipeUiListProvider
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts

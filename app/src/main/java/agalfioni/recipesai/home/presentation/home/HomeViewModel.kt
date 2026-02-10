@@ -1,12 +1,10 @@
 package agalfioni.recipesai.home.presentation.home
 
-
-
 import agalfioni.recipesai.core.presentation.extensions.ingredientsSuggestionsFlow
 import agalfioni.recipesai.core.presentation.utils.removeStressAccents
-import agalfioni.recipesai.home.domain.interfaces.IngredientsRepository
-import agalfioni.recipesai.recipe_list.domain.interfaces.RecipeRepository
-import agalfioni.recipesai.recipe_list.presentation.mappers.toRecipeUiList
+import agalfioni.recipesai.ingredients_detector.domain.interfaces.IngredientsRepository
+import agalfioni.recipesai.recipe.domain.interfaces.RecipeRepository
+import agalfioni.recipesai.recipe.presentation.recipe_list.mappers.toRecipeUiList
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -25,7 +23,7 @@ import java.util.Locale
 @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
 class HomeViewModel(
     private val ingredientsRepository: IngredientsRepository,
-    private val recipeRepository: RecipeRepository
+    recipeRepository: RecipeRepository
 ) : ViewModel() {
 
     // 1. Raw inputs (StateHolders)

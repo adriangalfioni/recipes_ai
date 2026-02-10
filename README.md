@@ -15,14 +15,13 @@ This project is built with a modern Android tech stack, focusing on performance,
 ### Core Stack
 * **Language:** [Kotlin](https://kotlinlang.org/)
 * **UI Framework:** **Jetpack Compose** (100% declarative UI with Material 3)
-* **Architecture:** Clean Architecture + MVI
+* **Architecture:** Clean Architecture + MVVM
 * **Dependency Injection:** **Koin**
-* **Networking:** **Ktor Client** with OkHttp engine and Content Negotiation for JSON.
 * **Image Loading:** **Coil 3**
 
 ### AI Integration
 * **Google Gemini AI:** Integrated via the **Firebase AI SDK**.
-* **Generative Models:** Utilizing `gemini-1.5-flash` for high-speed, low-latency recipe generation and ingredient analysis.
+* **Generative Models:** Utilizing `gemini-2.5-flash` for high-speed, low-latency recipe generation and ingredient analysis.
 
 ### Android Jetpack & Tools
 * **Navigation 3:** Exploring the latest experimental Navigation-Compose integration.
@@ -44,7 +43,7 @@ This project is built with a modern Android tech stack, focusing on performance,
 
 The project follows **Clean Architecture** principles to ensure separation of concerns aplying feature-layer architecture:
 
-- **`:app`**: Main Android module.
+- **`:core`**: Main Android module.
 - **`:domain`**: Pure Kotlin module containing Business Logic, Entities, and Repository Interfaces.
 - **`:data`**: Implementation of repositories, DataSources (Gemini, Local JSON), and API Models.
 - **`:presentation`**: UI components, ViewModels, and State management using Compose.

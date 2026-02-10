@@ -3,7 +3,7 @@ package agalfioni.recipesai.home.presentation.components
 import agalfioni.recipesai.core.presentation.models.Selectable
 import agalfioni.recipesai.core.presentation.models.toSelectableList
 import agalfioni.recipesai.core.presentation.theme.RecipesAITheme
-import agalfioni.recipesai.home.domain.IngredientsResult
+import agalfioni.recipesai.ingredients_detector.domain.models.IngredientsResult
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
