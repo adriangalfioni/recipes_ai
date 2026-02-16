@@ -3,9 +3,11 @@ package agalfioni.recipesai.recipe.di
 import agalfioni.recipesai.recipe.data.remote.AiRecipeGeneratorDataSource
 import agalfioni.recipesai.recipe.data.remote.AiRecipeGeneratorImpl
 import agalfioni.recipesai.recipe.data.repository.RecipeRepositoryImpl
+import agalfioni.recipesai.recipe.data.repository.RecipesSyncRepositoryImpl
 import agalfioni.recipesai.recipe.domain.GenerationTracker
 import agalfioni.recipesai.recipe.domain.interfaces.AiRecipeGenerator
 import agalfioni.recipesai.recipe.domain.interfaces.RecipeRepository
+import agalfioni.recipesai.recipe.domain.interfaces.RecipesSyncRepository
 import agalfioni.recipesai.recipe.domain.usecase.GenerateRecipesUseCase
 import agalfioni.recipesai.recipe.presentation.recipe_details.RecipeDetailsViewModel
 import agalfioni.recipesai.recipe.presentation.recipe_list.AiProgressViewModel
@@ -21,9 +23,11 @@ val recipesModule = module {
 
     single<RecipeRepository> { RecipeRepositoryImpl(get()) }
 
+    single<RecipesSyncRepository> { RecipesSyncRepositoryImpl(get()) }
+
     single { GenerationTracker() }
 
-    factory<GenerateRecipesUseCase> { GenerateRecipesUseCase(get(), get(), get()) }
+    factory<GenerateRecipesUseCase> { GenerateRecipesUseCase(get(), get(), get(), get()) }
 
     viewModelOf(::AiProgressViewModel)
     viewModelOf(::RecipesListViewModel)

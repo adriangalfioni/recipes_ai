@@ -7,12 +7,14 @@ import agalfioni.recipesai.recipe.domain.GenerationTracker
 import agalfioni.recipesai.recipe.domain.RecipeGenerationEvent
 import agalfioni.recipesai.recipe.domain.interfaces.AiRecipeGenerator
 import agalfioni.recipesai.recipe.domain.interfaces.RecipeRepository
+import agalfioni.recipesai.recipe.domain.interfaces.RecipesSyncRepository
 import agalfioni.recipesai.recipe.domain.models.Recipe
 import kotlin.coroutines.cancellation.CancellationException
 
 class GenerateRecipesUseCase(
     private val aiRecipeGenerator: AiRecipeGenerator,
     private val recipeRepository: RecipeRepository,
+    private val recipesSyncRepository: RecipesSyncRepository,
     private val generationTracker: GenerationTracker
 ) {
 
@@ -31,6 +33,7 @@ class GenerateRecipesUseCase(
 
             recipesResult.onSuccess { recipes ->
                 recipeRepository.save(recipes)
+                recipesSyncRepository.save(recipes)
             }
 
             completedNormally = true

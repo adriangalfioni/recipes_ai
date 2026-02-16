@@ -1,6 +1,6 @@
 package agalfioni.recipesai.recipe.data.repository
 
-import agalfioni.recipesai.recipe.data.local.RecipeDao
+import agalfioni.recipesai.recipe.data.local.daos.RecipeDao
 import agalfioni.recipesai.recipe.data.local.mappers.toDomain
 import agalfioni.recipesai.recipe.domain.interfaces.RecipeRepository
 import agalfioni.recipesai.recipe.domain.models.Recipe

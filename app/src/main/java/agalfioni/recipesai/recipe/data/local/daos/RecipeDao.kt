@@ -1,4 +1,4 @@
-package agalfioni.recipesai.recipe.data.local
+package agalfioni.recipesai.recipe.data.local.daos
 
 import agalfioni.recipesai.recipe.data.local.entity.IngredientEntity
 import agalfioni.recipesai.recipe.data.local.entity.InstructionsEntity
@@ -6,7 +6,6 @@ import agalfioni.recipesai.recipe.data.local.entity.RecipeEntity
 import agalfioni.recipesai.recipe.data.models.RecipeWithIngredients
 import agalfioni.recipesai.recipe.domain.models.Recipe
 import androidx.room.Dao
-import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Upsert
