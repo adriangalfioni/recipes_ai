@@ -11,13 +11,24 @@ class SyncRecipesRemoteWorker(
     params: WorkerParameters,
     private val recipesSyncRepository: RecipesSyncRepository
 ) : CoroutineWorker(context, params) {
-    
-    override suspend fun doWork(): Result {
 
+    companion object {
+        const val MAX_RETRIES = 3
+    }
+
+    override suspend fun doWork(): Result {
         return when (recipesSyncRepository.syncRecipes()) {
             is SyncResult.Success -> Result.success()
-            is SyncResult.PartialSuccess -> Result.retry()
-            is SyncResult.Error -> Result.retry()
+            is SyncResult.PartialSuccess -> retryWhenMaxNotReached()
+            is SyncResult.Error -> retryWhenMaxNotReached()
+        }
+    }
+
+    private fun retryWhenMaxNotReached(): Result {
+        return if (runAttemptCount < MAX_RETRIES) {
+            Result.retry()
+        } else {
+            Result.failure()
         }
     }
 }

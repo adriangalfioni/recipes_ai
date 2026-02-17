@@ -28,7 +28,10 @@ class RecipeDailySyncScheduler(
             .build()
 
         val syncRequest = PeriodicWorkRequestBuilder<SyncRecipesRemoteWorker>(
-            24, TimeUnit.HOURS
+            repeatInterval = 24,
+            repeatIntervalTimeUnit = TimeUnit.HOURS,
+            flexTimeInterval = 4,
+            flexTimeIntervalUnit = TimeUnit.HOURS
         )
             .setConstraints(constraints)
             .setBackoffCriteria(
