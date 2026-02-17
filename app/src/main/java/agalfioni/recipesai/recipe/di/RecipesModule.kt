@@ -23,7 +23,7 @@ val recipesModule = module {
 
     single<RecipeRepository> { RecipeRepositoryImpl(get()) }
 
-    single<RecipesSyncRepository> { RecipesSyncRepositoryImpl(get()) }
+    single<RecipesSyncRepository> { RecipesSyncRepositoryImpl(get(), get()) }
 
     single { GenerationTracker() }
 

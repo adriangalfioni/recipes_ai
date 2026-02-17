@@ -112,6 +112,7 @@ dependencies {
     implementation(libs.firebase.ai)
     implementation(libs.firebase.analytics)
     implementation(libs.firebase.crashlytics)
+    implementation(libs.firebase.firestore)
 
     // Gson
     implementation(libs.gson)
