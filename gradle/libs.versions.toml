@@ -29,6 +29,7 @@ robolectric = "4.16"
 junitVintage = "5.10.0"
 coreKtxVersion = "1.7.0"
 jetbrainsKotlinJvm = "2.0.21"
+workManager = "2.11.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -53,6 +54,7 @@ coil-network-okhttp = { group = "io.coil-kt.coil3", name = "coil-network-okhttp"
 # Koin
 koin-android = { group = "io.insert-koin", name = "koin-android", version.ref = "koin" }
 koin-compose = { group = "io.insert-koin", name = "koin-androidx-compose", version.ref = "koin" }
+koin-workmanager = { group = "io.insert-koin", name = "koin-androidx-workmanager", version.ref = "koin" }
 
 # Navigation 3
 androidx-navigation3-runtime = { group = "androidx.navigation3", name = "navigation3-runtime", version.ref = "nav3" }
@@ -98,6 +100,9 @@ room-compiler = { group = "androidx.room", name = "room-compiler", version.ref =
 
 # Lottie
 lottie = { group = "com.airbnb.android", name = "lottie-compose", version.ref = "lottie" }
+
+# WorkManager
+workmanager = { group = "androidx.work", name = "work-runtime-ktx", version.ref = "workManager" }
 
 # Testing
 junit-jupiter = { group = "org.junit.jupiter", name = "junit-jupiter", version.ref = "junitJupiter" }

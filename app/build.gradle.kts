@@ -83,6 +83,7 @@ dependencies {
     // Koin
     implementation(libs.koin.android)
     implementation(libs.koin.compose)
+    implementation(libs.koin.workmanager)
 
     // Navigation 3
     implementation(libs.androidx.navigation3.runtime)
@@ -125,6 +126,9 @@ dependencies {
 
     // Lottie
     implementation(libs.lottie)
+
+    // WorkManager
+    implementation(libs.workmanager)
 
     // Mockk
     implementation(libs.mockk)

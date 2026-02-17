@@ -4,6 +4,7 @@ import agalfioni.recipesai.BuildConfig
 import agalfioni.recipesai.recipe.data.local.daos.RecipesSyncDao
 import agalfioni.recipesai.recipe.data.local.entity.RecipeSyncEntity
 import agalfioni.recipesai.recipe.data.local.mappers.toSyncable
+import agalfioni.recipesai.recipe.data.models.SyncResult
 import agalfioni.recipesai.recipe.data.models.SyncableRecipe
 import agalfioni.recipesai.recipe.domain.interfaces.RecipesSyncRepository
 import agalfioni.recipesai.recipe.domain.models.Recipe
@@ -35,15 +36,23 @@ class RecipesSyncRepositoryImpl(
         )
     }
 
-    override suspend fun syncRecipes() {
-        val pendingRecipes = recipeSyncDao.getRecipesSync().first().take(2) // Lets sync 2 recipes, if works then remove take()
-        val syncableRecipes = pendingRecipes.toSyncable()
+    override suspend fun syncRecipes(): SyncResult {
+        val pendingRecipes = recipeSyncDao.getRecipesSync().first()
+        if (pendingRecipes.isEmpty()) return SyncResult.Success(0)
 
+        val syncableRecipes = pendingRecipes.toSyncable()
         val syncedRecipeIds = uploadIndependentRecipes(syncableRecipes)
+
         if (syncedRecipeIds.isNotEmpty()) {
             withContext(NonCancellable) {
                 recipeSyncDao.deleteSyncedRecipes(syncedRecipeIds)
             }
+        }
+
+        return when {
+            syncedRecipeIds.size == pendingRecipes.size -> SyncResult.Success(syncedRecipeIds.size)
+            syncedRecipeIds.isEmpty() -> SyncResult.Error("Total failure")
+            else -> SyncResult.PartialSuccess(syncedRecipeIds.size, pendingRecipes.size)
         }
     }
 
