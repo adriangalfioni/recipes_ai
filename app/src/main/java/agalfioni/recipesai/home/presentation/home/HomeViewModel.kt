@@ -1,10 +1,14 @@
 package agalfioni.recipesai.home.presentation.home
 
+import agalfioni.recipesai.core.domain.models.onFailure
+import agalfioni.recipesai.core.domain.models.onSuccess
 import agalfioni.recipesai.core.presentation.extensions.ingredientsSuggestionsFlow
 import agalfioni.recipesai.core.presentation.utils.removeStressAccents
 import agalfioni.recipesai.ingredients_detector.domain.interfaces.IngredientsRepository
 import agalfioni.recipesai.recipe.domain.interfaces.RecipeRepository
+import agalfioni.recipesai.recipe.domain.interfaces.TastyRepository
 import agalfioni.recipesai.recipe.presentation.recipe_list.mappers.toRecipeUiList
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -18,11 +22,13 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import java.util.Locale
 
 @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
 class HomeViewModel(
     private val ingredientsRepository: IngredientsRepository,
+    private val tastyRepository: TastyRepository,
     recipeRepository: RecipeRepository
 ) : ViewModel() {
 
@@ -47,8 +53,17 @@ class HomeViewModel(
     private val _suggestionsFlow = _queryFlow.ingredientsSuggestionsFlow(_localIngredientsFlow)
 
     private val _recentRecipesFlow = recipeRepository.getAllRecipes()
-        .map { it.toRecipeUiList() }
-        .catch { _ -> emit(emptyList()) }
+        .map {
+            try {
+                it.toRecipeUiList()
+            } catch (_: Exception) {
+                emptyList()
+            }
+        }
+        .catch { _ ->
+            // Repository exception
+            emit(emptyList())
+        }
 
     val uiState: StateFlow<HomeUiState> = combine(
         _queryFlow,
@@ -70,6 +85,18 @@ class HomeViewModel(
         started = SharingStarted.WhileSubscribed(5000),
         initialValue = HomeUiState()
     )
+
+    init {
+        viewModelScope.launch {
+            tastyRepository
+                .getQuickRecipes()
+                .onSuccess { response ->
+                    Log.d("asd", "Response $response")
+                }.onFailure { error ->
+                    Log.d("asd", "error ${error.name}")
+                }
+        }
+    }
 
     fun onEvent(event: HomeEvent) {
         when (event) {

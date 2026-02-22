@@ -10,6 +10,7 @@ import agalfioni.recipesai.core.di.workManagerModule
 import agalfioni.recipesai.home.di.homeModule
 import agalfioni.recipesai.ingredients_detector.di.ingredientsModule
 import agalfioni.recipesai.recipe.data.sync.RecipeDailySyncScheduler
+import agalfioni.recipesai.recipe.di.networkModule
 import agalfioni.recipesai.recipe.di.recipesModule
 import android.app.Application
 import com.google.firebase.Firebase
@@ -54,6 +55,7 @@ class RecipesApp : Application() {
                 androidLanguageModule,
                 firebaseModule,
                 workManagerModule,
+                networkModule,
                 // Features modules
                 homeModule,
                 recipesModule,

@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -7,6 +9,11 @@ plugins {
     alias(libs.plugins.kotlin.parcelize)
     alias(libs.plugins.ksp)
     alias(libs.plugins.firebase.crashlytics)
+    alias(libs.plugins.jetbrains.kotlin.jvm) apply false
+}
+
+val localProperties = Properties().apply {
+    load(rootProject.file("local.properties").inputStream())
 }
 
 android {
@@ -31,6 +38,12 @@ android {
             configure<com.google.firebase.crashlytics.buildtools.gradle.CrashlyticsExtension> {
                 mappingFileUploadEnabled = false
             }
+
+            buildConfigField(
+                "String",
+                "RAPID_API_KEY",
+                "\"${localProperties.getProperty("RAPID_API_KEY")}\""
+            )
         }
         release {
             isDebuggable = false
@@ -42,6 +55,12 @@ android {
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
+            )
+
+            buildConfigField(
+                "String",
+                "RAPID_API_KEY",
+                "\"${localProperties.getProperty("RAPID_API_KEY")}\""
             )
         }
     }
@@ -99,6 +118,7 @@ dependencies {
 
     // OkHttp
     implementation(libs.okhttp.logging)
+    implementation(libs.okhttp)
 
     // Coroutines
     implementation(libs.kotlinx.coroutines.android)
@@ -117,6 +137,10 @@ dependencies {
 
     // Gson
     implementation(libs.gson)
+
+    // Retrofit
+    implementation(libs.retrofit)
+    implementation(libs.retrofit.converter.gson)
 
     // Room
     implementation(libs.room.runtime)

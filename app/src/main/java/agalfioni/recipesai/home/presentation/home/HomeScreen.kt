@@ -40,9 +40,11 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -82,26 +84,26 @@ fun HomeScreen(
 fun HomeScreenRoot(
     uiState: HomeUiState,
     onEvent: (event: HomeEvent) -> Unit,
-    modifier: Modifier = Modifier,
     onImage: (String) -> Unit,
     onNavigateToRecipe: (String) -> Unit,
     onGenerateRecipesClick: (List<String>) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     Scaffold(
         modifier = Modifier
             .fillMaxSize(),
         bottomBar = {
+            val addedIngredients by rememberUpdatedState(uiState.addedIngredients)
             GenerateRecipesBottomBar(
-                selectedIngredientsQty = uiState.addedIngredients.size,
+                selectedIngredientsQty = addedIngredients.size,
                 onGenerateRecipesClick = {
-                    onGenerateRecipesClick(uiState.addedIngredients.toList())
+                    onGenerateRecipesClick(addedIngredients)
                 }
             )
         },
     ) { innerPadding ->
 
         val scrollState = rememberScrollState()
-        val density = LocalDensity.current
         var showImageSourceSheet by remember { mutableStateOf(false) }
 
         val galleryLauncher = rememberLauncherForActivityResult(
@@ -185,8 +187,11 @@ fun HomeScreenRoot(
                 maxSuggestions = 4,
             )
             Spacer(modifier = Modifier.height(16.dp))
+            val selectableAddedIngredients by remember(uiState.addedIngredients) {
+                derivedStateOf { uiState.addedIngredients.toSelectableList(true) }
+            }
             DetectedIngredientsChips(
-                ingredients = uiState.addedIngredients.toList().toSelectableList(true),
+                ingredients = selectableAddedIngredients,
                 onTrailingIconClick = {
                     onEvent(HomeEvent.OnIngredientRemoved(it))
                 }
