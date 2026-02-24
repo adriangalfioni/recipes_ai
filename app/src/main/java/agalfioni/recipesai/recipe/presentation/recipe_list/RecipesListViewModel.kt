@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -24,6 +25,7 @@ class RecipesListViewModel(
     private val generateRecipesUseCase: GenerateRecipesUseCase
 ) : ViewModel() {
 
+    private var generateRecipesJob: Job? = null
     private val _uiState = MutableStateFlow(GenerateRecipesUiState(isLoading = true))
     val uiState = _uiState.asStateFlow()
 
@@ -32,7 +34,8 @@ class RecipesListViewModel(
     }
 
     private fun generateRecipes() {
-        viewModelScope.launch {
+        generateRecipesJob?.cancel()
+        generateRecipesJob = viewModelScope.launch {
             withTimeout(IA_GENERATION_TIMEOUT_MILLIS) {
                 try {
                     generateRecipesUseCase(
@@ -40,16 +43,25 @@ class RecipesListViewModel(
                         recipesQty = NUMBER_OF_RECIPES_TO_GENERATE
                     ).onSuccess { result ->
                         _uiState.update {
-                            it.copy(recipes = result.toRecipeUiList())
+                            it.copy(
+                                recipes = result.toRecipeUiList(),
+                                isLoading = false
+                            )
                         }
                     }.onFailure { dataError ->
                         _uiState.update {
-                            it.copy(error = dataError.asUiText())
+                            it.copy(
+                                error = dataError.asUiText(),
+                                isLoading = false
+                            )
                         }
                     }
                 } catch (e: TimeoutCancellationException) {
                     _uiState.update {
-                        it.copy(error = DataError.DEADLINE_EXCEEDED.asUiText())
+                        it.copy(
+                            error = DataError.DEADLINE_EXCEEDED.asUiText(),
+                            isLoading = false
+                        )
                     }
                 }
             }

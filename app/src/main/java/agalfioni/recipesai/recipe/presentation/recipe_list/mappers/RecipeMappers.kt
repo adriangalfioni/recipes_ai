@@ -38,7 +38,7 @@ private fun Recipe.toRecipeUi(): RecipeUi {
         difficulty = difficulty.toDisplayString(),
         minutesTime = formatMinutesToHourMinutes(minutesTime),
         ingredientCoveragePercentage = coverageToString(ingredientCoverage),
-        isMatchHigh = ingredientCoverage >= 80,
+        isMatchHigh = ingredientCoverage >= 0.8,
         totalCalories = formatTotalCalories(nutrition.calories)
     )
 }

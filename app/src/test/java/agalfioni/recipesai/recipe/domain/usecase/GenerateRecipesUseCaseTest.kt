@@ -5,6 +5,7 @@ import agalfioni.recipesai.core.domain.models.DataError
 import agalfioni.recipesai.recipe.data.remote.AiRecipeGeneratorResultType
 import agalfioni.recipesai.recipe.data.remote.FakeAiRecipeGenerator
 import agalfioni.recipesai.recipe.data.repository.FakeRecipeRepository
+import agalfioni.recipesai.recipe.data.repository.FakeRecipesSyncRepository
 import agalfioni.recipesai.recipe.domain.GenerationTracker
 import agalfioni.recipesai.recipe.domain.RecipeGenerationEvent
 import app.cash.turbine.test
@@ -22,6 +23,7 @@ class GenerateRecipesUseCaseTest {
     private lateinit var useCase: GenerateRecipesUseCase
     private lateinit var fakeGenerator: FakeAiRecipeGenerator
     private lateinit var fakeRepo: FakeRecipeRepository
+    private lateinit var fakeSyncRepo: FakeRecipesSyncRepository
     private val fakeTracker = GenerationTracker()
 
     private val testIngredients = listOf("Tomato", "Onion")
@@ -31,12 +33,13 @@ class GenerateRecipesUseCaseTest {
     fun setup() {
         fakeGenerator = FakeAiRecipeGenerator()
         fakeRepo = FakeRecipeRepository()
+        fakeSyncRepo = FakeRecipesSyncRepository()
         useCase = GenerateRecipesUseCase(
             fakeGenerator,
             fakeRepo,
-            fakeTracker,
-
-            )
+            fakeSyncRepo,
+            fakeTracker
+        )
         fakeTracker.reset() // Ensure clean state
     }
 
@@ -54,6 +57,7 @@ class GenerateRecipesUseCaseTest {
             Assertions.assertTrue(result is AppResult.Success)
             assertEquals(2, (result as AppResult.Success).data.size)
             assertEquals(2, fakeRepo.getCachedRecipes().size) // Saved to repo
+            assertEquals(2, fakeSyncRepo.getCachedRecipes().size) // Saved to sync repo
 
             assertEquals(RecipeGenerationEvent.Started, awaitItem())
             assertEquals(RecipeGenerationEvent.Completed, awaitItem())
@@ -75,6 +79,7 @@ class GenerateRecipesUseCaseTest {
             Assertions.assertTrue(result is AppResult.Error)
             assertEquals(DataError.DEADLINE_EXCEEDED, (result as AppResult.Error).error)
             Assertions.assertTrue(fakeRepo.getCachedRecipes().isEmpty()) // Not saved
+            Assertions.assertTrue(fakeSyncRepo.getCachedRecipes().isEmpty()) // Not saved
 
             assertEquals(RecipeGenerationEvent.Started, awaitItem())
             assertEquals(RecipeGenerationEvent.Completed, awaitItem())
@@ -98,6 +103,7 @@ class GenerateRecipesUseCaseTest {
             Assertions.assertTrue(result is AppResult.Success)
             assertEquals(0, (result as AppResult.Success).data.size)
             assertEquals(0, fakeRepo.getCachedRecipes().size) // Saved to repo
+            assertEquals(0, fakeSyncRepo.getCachedRecipes().size) // Saved to repo
 
             assertEquals(RecipeGenerationEvent.Started, awaitItem())
             assertEquals(RecipeGenerationEvent.Completed, awaitItem())

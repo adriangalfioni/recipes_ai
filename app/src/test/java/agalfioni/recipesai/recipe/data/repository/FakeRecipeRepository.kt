@@ -7,21 +7,20 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flowOf
 
 class FakeRecipeRepository : RecipeRepository {
+    private val _recipes = mutableListOf<Recipe>()
 
-    private val _recipes = MutableStateFlow<List<Recipe>>(emptyList())
-
-    fun getCachedRecipes(): List<Recipe> = _recipes.value
+    fun getCachedRecipes(): List<Recipe> = _recipes.toList()
 
     override suspend fun save(recipes: List<Recipe>) {
-        _recipes.value = recipes
+        _recipes.addAll(recipes)
     }
 
     override fun getAllRecipes(): Flow<List<Recipe>> {
-        return flowOf(_recipes.value)
+        return flowOf(_recipes)
     }
 
     override fun getRecipeById(id: String): Flow<Recipe?> {
-        return flowOf(_recipes.value.find { it.id == id })
+        return flowOf(_recipes.find { it.id == id })
     }
 
 }

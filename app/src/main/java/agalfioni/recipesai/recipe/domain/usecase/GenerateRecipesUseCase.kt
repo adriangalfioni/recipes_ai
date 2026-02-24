@@ -41,11 +41,12 @@ class GenerateRecipesUseCase(
         } catch (e: CancellationException) {
             generationTracker.update(RecipeGenerationEvent.Error)
             throw e
+        } catch (_: Exception) {
+            return AppResult.Error(DataError.UNKNOWN)
         } finally {
             if (completedNormally) {
                 generationTracker.update(RecipeGenerationEvent.Completed)
             }
         }
-
     }
 }

@@ -7,23 +7,23 @@ import androidx.compose.ui.platform.LocalContext
 
 sealed class UiText {
     data class DynamicString(val value: String) : UiText()
-    class StringResource(
+    data class StringResource(
         @StringRes val id: Int,
-        val args: Array<Any> = arrayOf()
+        val args: List<Any> = listOf()
     ) : UiText()
 
     @Composable
     fun asString(): String {
         return when (this) {
             is DynamicString -> value
-            is StringResource -> LocalContext.current.getString(id, *args)
+            is StringResource -> LocalContext.current.getString(id, *args.toTypedArray())
         }
     }
 
     fun asString(context: Context): String {
         return when (this) {
             is DynamicString -> value
-            is StringResource -> context.getString(id, *args)
+            is StringResource -> context.getString(id, *args.toTypedArray())
         }
     }
 }
