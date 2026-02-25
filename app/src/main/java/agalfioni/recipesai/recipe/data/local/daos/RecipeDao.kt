@@ -5,11 +5,14 @@ import agalfioni.recipesai.recipe.data.local.entity.InstructionsEntity
 import agalfioni.recipesai.recipe.data.local.entity.RecipeEntity
 import agalfioni.recipesai.recipe.data.models.RecipeWithIngredients
 import agalfioni.recipesai.recipe.domain.models.Recipe
+import androidx.paging.PagingSource
 import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Upsert
 import kotlinx.coroutines.flow.Flow
+import java.lang.System
+import kotlin.Long
 
 @Dao
 interface RecipeDao {
@@ -29,8 +32,9 @@ interface RecipeDao {
     @Query("SELECT * FROM recipes WHERE id = :recipeId LIMIT 1")
     fun getRecipeById(recipeId: String): Flow<RecipeWithIngredients?>
 
-    @Query("SELECT * FROM recipes")
-    fun getAllRecipes(): Flow<List<RecipeWithIngredients>>
+    @Transaction
+    @Query("SELECT * FROM recipes ORDER BY createdAt DESC, id DESC")
+    fun getRecipes(): PagingSource<Int, RecipeEntity>
 
     @Transaction
     suspend fun saveFullRecipes(recipes: List<Recipe>) {
@@ -42,7 +46,8 @@ interface RecipeDao {
                 difficulty = recipe.difficulty,
                 minutesTime = recipe.minutesTime,
                 ingredientCoverage = recipe.ingredientCoverage,
-                calories = recipe.nutrition.calories
+                calories = recipe.nutrition.calories,
+                createdAt = System.currentTimeMillis()
             )
         }
 

@@ -31,7 +31,7 @@ fun List<RecipeInstruction>.toInstructionList(): List<Instruction> {
     }
 }
 
-private fun Recipe.toRecipeUi(): RecipeUi {
+fun Recipe.toRecipeUi(): RecipeUi {
     return RecipeUi(
         id = id,
         title = title,

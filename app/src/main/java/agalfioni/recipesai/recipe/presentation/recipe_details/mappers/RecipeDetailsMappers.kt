@@ -1,6 +1,7 @@
 package agalfioni.recipesai.recipe.presentation.recipe_details.mappers
 
 import agalfioni.recipesai.recipe.domain.models.Recipe
+import agalfioni.recipesai.recipe.presentation.recipe_details.models.RecipeDetailsUi
 import agalfioni.recipesai.recipe.presentation.recipe_list.mappers.toIngredientList
 import agalfioni.recipesai.recipe.presentation.recipe_list.mappers.toInstructionList
 import kotlin.math.roundToInt
@@ -8,8 +9,9 @@ import kotlin.time.DurationUnit
 import kotlin.time.toDuration
 
 
-fun Recipe.toRecipeDetailsUi(): agalfioni.recipesai.recipe.presentation.recipe_details.models.RecipeDetailsUi {
-    return _root_ide_package_.agalfioni.recipesai.recipe.presentation.recipe_details.models.RecipeDetailsUi(
+fun Recipe.toRecipeDetailsUi(): RecipeDetailsUi {
+    return RecipeDetailsUi(
+        id = id,
         title = title,
         minutesTime = formatMinutesToHourMinutes(minutesTime),
         category = "",

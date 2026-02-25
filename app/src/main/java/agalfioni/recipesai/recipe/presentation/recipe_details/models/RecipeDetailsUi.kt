@@ -1,6 +1,7 @@
 package agalfioni.recipesai.recipe.presentation.recipe_details.models
 
 data class RecipeDetailsUi(
+    val id: String,
     val title: String,
     val minutesTime: String,
     val category: String,

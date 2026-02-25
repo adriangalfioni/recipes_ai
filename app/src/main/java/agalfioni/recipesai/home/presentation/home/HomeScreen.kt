@@ -6,11 +6,11 @@ import agalfioni.recipesai.core.presentation.components.SearchableWithSuggestion
 import agalfioni.recipesai.core.presentation.components.rememberCameraLauncher
 import agalfioni.recipesai.core.presentation.models.toSelectableList
 import agalfioni.recipesai.core.presentation.theme.RecipesAITheme
+import agalfioni.recipesai.home.presentation.components.DetectedIngredientsChips
 import agalfioni.recipesai.home.presentation.components.GenerateRecipesBottomBar
 import agalfioni.recipesai.home.presentation.home.components.MediaSourcePickerSheet
 import agalfioni.recipesai.home.presentation.home.components.ScanFridgeCard
 import agalfioni.recipesai.home.presentation.home.models.ImageSource
-import agalfioni.recipesai.home.presentation.components.DetectedIngredientsChips
 import agalfioni.recipesai.recipe.presentation.recipe_list.components.RecipeCard
 import agalfioni.recipesai.recipe.presentation.recipe_list.models.RecipeUi
 import agalfioni.recipesai.recipe.presentation.recipe_list.preview_providers.RecipeUiListProvider
@@ -30,11 +30,11 @@ import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -53,6 +53,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.paging.LoadState
+import androidx.paging.PagingData
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
+import kotlinx.coroutines.flow.flowOf
 import org.koin.androidx.compose.koinViewModel
 
 
@@ -66,9 +71,11 @@ fun HomeScreen(
     viewModel: HomeViewModel = koinViewModel()
 ) {
     val uiState = viewModel.uiState.collectAsStateWithLifecycle()
+    val recentRecipes = viewModel.recentRecipes.collectAsLazyPagingItems()
 
     HomeScreenRoot(
         uiState = uiState.value,
+        recentRecipes = recentRecipes,
         onEvent = viewModel::onEvent,
         onImage = onImage,
         onNavigateToRecipe = onNavigateToRecipe,
@@ -81,11 +88,12 @@ fun HomeScreen(
 @Composable
 fun HomeScreenRoot(
     uiState: HomeUiState,
+    recentRecipes: LazyPagingItems<RecipeUi>,
     onEvent: (event: HomeEvent) -> Unit,
-    modifier: Modifier = Modifier,
     onImage: (String) -> Unit,
     onNavigateToRecipe: (String) -> Unit,
     onGenerateRecipesClick: (List<String>) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     Scaffold(
         modifier = Modifier
@@ -193,7 +201,7 @@ fun HomeScreenRoot(
             )
 
             RecentRecipes(
-                uiState = uiState,
+                recentRecipes = recentRecipes,
                 onEvent = onEvent,
                 onRecipeCardClick = onNavigateToRecipe
             )
@@ -204,12 +212,12 @@ fun HomeScreenRoot(
 
 @Composable
 fun RecentRecipes(
-    uiState: HomeUiState,
+    recentRecipes: LazyPagingItems<RecipeUi>,
     onEvent: (event: HomeEvent) -> Unit,
     onRecipeCardClick: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    if (uiState.recentRecipes.isNotEmpty()) {
+    if (recentRecipes.itemCount > 0) {
         Spacer(modifier = Modifier.height(16.dp))
         Row(
             modifier = Modifier.padding(vertical = 16.dp),
@@ -239,19 +247,31 @@ fun RecentRecipes(
                 .fillMaxWidth(),
             horizontalArrangement = Arrangement.Start
         ) {
+
             items(
-                items = uiState.recentRecipes,
-                key = { it.id }
-            ) { recipe ->
-                RecipeCard(
-                    recipeUi = recipe,
-                    modifier = Modifier
-                        .fillParentMaxHeight()
-                        .fillParentMaxWidth(0.85f)
-                        .widthIn(max = 300.dp),
-                    showMatchIndicator = false,
-                    onClick = { onRecipeCardClick(recipe.id) }
-                )
+                count = recentRecipes.itemCount,
+                key = { index -> recentRecipes[index]?.id ?: index }
+            ) { index ->
+                recentRecipes[index]?.let { recipe ->
+                    RecipeCard(
+                        recipeUi = recipe,
+                        modifier = Modifier
+                            .fillParentMaxHeight()
+                            .fillParentMaxWidth(0.85f)
+                            .widthIn(max = 300.dp),
+                        showMatchIndicator = false,
+                        onClick = { onRecipeCardClick(recipe.id) }
+                    )
+                }
+            }
+
+            when (recentRecipes.loadState.append) {
+                is LoadState.Loading -> {
+                    item(contentType = "loader") {
+                        CircularProgressIndicator()
+                    }
+                }
+                else -> Unit
             }
         }
         Spacer(modifier = Modifier.height(16.dp))
@@ -264,17 +284,22 @@ private fun HomeScreenPreview(
     @PreviewParameter(RecipeUiListProvider::class) recipes: List<RecipeUi>
 ) {
     RecipesAITheme {
+
+        val pagingData = remember { PagingData.from(recipes) }
+
+        val lazyPagingItems = flowOf(pagingData)
+            .collectAsLazyPagingItems()
+
         HomeScreenRoot(
+            uiState = HomeUiState(),
+            recentRecipes = lazyPagingItems,
+            onEvent = {},
             modifier = Modifier
                 .fillMaxSize()
                 .background(color = MaterialTheme.colorScheme.surface),
             onImage = {},
-            onGenerateRecipesClick = {},
-            onEvent = {},
             onNavigateToRecipe = {},
-            uiState = HomeUiState(
-                recentRecipes = recipes
-            )
+            onGenerateRecipesClick = {},
         )
     }
 }

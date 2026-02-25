@@ -96,6 +96,7 @@ private fun RecipeDetailsScreenPreview() {
     RecipesAITheme {
         RecipeHeader(
             recipe = _root_ide_package_.agalfioni.recipesai.recipe.presentation.recipe_details.models.RecipeDetailsUi(
+                id = "1_spaghetti_bolognese",
                 title = "Spaghetti Bolognese",
                 minutesTime = "20 min",
                 category = "Vegan",

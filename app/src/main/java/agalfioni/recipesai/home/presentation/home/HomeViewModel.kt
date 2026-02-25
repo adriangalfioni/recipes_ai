@@ -4,9 +4,13 @@ import agalfioni.recipesai.core.presentation.extensions.ingredientsSuggestionsFl
 import agalfioni.recipesai.core.presentation.utils.removeStressAccents
 import agalfioni.recipesai.ingredients_detector.domain.interfaces.IngredientsRepository
 import agalfioni.recipesai.recipe.domain.interfaces.RecipeRepository
+import agalfioni.recipesai.recipe.presentation.recipe_details.mappers.toRecipeDetailsUi
+import agalfioni.recipesai.recipe.presentation.recipe_list.mappers.toRecipeUi
 import agalfioni.recipesai.recipe.presentation.recipe_list.mappers.toRecipeUiList
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.cachedIn
+import androidx.paging.map
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,6 +22,7 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
+import okhttp3.internal.toImmutableList
 import java.util.Locale
 
 @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
@@ -46,24 +51,26 @@ class HomeViewModel(
 
     private val _suggestionsFlow = _queryFlow.ingredientsSuggestionsFlow(_localIngredientsFlow)
 
-    private val _recentRecipesFlow = recipeRepository.getAllRecipes()
-        .map { it.toRecipeUiList() }
-        .catch { _ -> emit(emptyList()) }
+    val recentRecipes = recipeRepository.getRecipes()
+        .map { pagingData ->
+            pagingData.map { recipe ->
+                recipe.toRecipeUi()
+            }
+        }
+        .cachedIn(viewModelScope)
 
     val uiState: StateFlow<HomeUiState> = combine(
         _queryFlow,
         _addedIngredientsFlow,
         _localIngredientsFlow,
         _suggestionsFlow,
-        _recentRecipesFlow
-    ) { query, addedIngredients, allLocalIngredients, suggestions, recentRecipes ->
+    ) { query, addedIngredients, allLocalIngredients, suggestions ->
         HomeUiState(
             addedIngredients = addedIngredients,
             allLocalIngredients = allLocalIngredients,
             query = query,
             suggestions = suggestions,
-            showSuggestions = suggestions.isNotEmpty() && query.isNotBlank(),
-            recentRecipes = recentRecipes
+            showSuggestions = suggestions.isNotEmpty() && query.isNotBlank()
         )
     }.stateIn(
         scope = viewModelScope,

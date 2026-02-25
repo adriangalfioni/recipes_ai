@@ -7,6 +7,11 @@ val MIGRATION_1_2 = object : Migration(1, 2) {
     override fun migrate(db: SupportSQLiteDatabase) {
 
         db.execSQL("""
+            ALTER TABLE recipes
+            ADD COLUMN createdAt INTEGER NOT NULL DEFAULT 0
+        """.trimIndent())
+
+        db.execSQL("""
             CREATE TABLE IF NOT EXISTS recipes_sync (
                 id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
                 synced INTEGER NOT NULL,

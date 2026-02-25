@@ -12,7 +12,8 @@ data class RecipeEntity(
     val difficulty: Difficulty,
     val minutesTime: Int,
     val ingredientCoverage: Double,
-    val calories: Double // Flattened from Nutrition
+    val calories: Double,// Flattened from Nutrition
+    val createdAt: Long = System.currentTimeMillis()
 )
 
 @Entity(

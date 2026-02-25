@@ -3,7 +3,7 @@ import agalfioni.recipesai.home.presentation.home.HomeEvent
 import agalfioni.recipesai.home.presentation.home.HomeViewModel
 import agalfioni.recipesai.ingredients_detector.domain.interfaces.IngredientsRepository
 import agalfioni.recipesai.recipe.domain.interfaces.RecipeRepository
-import agalfioni.recipesai.recipe.presentation.recipe_details.models.Ingredient
+import androidx.paging.PagingData
 import app.cash.turbine.test
 import io.mockk.coEvery
 import io.mockk.every
@@ -38,7 +38,7 @@ class HomeViewModelTest {
 
         // Default mock behaviors
         coEvery { ingredientsRepository.getLocalIngredients() } returns Result.success(emptyList())
-        every { recipeRepository.getAllRecipes() } returns flowOf(emptyList())
+        every { recipeRepository.getRecipes() } returns flowOf(PagingData.from(emptyList()))
     }
 
     @AfterEach
@@ -58,7 +58,6 @@ class HomeViewModelTest {
             assert(initialState.error == null)
             assert(initialState.suggestions.isEmpty())
             assert(!initialState.showSuggestions)
-            assert(initialState.recentRecipes.isEmpty())
             cancelAndIgnoreRemainingEvents()
         }
     }

@@ -18,7 +18,8 @@ import androidx.room.TypeConverters
         InstructionsEntity::class,
         RecipeSyncEntity::class
     ],
-    version = 2
+    version = 2,
+    exportSchema = true
 )
 @TypeConverters(RecipeConverters::class)
 abstract class AppDatabase : RoomDatabase() {

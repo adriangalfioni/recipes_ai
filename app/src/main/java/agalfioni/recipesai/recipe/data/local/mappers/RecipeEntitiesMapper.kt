@@ -2,11 +2,13 @@ package agalfioni.recipesai.recipe.data.local.mappers
 
 import agalfioni.recipesai.recipe.data.local.entity.IngredientEntity
 import agalfioni.recipesai.recipe.data.local.entity.InstructionsEntity
+import agalfioni.recipesai.recipe.data.local.entity.RecipeEntity
 import agalfioni.recipesai.recipe.data.models.RecipeWithIngredients
 import agalfioni.recipesai.recipe.domain.models.Nutrition
 import agalfioni.recipesai.recipe.domain.models.Recipe
 import agalfioni.recipesai.recipe.domain.models.RecipeIngredient
 import agalfioni.recipesai.recipe.domain.models.RecipeInstruction
+import kotlin.collections.map
 
 fun List<RecipeWithIngredients>.toDomain(): List<Recipe> {
     return this.map { it.toDomain() }
@@ -22,6 +24,19 @@ fun RecipeWithIngredients.toDomain(): Recipe {
         instructions = instructions.map { it.toDomain() },
         nutrition = Nutrition(calories = recipe.calories),
         ingredients = ingredients.map { it.toDomain() }
+    )
+}
+
+fun RecipeEntity.toDomain(): Recipe {
+    return Recipe(
+        id = this.id,
+        title = this.title,
+        difficulty = this.difficulty,
+        minutesTime = this.minutesTime,
+        ingredientCoverage = this.ingredientCoverage,
+        nutrition = Nutrition(calories = this.calories),
+        instructions = emptyList(),
+        ingredients = emptyList()
     )
 }
 

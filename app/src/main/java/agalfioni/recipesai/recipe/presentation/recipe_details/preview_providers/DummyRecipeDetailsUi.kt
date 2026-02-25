@@ -3,6 +3,7 @@ package agalfioni.recipesai.recipe.presentation.recipe_details.preview_providers
 
 val dummyRecipeDetailsUi =
     _root_ide_package_.agalfioni.recipesai.recipe.presentation.recipe_details.models.RecipeDetailsUi(
+        id = "1_lemon_herb_roasted_chicken_potatoes",
         title = "Lemon Herb Roasted Chicken & Potatoes",
         minutesTime = "00:45",
         category = "Vegan",
