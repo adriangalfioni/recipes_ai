@@ -31,7 +31,20 @@ class HomeViewModel(
     recipeRepository: RecipeRepository
 ) : ViewModel() {
 
-    // 1. Raw inputs (StateHolders)
+    /*
+     * ---------------------------------------------------------------------------------------
+     * UI STATE ARCHITECTURE (MVVM + MVI Approach) - Learning purpose :)
+     * ---------------------------------------------------------------------------------------
+     * Using a 'Single Source of Truth' pattern by combining multiple private flows:
+     * 1. STATE STREAMS: We observe private flows for the query, ingredients local data and suggestions.
+     * 2. COMBINE: The 'combine' operator merges these streams into a single HomeUiState object.
+     * 3. IMMUTABILITY: Every change in a private flow triggers a new emission of the UI state,
+     * ensuring the View remains a "passive observer" of the data.
+     * 4. EFFICIENCY: 'stateIn' with 'WhileSubscribed' ensures that if the user leaves the screen,
+     * we stop calculating suggestions and save resources after a 5-second delay.
+     * ---------------------------------------------------------------------------------------
+     */
+
     private var _queryFlow = MutableStateFlow("")
     private val _addedIngredientsFlow = MutableStateFlow<List<String>>(emptyList())
 
