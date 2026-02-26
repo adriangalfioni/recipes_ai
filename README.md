@@ -8,6 +8,11 @@ An intelligent Android application that leverages Generative AI to help users di
 
 ---
 
+## 📲 Download
+**Available now on the Google Play Store:** [**Get it on Google Play**](https://play.google.com/store/apps/details?id=agalfioni.recipesai&hl=en)
+
+---
+
 ## 🚀 Technologies & Architecture
 
 This project is built with a modern Android tech stack, focusing on performance, modularity, and cutting-edge AI integration.
