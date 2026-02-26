@@ -57,6 +57,7 @@ import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.itemKey
 import kotlinx.coroutines.flow.flowOf
 import org.koin.androidx.compose.koinViewModel
 
@@ -250,7 +251,7 @@ fun RecentRecipes(
 
             items(
                 count = recentRecipes.itemCount,
-                key = { index -> recentRecipes[index]?.id ?: index }
+                key = recentRecipes.itemKey { it.id }
             ) { index ->
                 recentRecipes[index]?.let { recipe ->
                     RecipeCard(
