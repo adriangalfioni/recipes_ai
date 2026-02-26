@@ -15,35 +15,53 @@ This project is built with a modern Android tech stack, focusing on performance,
 ### Core Stack
 * **Language:** [Kotlin](https://kotlinlang.org/)
 * **UI Framework:** **Jetpack Compose** (100% declarative UI with Material 3)
-* **Architecture:** Clean Architecture + MVVM
+* **Architecture:** Clean Architecture + MVI. Adopting a "Single Source of Truth" pattern in ViewModels for state consistency and predictable UI updates.
 * **Dependency Injection:** **Koin**
 * **Image Loading:** **Coil 3**
 
 ### AI Integration
-* **Google Gemini AI:** Integrated via the **Firebase AI SDK**.
-* **Generative Models:** Utilizing `gemini-2.5-flash` for high-speed, low-latency recipe generation and ingredient analysis.
+* **Google Gemini AI:** Integrated via the **Firebase AI Logic SDK**.
+* **Generative Models:** Utilizing `gemini-2.0-flash` for high-speed, low-latency recipe generation and ingredient analysis.
+
+### Data & Persistence
+* **Room Database:** Robust local persistence for saved recipes, ingredients, and offline support.
+* **Paging 3:** Efficient loading and caching of large recipe collections with seamless `LazyRow`/`LazyColumn` integration.
+* **WorkManager:** Background processing for syncing AI-generated content and long-running data maintenance tasks.
 
 ### Android Jetpack & Tools
-* **Navigation 3:** Exploring the latest experimental Navigation-Compose integration.
-* **Lifecycle & ViewModels:** Modern state management with `lifecycle-runtime-ktx` and `lifecycle-viewmodel-navigation3`.
-* **Coroutines & Flow:** Asynchronous programming and reactive data streams.
-* **Firebase:** Centralized management of Firebase dependencies (Generative AI, Analytics, etc.).
+* **Navigation 3:** Exploring the latest experimental Navigation-Compose integration for type-safe routing.
+* **Lifecycle & ViewModels:** Modern state management using `StateFlow` and `lifecycle-viewmodel-navigation3`.
+* **Coroutines & Flow:** Asynchronous programming and reactive data streams (utilizing `combine` to merge multiple state sources).
+
+### Testing & Quality
+* **Unit Testing:** Comprehensive business logic verification using **JUnit 5** and **MockK**.
+* **Turbine:** Specialized testing for **Kotlin Flows**, ensuring reactive state transitions and emissions are verified accurately.
 
 ---
 
 ## ✨ Key Features
 
-- **AI Ingredients Detection from photo:** Obtain ingredients using AI Vision feature from a frige photo.
-- **AI Recipe Generation:** Transforms a list of ingredients into detailed culinary instructions using Google's most capable generative models.
-- **Modern UI:** Fully responsive design using Material Design 3 tokens and smooth Compose animations.
+- **AI Ingredient Detection (Vision):** Extract ingredients directly from fridge or pantry photos using Google's AI Vision capabilities.
+- **AI Recipe Generation:** Transform a list of ingredients into detailed culinary instructions using the latest Generative AI.
+- **Efficient Browsing:** Smooth, paginated list of recipes powered by Paging 3 to ensure a low memory footprint even with large datasets.
+- **Offline Reliability:** Access and manage your favorite recipes without an internet connection via Room persistence.
+- **Background Operations:** WorkManager handles background tasks ensuring data consistency without interrupting the user experience.
 
 ---
 
 ## 🛠️ Project Structure
 
-The project follows **Clean Architecture** principles to ensure separation of concerns aplying feature-layer architecture:
+The project follows **Clean Architecture** principles applying a feature-layered architecture to ensure scalability:
 
-- **`:core`**: Main Android module.
 - **`:domain`**: Pure Kotlin module containing Business Logic, Entities, and Repository Interfaces.
-- **`:data`**: Implementation of repositories, DataSources (Gemini, Local JSON), and API Models.
-- **`:presentation`**: UI components, ViewModels, and State management using Compose.
+- **`:data`**: Implementation of repositories, Room DAOs, DataSources (Gemini, Local JSON), and API Models.
+- **`:presentation`**: UI components (Compose), ViewModels, and MVI state management.
+- **`:core`**: Common utilities, theme definitions, and shared components used across the app.
+
+---
+
+## 🧪 Testing Approach
+
+- **State Verification:** Utilizing **Turbine** to assert that the `uiState` transitions correctly in response to user intents.
+- **Repository Testing:** Mocking data sources with **MockK** or using Fakes to isolate business logic.
+- **Migration Testing:** Automated Room migration tests to ensure data integrity across schema versions.
