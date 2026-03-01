@@ -10,12 +10,10 @@ import agalfioni.recipesai.recipe.domain.models.RecipeIngredient
 import agalfioni.recipesai.recipe.domain.models.RecipeInstruction
 import kotlin.collections.map
 
-fun List<RecipeWithIngredients>.toDomain(): List<Recipe> {
-    return this.map { it.toDomain() }
-}
+fun List<RecipeWithIngredients>.toDomain(): List<Recipe> = this.map { it.toDomain() }
 
-fun RecipeWithIngredients.toDomain(): Recipe {
-    return Recipe(
+fun RecipeWithIngredients.toDomain(): Recipe =
+    Recipe(
         id = recipe.id,
         title = recipe.title,
         difficulty = recipe.difficulty,
@@ -23,12 +21,11 @@ fun RecipeWithIngredients.toDomain(): Recipe {
         ingredientCoverage = recipe.ingredientCoverage,
         instructions = instructions.map { it.toDomain() },
         nutrition = Nutrition(calories = recipe.calories),
-        ingredients = ingredients.map { it.toDomain() }
+        ingredients = ingredients.map { it.toDomain() },
     )
-}
 
-fun RecipeEntity.toDomain(): Recipe {
-    return Recipe(
+fun RecipeEntity.toDomain(): Recipe =
+    Recipe(
         id = this.id,
         title = this.title,
         difficulty = this.difficulty,
@@ -36,21 +33,18 @@ fun RecipeEntity.toDomain(): Recipe {
         ingredientCoverage = this.ingredientCoverage,
         nutrition = Nutrition(calories = this.calories),
         instructions = emptyList(),
-        ingredients = emptyList()
+        ingredients = emptyList(),
     )
-}
 
-fun IngredientEntity.toDomain(): RecipeIngredient {
-    return RecipeIngredient(
+fun IngredientEntity.toDomain(): RecipeIngredient =
+    RecipeIngredient(
         name = this.name,
         quantity = this.quantity,
-        unit = this.unit
+        unit = this.unit,
     )
-}
 
-fun InstructionsEntity.toDomain(): RecipeInstruction {
-    return RecipeInstruction(
+fun InstructionsEntity.toDomain(): RecipeInstruction =
+    RecipeInstruction(
         title = this.title,
-        description = this.description
+        description = this.description,
     )
-}

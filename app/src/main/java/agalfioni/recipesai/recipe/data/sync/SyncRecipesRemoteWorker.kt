@@ -9,26 +9,23 @@ import androidx.work.WorkerParameters
 class SyncRecipesRemoteWorker(
     context: Context,
     params: WorkerParameters,
-    private val recipesSyncRepository: RecipesSyncRepository
+    private val recipesSyncRepository: RecipesSyncRepository,
 ) : CoroutineWorker(context, params) {
-
     companion object {
         const val MAX_RETRIES = 3
     }
 
-    override suspend fun doWork(): Result {
-        return when (recipesSyncRepository.syncRecipes()) {
+    override suspend fun doWork(): Result =
+        when (recipesSyncRepository.syncRecipes()) {
             is SyncResult.Success -> Result.success()
             is SyncResult.PartialSuccess -> retryWhenMaxNotReached()
             is SyncResult.Error -> retryWhenMaxNotReached()
         }
-    }
 
-    private fun retryWhenMaxNotReached(): Result {
-        return if (runAttemptCount < MAX_RETRIES) {
+    private fun retryWhenMaxNotReached(): Result =
+        if (runAttemptCount < MAX_RETRIES) {
             Result.retry()
         } else {
             Result.failure()
         }
-    }
 }

@@ -2,9 +2,14 @@ package agalfioni.recipesai.core.domain.models
 
 interface AppError
 
-sealed interface AppResult<out D, out E: AppError> {
-    data class Success<out D, out E: AppError>(val data: D): AppResult<D, E>
-    data class Error<out D, out E: AppError>(val error: E): AppResult<D, E>
+sealed interface AppResult<out D, out E : AppError> {
+    data class Success<out D, out E : AppError>(
+        val data: D,
+    ) : AppResult<D, E>
+
+    data class Error<out D, out E : AppError>(
+        val error: E,
+    ) : AppResult<D, E>
 }
 
 /**
@@ -35,17 +40,15 @@ fun <D, E : AppError> AppResult<D, E>.getDataOrNull(): D? =
         is AppResult.Error -> null
     }
 
-
 fun <R, D, E : AppError> AppResult<D, E>.map(transform: (D) -> R): AppResult<R, E> =
     when (this) {
         is AppResult.Success -> AppResult.Success(transform(data))
         is AppResult.Error -> AppResult.Error(error)
-
     }
 
 inline fun <D, E : AppError, R> AppResult<D, E>.mapCatching(
     onError: (Throwable) -> E,
-    transform: (D) -> R
+    transform: (D) -> R,
 ): AppResult<R, E> =
     when (this) {
         is AppResult.Success ->

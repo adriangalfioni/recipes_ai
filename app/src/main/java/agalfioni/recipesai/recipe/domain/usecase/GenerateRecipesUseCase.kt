@@ -15,9 +15,8 @@ class GenerateRecipesUseCase(
     private val aiRecipeGenerator: AiRecipeGenerator,
     private val recipeRepository: RecipeRepository,
     private val recipesSyncRepository: RecipesSyncRepository,
-    private val generationTracker: GenerationTracker
+    private val generationTracker: GenerationTracker,
 ) {
-
     suspend operator fun invoke(
         ingredients: List<String>,
         recipesQty: Int,
@@ -26,10 +25,11 @@ class GenerateRecipesUseCase(
         var completedNormally = false
 
         try {
-            val recipesResult = aiRecipeGenerator.generateRecipes(
-                ingredients = ingredients,
-                recipesQty = recipesQty
-            )
+            val recipesResult =
+                aiRecipeGenerator.generateRecipes(
+                    ingredients = ingredients,
+                    recipesQty = recipesQty,
+                )
 
             recipesResult.onSuccess { recipes ->
                 recipeRepository.save(recipes)

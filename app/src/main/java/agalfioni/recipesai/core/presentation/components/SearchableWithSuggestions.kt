@@ -75,11 +75,12 @@ fun SearchableWithSuggestions(
 
     var isFocused by remember { mutableStateOf(false) }
 
-    val visibleSuggestions = remember(value, suggestions) {
-        suggestions
-            .filter { it.contains(value, ignoreCase = true) }
-            .take(maxSuggestions)
-    }
+    val visibleSuggestions =
+        remember(value, suggestions) {
+            suggestions
+                .filter { it.contains(value, ignoreCase = true) }
+                .take(maxSuggestions)
+        }
     val showAddNew = value.length >= MIN_CHARS_TO_ADD_NEW_INGREDIENT && visibleSuggestions.isEmpty()
 
     val hasContentToShow = visibleSuggestions.isNotEmpty() || showAddNew
@@ -92,33 +93,35 @@ fun SearchableWithSuggestions(
         }
     }
 
-    val handleSelection = remember {
-        { text: String ->
-            onSelectSuggestion(text)
-            focusManager.clearFocus()
-            keyboardController?.hide()
+    val handleSelection =
+        remember {
+            { text: String ->
+                onSelectSuggestion(text)
+                focusManager.clearFocus()
+                keyboardController?.hide()
+            }
         }
-    }
 
     val isSingleResult = visibleSuggestions.size == 1
 
     Column(
-        modifier = modifier
-            .bringIntoViewRequester(bringIntoViewRequester)
-            .focusTarget()
-            .clickable(
-                interactionSource = remember { MutableInteractionSource() },
-                indication = null
-            ) {
-                focusManager.clearFocus()
-                keyboardController?.hide()
-            }
+        modifier =
+            modifier
+                .bringIntoViewRequester(bringIntoViewRequester)
+                .focusTarget()
+                .clickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = null,
+                ) {
+                    focusManager.clearFocus()
+                    keyboardController?.hide()
+                },
     ) {
         Surface(
             shape = RoundedCornerShape(28.dp),
             tonalElevation = 2.dp,
             color = MaterialTheme.colorScheme.surfaceVariant,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
         ) {
             TextField(
                 value = value,
@@ -126,38 +129,45 @@ fun SearchableWithSuggestions(
                 placeholder = { Text(placeholder) },
                 singleLine = true,
                 leadingIcon = leadingIcon?.let { { Icon(it, contentDescription = null) } },
-                trailingIcon = if (isSingleResult && trailingIcon != null) {
-                    {
-                        IconButton(onClick = { handleSelection(visibleSuggestions.first()) }) {
-                            Icon(trailingIcon, contentDescription = null)
-                        }
-                    }
-                } else null,
-                colors = TextFieldDefaults.colors().copy(
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent,
-                ),
-                keyboardOptions = KeyboardOptions(
-                    imeAction = ImeAction.Done
-                ),
-                keyboardActions = KeyboardActions(
-                    onDone = {
-                        if (visibleSuggestions.size == 1) handleSelection(visibleSuggestions.first())
-                        if (showAddNew) handleSelection(value.replaceFirstChar { it.titlecase() })
-                    }
-                ),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .focusRequester(focusRequester)
-                    .onFocusEvent { focus ->
-                        isFocused = focus.isFocused
-                        if (focus.isFocused) {
-                            scope.launch {
-                                delay(300)
-                                bringIntoViewRequester.bringIntoView()
+                trailingIcon =
+                    if (isSingleResult && trailingIcon != null) {
+                        {
+                            IconButton(onClick = { handleSelection(visibleSuggestions.first()) }) {
+                                Icon(trailingIcon, contentDescription = null)
                             }
                         }
-                    }
+                    } else {
+                        null
+                    },
+                colors =
+                    TextFieldDefaults.colors().copy(
+                        focusedIndicatorColor = Color.Transparent,
+                        unfocusedIndicatorColor = Color.Transparent,
+                    ),
+                keyboardOptions =
+                    KeyboardOptions(
+                        imeAction = ImeAction.Done,
+                    ),
+                keyboardActions =
+                    KeyboardActions(
+                        onDone = {
+                            if (visibleSuggestions.size == 1) handleSelection(visibleSuggestions.first())
+                            if (showAddNew) handleSelection(value.replaceFirstChar { it.titlecase() })
+                        },
+                    ),
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .focusRequester(focusRequester)
+                        .onFocusEvent { focus ->
+                            isFocused = focus.isFocused
+                            if (focus.isFocused) {
+                                scope.launch {
+                                    delay(300)
+                                    bringIntoViewRequester.bringIntoView()
+                                }
+                            }
+                        },
             )
         }
 
@@ -165,18 +175,22 @@ fun SearchableWithSuggestions(
             Column {
                 if (showAddNew) {
                     Row(
-                        modifier = Modifier
-                            .padding(top = 8.dp)
-                            .fillMaxWidth()
-                            .clip(RoundedCornerShape(20.dp))
-                            .background(MaterialTheme.colorScheme.surfaceVariant)
-                            .clickable { handleSelection(value.replaceFirstChar { it.titlecase() }) }
-                            .padding(horizontal = 16.dp, vertical = 12.dp),
-                        verticalAlignment = Alignment.CenterVertically
+                        modifier =
+                            Modifier
+                                .padding(top = 8.dp)
+                                .fillMaxWidth()
+                                .clip(RoundedCornerShape(20.dp))
+                                .background(MaterialTheme.colorScheme.surfaceVariant)
+                                .clickable { handleSelection(value.replaceFirstChar { it.titlecase() }) }
+                                .padding(horizontal = 16.dp, vertical = 12.dp),
+                        verticalAlignment = Alignment.CenterVertically,
                     ) {
                         Icon(Icons.Default.Add, null, tint = MaterialTheme.colorScheme.onPrimaryContainer, modifier = Modifier.size(20.dp))
                         Spacer(Modifier.width(12.dp))
-                        Text(stringResource(R.string.add, value.replaceFirstChar { it.titlecase() }), color = MaterialTheme.colorScheme.onPrimaryContainer)
+                        Text(
+                            stringResource(R.string.add, value.replaceFirstChar { it.titlecase() }),
+                            color = MaterialTheme.colorScheme.onPrimaryContainer,
+                        )
                     }
                 } else {
                     SuggestionsList(items = visibleSuggestions, onSelect = { handleSelection(it) })
@@ -191,26 +205,28 @@ const val MIN_CHARS_TO_ADD_NEW_INGREDIENT = 3
 @Composable
 private fun SuggestionsList(
     items: List<String>,
-    onSelect: (String) -> Unit
+    onSelect: (String) -> Unit,
 ) {
     Column(
-        modifier = Modifier
-            .animateContentSize()
-            .padding(top = 8.dp)
-            .clip(RoundedCornerShape(20.dp))
-            .background(MaterialTheme.colorScheme.surfaceVariant)
+        modifier =
+            Modifier
+                .animateContentSize()
+                .padding(top = 8.dp)
+                .clip(RoundedCornerShape(20.dp))
+                .background(MaterialTheme.colorScheme.surfaceVariant),
     ) {
         items.forEach { item ->
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable { onSelect(item) }
-                    .padding(horizontal = 16.dp, vertical = 12.dp),
-                verticalAlignment = Alignment.CenterVertically
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .clickable { onSelect(item) }
+                        .padding(horizontal = 16.dp, vertical = 12.dp),
+                verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(
                     text = item,
-                    style = MaterialTheme.typography.bodyMedium
+                    style = MaterialTheme.typography.bodyMedium,
                 )
             }
         }
@@ -225,13 +241,17 @@ private fun SearchableWithSuggestionsPreview() {
             value = "asd",
             placeholder = stringResource(R.string.add_more_ingredients),
             onValueChange = {},
-            suggestions = listOf(
-                "Apple", "Carrot", "Milk", "Cheese"
-            ),
+            suggestions =
+                listOf(
+                    "Apple",
+                    "Carrot",
+                    "Milk",
+                    "Cheese",
+                ),
             onSelectSuggestion = {},
             trailingIcon = Icons.Default.Add,
             onTrailingClick = {},
-            onFocusedAtY = null
+            onFocusedAtY = null,
         )
     }
 }
@@ -248,7 +268,7 @@ private fun SearchableWithAddOptionPreview() {
             onSelectSuggestion = {},
             trailingIcon = Icons.Default.Add,
             onTrailingClick = {},
-            onFocusedAtY = null
+            onFocusedAtY = null,
         )
     }
 }

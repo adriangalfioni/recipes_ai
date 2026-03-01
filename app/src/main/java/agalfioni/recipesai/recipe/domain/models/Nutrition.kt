@@ -18,5 +18,5 @@ data class Nutrition(
     val cholesterol: Double? = null,
     val sugars: Double? = null,
     @SerialName("total_carbohydrate")
-    val totalCarbohydrate: Double? = null
+    val totalCarbohydrate: Double? = null,
 )

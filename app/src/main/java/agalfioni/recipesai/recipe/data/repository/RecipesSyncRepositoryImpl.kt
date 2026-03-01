@@ -19,9 +19,8 @@ import kotlinx.coroutines.withContext
 
 class RecipesSyncRepositoryImpl(
     private val recipeSyncDao: RecipesSyncDao,
-    private val firestore: FirebaseFirestore
-): RecipesSyncRepository {
-
+    private val firestore: FirebaseFirestore,
+) : RecipesSyncRepository {
     companion object {
         val SYNC_RECIPES_PATH = if (BuildConfig.DEBUG) "recipes_sync_debug" else "recipes_sync"
     }
@@ -30,9 +29,9 @@ class RecipesSyncRepositoryImpl(
         recipeSyncDao.upsertRecipesSync(
             recipes.map {
                 RecipeSyncEntity(
-                    recipeId = it.id
+                    recipeId = it.id,
                 )
-            }
+            },
         )
     }
 
@@ -56,17 +55,21 @@ class RecipesSyncRepositoryImpl(
         }
     }
 
-    suspend fun uploadIndependentRecipes(syncableRecipes: List<SyncableRecipe>): List<String> = supervisorScope {
-        syncableRecipes.map { syncableRecipe ->
-            async {
-                runCatching {
-                    firestore.collection(SYNC_RECIPES_PATH)
-                        .document(syncableRecipe.id)
-                        .set(syncableRecipe)
-                        .await()
-                    syncableRecipe.id // Return ID on success
-                }
-            }
-        }.awaitAll().mapNotNull { it.getOrNull() }
-    }
+    suspend fun uploadIndependentRecipes(syncableRecipes: List<SyncableRecipe>): List<String> =
+        supervisorScope {
+            syncableRecipes
+                .map { syncableRecipe ->
+                    async {
+                        runCatching {
+                            firestore
+                                .collection(SYNC_RECIPES_PATH)
+                                .document(syncableRecipe.id)
+                                .set(syncableRecipe)
+                                .await()
+                            syncableRecipe.id // Return ID on success
+                        }
+                    }
+                }.awaitAll()
+                .mapNotNull { it.getOrNull() }
+        }
 }

@@ -1,0 +1,88 @@
+package agalfioni.recipesai.recipe.presentation.recipelist
+
+import agalfioni.recipesai.core.domain.models.DataError
+import agalfioni.recipesai.core.domain.models.onFailure
+import agalfioni.recipesai.core.domain.models.onSuccess
+import agalfioni.recipesai.core.presentation.utils.asUiText
+import agalfioni.recipesai.recipe.domain.usecase.GenerateRecipesUseCase
+import agalfioni.recipesai.recipe.presentation.recipelist.mappers.toRecipeUiList
+import agalfioni.recipesai.recipe.presentation.recipelist.utils.IA_GENERATION_TIMEOUT_MILLIS
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.TimeoutCancellationException
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withTimeout
+
+@OptIn(ExperimentalCoroutinesApi::class, FlowPreview::class)
+class RecipesListViewModel(
+    private val ingredients: List<String>,
+    private val generateRecipesUseCase: GenerateRecipesUseCase,
+) : ViewModel() {
+    private var generateRecipesJob: Job? = null
+    private val _uiState = MutableStateFlow(GenerateRecipesUiState(isLoading = true))
+    val uiState = _uiState.asStateFlow()
+
+    init {
+        generateRecipes()
+    }
+
+    private fun generateRecipes() {
+        generateRecipesJob?.cancel()
+        generateRecipesJob =
+            viewModelScope.launch {
+                withTimeout(IA_GENERATION_TIMEOUT_MILLIS) {
+                    try {
+                        generateRecipesUseCase(
+                            ingredients = ingredients,
+                            recipesQty = NUMBER_OF_RECIPES_TO_GENERATE,
+                        ).onSuccess { result ->
+                            _uiState.update {
+                                it.copy(
+                                    recipes = result.toRecipeUiList(),
+                                    isLoading = false,
+                                )
+                            }
+                        }.onFailure { dataError ->
+                            _uiState.update {
+                                it.copy(
+                                    error = dataError.asUiText(),
+                                    isLoading = false,
+                                )
+                            }
+                        }
+                    } catch (e: TimeoutCancellationException) {
+                        _uiState.update {
+                            it.copy(
+                                error = DataError.DEADLINE_EXCEEDED.asUiText(),
+                                isLoading = false,
+                            )
+                        }
+                    }
+                }
+            }
+    }
+
+    fun onEvent(event: RecipeListEvent) {
+        when (event) {
+            RecipeListEvent.OnRetry -> {
+                _uiState.update {
+                    it.copy(
+                        isLoading = true,
+                        error = null,
+                    )
+                }
+                generateRecipes()
+            }
+        }
+    }
+
+    companion object {
+        private const val NUMBER_OF_RECIPES_TO_GENERATE = 10
+    }
+}

@@ -4,12 +4,10 @@ import agalfioni.recipesai.recipe.data.models.RecipeWithIngredients
 import agalfioni.recipesai.recipe.data.models.SyncableRecipe
 import agalfioni.recipesai.recipe.domain.models.Nutrition
 
-fun List<RecipeWithIngredients>.toSyncable(): List<SyncableRecipe> {
-    return this.map { it.toSyncable() }
-}
+fun List<RecipeWithIngredients>.toSyncable(): List<SyncableRecipe> = this.map { it.toSyncable() }
 
-fun RecipeWithIngredients.toSyncable(): SyncableRecipe {
-    return SyncableRecipe(
+fun RecipeWithIngredients.toSyncable(): SyncableRecipe =
+    SyncableRecipe(
         id = recipe.id,
         title = recipe.title,
         difficulty = recipe.difficulty,
@@ -18,6 +16,5 @@ fun RecipeWithIngredients.toSyncable(): SyncableRecipe {
         instructions = instructions.map { it.toDomain() },
         nutrition = Nutrition(calories = recipe.calories),
         ingredients = ingredients.map { it.toDomain() },
-        ingredientNames = ingredients.map { it.name }
+        ingredientNames = ingredients.map { it.name },
     )
-}

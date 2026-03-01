@@ -32,38 +32,39 @@ import androidx.compose.ui.unit.dp
 fun MediaSourcePickerSheet(
     onDismissRequest: () -> Unit,
     onSourceSelected: (ImageSource) -> Unit,
-    sheetState: SheetState = rememberModalBottomSheetState()
+    sheetState: SheetState = rememberModalBottomSheetState(),
 ) {
     ModalBottomSheet(
         onDismissRequest = onDismissRequest,
         sheetState = sheetState,
         containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
-        dragHandle = { BottomSheetDefaults.DragHandle() }
+        dragHandle = { BottomSheetDefaults.DragHandle() },
     ) {
         Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 32.dp, start = 16.dp, end = 16.dp, top = 8.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 32.dp, start = 16.dp, end = 16.dp, top = 8.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             Text(
                 text = stringResource(R.string.select_image_source),
                 style = MaterialTheme.typography.titleMedium,
-                modifier = Modifier.padding(bottom = 8.dp)
+                modifier = Modifier.padding(bottom = 8.dp),
             )
 
             // Camera Option
             SourceItem(
                 label = stringResource(R.string.camera),
                 icon = ImageVector.vectorResource(R.drawable.ic_camera),
-                onClick = { onSourceSelected(ImageSource.CAMERA) }
+                onClick = { onSourceSelected(ImageSource.CAMERA) },
             )
 
             // Gallery Option
             SourceItem(
                 label = stringResource(R.string.gallery),
                 icon = ImageVector.vectorResource(R.drawable.ic_photo_gallery),
-                onClick = { onSourceSelected(ImageSource.GALLERY) }
+                onClick = { onSourceSelected(ImageSource.GALLERY) },
             )
         }
     }
@@ -73,18 +74,19 @@ fun MediaSourcePickerSheet(
 private fun SourceItem(
     label: String,
     icon: ImageVector,
-    onClick: () -> Unit
+    onClick: () -> Unit,
 ) {
     Surface(
         onClick = onClick,
         shape = RoundedCornerShape(16.dp),
-        color = MaterialTheme.colorScheme.surfaceContainerHigh
+        color = MaterialTheme.colorScheme.surfaceContainerHigh,
     ) {
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             Icon(icon, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
             Spacer(Modifier.width(16.dp))

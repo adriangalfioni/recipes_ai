@@ -1,12 +1,12 @@
 package agalfioni.recipesai.core.navigation
 
 import agalfioni.recipesai.home.presentation.home.HomeScreen
-import agalfioni.recipesai.ingredients_detector.presentation.IngredientDetectorScreen
-import agalfioni.recipesai.ingredients_detector.presentation.IngredientsDetectorViewModel
-import agalfioni.recipesai.recipe.presentation.recipe_details.RecipeDetailsScreen
-import agalfioni.recipesai.recipe.presentation.recipe_details.RecipeDetailsViewModel
-import agalfioni.recipesai.recipe.presentation.recipe_list.RecipeListScreen
-import agalfioni.recipesai.recipe.presentation.recipe_list.RecipesListViewModel
+import agalfioni.recipesai.ingredientsdetector.presentation.IngredientDetectorScreen
+import agalfioni.recipesai.ingredientsdetector.presentation.IngredientsDetectorViewModel
+import agalfioni.recipesai.recipe.presentation.recipedetails.RecipeDetailsScreen
+import agalfioni.recipesai.recipe.presentation.recipedetails.RecipeDetailsViewModel
+import agalfioni.recipesai.recipe.presentation.recipelist.RecipeListScreen
+import agalfioni.recipesai.recipe.presentation.recipelist.RecipesListViewModel
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.saveable.listSaver
@@ -22,28 +22,29 @@ import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
 
 @Composable
-fun NavigationWrapper(
-    modifier: Modifier = Modifier
-) {
-    val backStack = rememberSaveable(
-        saver = listSaver(
-            save = { it.toList() },
-            restore = { it.toMutableStateList() }
-        )
-    ) {
-        mutableStateListOf<NavKey>(Route.HomeScreen)
-    }
+fun NavigationWrapper(modifier: Modifier = Modifier) {
+    val backStack =
+        rememberSaveable(
+            saver =
+                listSaver(
+                    save = { it.toList() },
+                    restore = { it.toMutableStateList() },
+                ),
+        ) {
+            mutableStateListOf<NavKey>(Route.HomeScreen)
+        }
     val resultStore = rememberResultStore()
 
     NavDisplay(
         modifier = modifier,
         backStack = backStack,
-        entryDecorators = listOf(
-            // Add the default decorators for managing scenes and saving state
-            rememberSaveableStateHolderNavEntryDecorator(),
-            // Then add the view model store decorator
-            rememberViewModelStoreNavEntryDecorator()
-        ),
+        entryDecorators =
+            listOf(
+                // Add the default decorators for managing scenes and saving state
+                rememberSaveableStateHolderNavEntryDecorator(),
+                // Then add the view model store decorator
+                rememberViewModelStoreNavEntryDecorator(),
+            ),
         onBack = {
             when {
                 backStack.lastOrNull() == Route.RecipeListScreen -> backStack.keepOnlyFirst()
@@ -52,67 +53,73 @@ fun NavigationWrapper(
         },
         entryProvider = { key ->
             when (key) {
-                is Route.HomeScreen -> NavEntry(key) {
-                    HomeScreen(
-                        resultStore = resultStore,
-                        onImage = { backStack.add(Route.IngredientsDetectorScreen(it)) },
-                        onNavigateToRecipe = { recipeId ->
-                            backStack.add(Route.RecipeDetailsScreen(recipeId))
-                        },
-                        onGenerateRecipesClick = {
-                            resultStore.setResult("Ingredients", it)
-                            backStack.add(Route.RecipeListScreen)
-                        }
-                    )
-                }
-
-                is Route.IngredientsDetectorScreen -> NavEntry(key) {
-                    val viewModel = koinViewModel<IngredientsDetectorViewModel> {
-                        parametersOf(key.uri)
+                is Route.HomeScreen ->
+                    NavEntry(key) {
+                        HomeScreen(
+                            resultStore = resultStore,
+                            onImage = { backStack.add(Route.IngredientsDetectorScreen(it)) },
+                            onNavigateToRecipe = { recipeId ->
+                                backStack.add(Route.RecipeDetailsScreen(recipeId))
+                            },
+                            onGenerateRecipesClick = {
+                                resultStore.setResult("Ingredients", it)
+                                backStack.add(Route.RecipeListScreen)
+                            },
+                        )
                     }
 
-                    IngredientDetectorScreen(
-                        viewModel = viewModel,
-                        onBackClick = { backStack.removeLastOrNull() },
-                        onGenerateRecipesClick = {
-                            resultStore.setResult("Ingredients", it)
-                            backStack.add(Route.RecipeListScreen)
-                        }
-                    )
-                }
+                is Route.IngredientsDetectorScreen ->
+                    NavEntry(key) {
+                        val viewModel =
+                            koinViewModel<IngredientsDetectorViewModel> {
+                                parametersOf(key.uri)
+                            }
 
-                is Route.RecipeListScreen -> NavEntry(key) {
-                    val ingredients = resultStore.getResultAndRemove<List<String>>("Ingredients")
-
-                    val viewModel = koinViewModel<RecipesListViewModel> {
-                        parametersOf(ingredients)
+                        IngredientDetectorScreen(
+                            viewModel = viewModel,
+                            onBackClick = { backStack.removeLastOrNull() },
+                            onGenerateRecipesClick = {
+                                resultStore.setResult("Ingredients", it)
+                                backStack.add(Route.RecipeListScreen)
+                            },
+                        )
                     }
 
-                    RecipeListScreen(
-                        onBackClick = { backStack.keepOnlyFirst() },
-                        onNavigateToRecipe = { recipeId ->
-                            backStack.add(Route.RecipeDetailsScreen(recipeId))
-                        },
-                        recipesListViewModel = viewModel
-                    )
-                }
+                is Route.RecipeListScreen ->
+                    NavEntry(key) {
+                        val ingredients = resultStore.getResultAndRemove<List<String>>("Ingredients")
 
-                is Route.RecipeDetailsScreen -> NavEntry(key) {
-                    val viewModel = koinViewModel<RecipeDetailsViewModel> {
-                        parametersOf(key.recipeId)
+                        val viewModel =
+                            koinViewModel<RecipesListViewModel> {
+                                parametersOf(ingredients)
+                            }
+
+                        RecipeListScreen(
+                            onBackClick = { backStack.keepOnlyFirst() },
+                            onNavigateToRecipe = { recipeId ->
+                                backStack.add(Route.RecipeDetailsScreen(recipeId))
+                            },
+                            recipesListViewModel = viewModel,
+                        )
                     }
 
-                    RecipeDetailsScreen(
-                        onBackClick = { backStack.removeLastOrNull() },
-                        recipeDetailsViewModel = viewModel
-                    )
-                }
+                is Route.RecipeDetailsScreen ->
+                    NavEntry(key) {
+                        val viewModel =
+                            koinViewModel<RecipeDetailsViewModel> {
+                                parametersOf(key.recipeId)
+                            }
+
+                        RecipeDetailsScreen(
+                            onBackClick = { backStack.removeLastOrNull() },
+                            recipeDetailsViewModel = viewModel,
+                        )
+                    }
 
                 else -> {
                     error("Unknown route: $key")
                 }
             }
-        }
+        },
     )
-
 }

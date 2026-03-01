@@ -18,7 +18,7 @@ import androidx.compose.ui.graphics.graphicsLayer
 fun AttentionSeekerTranslationAlpha(
     content: @Composable () -> Unit,
     modifier: Modifier = Modifier,
-    enabled: Boolean = true
+    enabled: Boolean = true,
 ) {
     if (!enabled) {
         content()
@@ -31,31 +31,34 @@ fun AttentionSeekerTranslationAlpha(
     val translateY by infiniteTransition.animateFloat(
         initialValue = 0f,
         targetValue = -6f, // Moves up 6dp
-        animationSpec = infiniteRepeatable(
-            animation = tween(1200, easing = FastOutSlowInEasing),
-            repeatMode = RepeatMode.Reverse
-        ),
-        label = "translationY"
+        animationSpec =
+            infiniteRepeatable(
+                animation = tween(1200, easing = FastOutSlowInEasing),
+                repeatMode = RepeatMode.Reverse,
+            ),
+        label = "translationY",
     )
 
     // 2. Subtle Alpha Pulse (Glow effect)
     val alpha by infiniteTransition.animateFloat(
         initialValue = 0.8f,
         targetValue = 1f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(1200, easing = LinearEasing),
-            repeatMode = RepeatMode.Reverse
-        ),
-        label = "alpha"
+        animationSpec =
+            infiniteRepeatable(
+                animation = tween(1200, easing = LinearEasing),
+                repeatMode = RepeatMode.Reverse,
+            ),
+        label = "alpha",
     )
 
     Box(
-        modifier = modifier
-            .graphicsLayer {
-                //translationY = translateY
-                this.alpha = alpha
-            },
-        contentAlignment = Alignment.Center
+        modifier =
+            modifier
+                .graphicsLayer {
+                    // translationY = translateY
+                    this.alpha = alpha
+                },
+        contentAlignment = Alignment.Center,
     ) {
         content()
     }
@@ -65,7 +68,7 @@ fun AttentionSeekerTranslationAlpha(
 fun AttentionSeekerScale(
     content: @Composable () -> Unit,
     modifier: Modifier = Modifier,
-    enabled: Boolean = true
+    enabled: Boolean = true,
 ) {
     if (!enabled) {
         content()
@@ -78,32 +81,35 @@ fun AttentionSeekerScale(
     val scale by infiniteTransition.animateFloat(
         initialValue = 1f,
         targetValue = 1.04f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(1400, easing = FastOutSlowInEasing),
-            repeatMode = RepeatMode.Reverse
-        ),
-        label = "scale"
+        animationSpec =
+            infiniteRepeatable(
+                animation = tween(1400, easing = FastOutSlowInEasing),
+                repeatMode = RepeatMode.Reverse,
+            ),
+        label = "scale",
     )
 
     // 2. Vertical Float: Moves up 4dp to complement the scaling
     val translateY by infiniteTransition.animateFloat(
         initialValue = 0f,
         targetValue = -2f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(1400, easing = FastOutSlowInEasing),
-            repeatMode = RepeatMode.Reverse
-        ),
-        label = "translationY"
+        animationSpec =
+            infiniteRepeatable(
+                animation = tween(1400, easing = FastOutSlowInEasing),
+                repeatMode = RepeatMode.Reverse,
+            ),
+        label = "translationY",
     )
 
     Box(
-        modifier = modifier
-            .graphicsLayer {
-                scaleX = scale
-                scaleY = scale
-                translationY = translateY
-            },
-        contentAlignment = Alignment.Center
+        modifier =
+            modifier
+                .graphicsLayer {
+                    scaleX = scale
+                    scaleY = scale
+                    translationY = translateY
+                },
+        contentAlignment = Alignment.Center,
     ) {
         content()
     }

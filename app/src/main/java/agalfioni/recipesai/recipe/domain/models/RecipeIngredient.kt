@@ -6,5 +6,5 @@ import kotlinx.serialization.Serializable
 data class RecipeIngredient(
     val name: String,
     val quantity: Double,
-    val unit: String
+    val unit: String,
 )

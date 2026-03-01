@@ -11,9 +11,9 @@ import agalfioni.recipesai.home.presentation.components.GenerateRecipesBottomBar
 import agalfioni.recipesai.home.presentation.home.components.MediaSourcePickerSheet
 import agalfioni.recipesai.home.presentation.home.components.ScanFridgeCard
 import agalfioni.recipesai.home.presentation.home.models.ImageSource
-import agalfioni.recipesai.recipe.presentation.recipe_list.components.RecipeCard
-import agalfioni.recipesai.recipe.presentation.recipe_list.models.RecipeUi
-import agalfioni.recipesai.recipe.presentation.recipe_list.preview_providers.RecipeUiListProvider
+import agalfioni.recipesai.recipe.presentation.recipelist.components.RecipeCard
+import agalfioni.recipesai.recipe.presentation.recipelist.models.RecipeUi
+import agalfioni.recipesai.recipe.presentation.recipelist.previewproviders.RecipeUiListProvider
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -61,7 +61,6 @@ import androidx.paging.compose.itemKey
 import kotlinx.coroutines.flow.flowOf
 import org.koin.androidx.compose.koinViewModel
 
-
 @Composable
 fun HomeScreen(
     resultStore: ResultStore,
@@ -69,7 +68,7 @@ fun HomeScreen(
     onGenerateRecipesClick: (List<String>) -> Unit,
     onNavigateToRecipe: (String) -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: HomeViewModel = koinViewModel()
+    viewModel: HomeViewModel = koinViewModel(),
 ) {
     val uiState = viewModel.uiState.collectAsStateWithLifecycle()
     val recentRecipes = viewModel.recentRecipes.collectAsLazyPagingItems()
@@ -81,7 +80,7 @@ fun HomeScreen(
         onImage = onImage,
         onNavigateToRecipe = onNavigateToRecipe,
         onGenerateRecipesClick = onGenerateRecipesClick,
-        modifier = modifier
+        modifier = modifier,
     )
 }
 
@@ -97,14 +96,15 @@ fun HomeScreenRoot(
     modifier: Modifier = Modifier,
 ) {
     Scaffold(
-        modifier = Modifier
-            .fillMaxSize(),
+        modifier =
+            Modifier
+                .fillMaxSize(),
         bottomBar = {
             GenerateRecipesBottomBar(
                 selectedIngredientsQty = uiState.addedIngredients.size,
                 onGenerateRecipesClick = {
                     onGenerateRecipesClick(uiState.addedIngredients.toList())
-                }
+                },
             )
         },
     ) { innerPadding ->
@@ -113,32 +113,35 @@ fun HomeScreenRoot(
         val density = LocalDensity.current
         var showImageSourceSheet by remember { mutableStateOf(false) }
 
-        val galleryLauncher = rememberLauncherForActivityResult(
-            contract = ActivityResultContracts.GetContent()
-        ) { uri: Uri? ->
-            uri?.let { onImage(uri.toString()) }
-        }
-
-        val cameraLauncher = rememberCameraLauncher(
-            onImageCaptured = { uri ->
-                onImage(uri.toString())
+        val galleryLauncher =
+            rememberLauncherForActivityResult(
+                contract = ActivityResultContracts.GetContent(),
+            ) { uri: Uri? ->
+                uri?.let { onImage(uri.toString()) }
             }
-        )
+
+        val cameraLauncher =
+            rememberCameraLauncher(
+                onImageCaptured = { uri ->
+                    onImage(uri.toString())
+                },
+            )
 
         Column(
-            modifier = modifier
-                .imePadding()
-                .verticalScroll(scrollState)
-                .padding(horizontal = 16.dp)
-                .padding(innerPadding),
+            modifier =
+                modifier
+                    .imePadding()
+                    .verticalScroll(scrollState)
+                    .padding(horizontal = 16.dp)
+                    .padding(innerPadding),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+            verticalArrangement = Arrangement.Center,
         ) {
             Spacer(Modifier.height(36.dp))
             ScanFridgeCard(
                 onScanClick = {
                     showImageSourceSheet = true
-                }
+                },
             )
 
             if (showImageSourceSheet) {
@@ -155,18 +158,18 @@ fun HomeScreenRoot(
                                 galleryLauncher.launch("image/*")
                             }
                         }
-                    }
+                    },
                 )
             }
             Spacer(Modifier.height(12.dp))
             Row(
                 modifier = Modifier.padding(vertical = 16.dp),
-                verticalAlignment = Alignment.Bottom
+                verticalAlignment = Alignment.Bottom,
             ) {
                 Text(
                     modifier = Modifier.weight(1f),
                     text = stringResource(R.string.add_ingredients),
-                    style = MaterialTheme.typography.titleLarge
+                    style = MaterialTheme.typography.titleLarge,
                 )
                 if (uiState.addedIngredients.isNotEmpty()) {
                     Text(
@@ -174,11 +177,12 @@ fun HomeScreenRoot(
                         fontWeight = FontWeight.SemiBold,
                         style = MaterialTheme.typography.titleMedium,
                         color = MaterialTheme.colorScheme.onSurface,
-                        modifier = Modifier.clickable(
-                            interactionSource = null,
-                            indication = null,
-                            onClick = { onEvent(HomeEvent.OnClearAll) }
-                        )
+                        modifier =
+                            Modifier.clickable(
+                                interactionSource = null,
+                                indication = null,
+                                onClick = { onEvent(HomeEvent.OnClearAll) },
+                            ),
                     )
                 }
             }
@@ -198,17 +202,16 @@ fun HomeScreenRoot(
                 ingredients = uiState.addedIngredients.toList().toSelectableList(true),
                 onTrailingIconClick = {
                     onEvent(HomeEvent.OnIngredientRemoved(it))
-                }
+                },
             )
 
             RecentRecipes(
                 recentRecipes = recentRecipes,
                 onEvent = onEvent,
-                onRecipeCardClick = onNavigateToRecipe
+                onRecipeCardClick = onNavigateToRecipe,
             )
         }
     }
-
 }
 
 @Composable
@@ -216,19 +219,19 @@ fun RecentRecipes(
     recentRecipes: LazyPagingItems<RecipeUi>,
     onEvent: (event: HomeEvent) -> Unit,
     onRecipeCardClick: (String) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     if (recentRecipes.itemCount > 0) {
         Spacer(modifier = Modifier.height(16.dp))
         Row(
             modifier = Modifier.padding(vertical = 16.dp),
-            verticalAlignment = Alignment.Bottom
+            verticalAlignment = Alignment.Bottom,
         ) {
             Text(
                 modifier = Modifier.weight(1f),
                 text = stringResource(R.string.recent_recipes),
                 style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.onSurface
+                color = MaterialTheme.colorScheme.onSurface,
             )
             /*Text(
                 text = stringResource(R.string.view_history),
@@ -243,25 +246,26 @@ fun RecentRecipes(
             )*/
         }
         LazyRow(
-            modifier = Modifier
-                .height(180.dp)
-                .fillMaxWidth(),
-            horizontalArrangement = Arrangement.Start
+            modifier =
+                Modifier
+                    .height(180.dp)
+                    .fillMaxWidth(),
+            horizontalArrangement = Arrangement.Start,
         ) {
-
             items(
                 count = recentRecipes.itemCount,
-                key = recentRecipes.itemKey { it.id }
+                key = recentRecipes.itemKey { it.id },
             ) { index ->
                 recentRecipes[index]?.let { recipe ->
                     RecipeCard(
                         recipeUi = recipe,
-                        modifier = Modifier
-                            .fillParentMaxHeight()
-                            .fillParentMaxWidth(0.85f)
-                            .widthIn(max = 300.dp),
+                        modifier =
+                            Modifier
+                                .fillParentMaxHeight()
+                                .fillParentMaxWidth(0.85f)
+                                .widthIn(max = 300.dp),
                         showMatchIndicator = false,
-                        onClick = { onRecipeCardClick(recipe.id) }
+                        onClick = { onRecipeCardClick(recipe.id) },
                     )
                 }
             }
@@ -282,22 +286,23 @@ fun RecentRecipes(
 @Preview
 @Composable
 private fun HomeScreenPreview(
-    @PreviewParameter(RecipeUiListProvider::class) recipes: List<RecipeUi>
+    @PreviewParameter(RecipeUiListProvider::class) recipes: List<RecipeUi>,
 ) {
     RecipesAITheme {
-
         val pagingData = remember { PagingData.from(recipes) }
 
-        val lazyPagingItems = flowOf(pagingData)
-            .collectAsLazyPagingItems()
+        val lazyPagingItems =
+            flowOf(pagingData)
+                .collectAsLazyPagingItems()
 
         HomeScreenRoot(
             uiState = HomeUiState(),
             recentRecipes = lazyPagingItems,
             onEvent = {},
-            modifier = Modifier
-                .fillMaxSize()
-                .background(color = MaterialTheme.colorScheme.surface),
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .background(color = MaterialTheme.colorScheme.surface),
             onImage = {},
             onNavigateToRecipe = {},
             onGenerateRecipesClick = {},

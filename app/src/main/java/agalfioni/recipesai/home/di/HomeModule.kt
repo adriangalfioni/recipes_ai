@@ -4,6 +4,7 @@ import agalfioni.recipesai.home.presentation.home.HomeViewModel
 import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.dsl.module
 
-val homeModule = module {
-    viewModelOf(::HomeViewModel)
-}
+val homeModule =
+    module {
+        viewModelOf(::HomeViewModel)
+    }

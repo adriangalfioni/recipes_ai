@@ -1,7 +1,7 @@
 import agalfioni.recipesai.core.domain.models.LocalIngredient
 import agalfioni.recipesai.home.presentation.home.HomeEvent
 import agalfioni.recipesai.home.presentation.home.HomeViewModel
-import agalfioni.recipesai.ingredients_detector.domain.interfaces.IngredientsRepository
+import agalfioni.recipesai.ingredientsdetector.domain.interfaces.IngredientsRepository
 import agalfioni.recipesai.recipe.domain.interfaces.RecipeRepository
 import androidx.paging.PagingData
 import app.cash.turbine.test
@@ -22,7 +22,6 @@ import org.junit.jupiter.api.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class HomeViewModelTest {
-
     // 1. Rule to swap the Main dispatcher for tests
     private val testDispatcher = StandardTestDispatcher()
 
@@ -47,96 +46,102 @@ class HomeViewModelTest {
     }
 
     @Test
-    fun `uiState initially shows default values`() = runTest {
-        viewModel = HomeViewModel(ingredientsRepository, recipeRepository)
+    fun `uiState initially shows default values`() =
+        runTest {
+            viewModel = HomeViewModel(ingredientsRepository, recipeRepository)
 
-        viewModel.uiState.test {
-            val initialState = awaitItem()
-            assert(initialState.query.isEmpty())
-            assert(initialState.addedIngredients.isEmpty())
-            assert(initialState.allLocalIngredients.isEmpty())
-            assert(initialState.error == null)
-            assert(initialState.suggestions.isEmpty())
-            assert(!initialState.showSuggestions)
-            cancelAndIgnoreRemainingEvents()
+            viewModel.uiState.test {
+                val initialState = awaitItem()
+                assert(initialState.query.isEmpty())
+                assert(initialState.addedIngredients.isEmpty())
+                assert(initialState.allLocalIngredients.isEmpty())
+                assert(initialState.error == null)
+                assert(initialState.suggestions.isEmpty())
+                assert(!initialState.showSuggestions)
+                cancelAndIgnoreRemainingEvents()
+            }
         }
-    }
 
     @Test
-    fun `onQueryChanged updates query and shows suggestions`() = runTest {
-        // Setup local ingredients for the suggestion flow to work
-        val local = listOf(
-            LocalIngredient(en = "Tomato", es = "Tomate", id = "tomato", type = "")
-        )
-        coEvery { ingredientsRepository.getLocalIngredients() } returns Result.success(local)
+    fun `onQueryChanged updates query and shows suggestions`() =
+        runTest {
+            // Setup local ingredients for the suggestion flow to work
+            val local =
+                listOf(
+                    LocalIngredient(en = "Tomato", es = "Tomate", id = "tomato", type = ""),
+                )
+            coEvery { ingredientsRepository.getLocalIngredients() } returns Result.success(local)
 
-        viewModel = HomeViewModel(ingredientsRepository, recipeRepository)
-        // Advance to collect the local ingredients flow
-        testDispatcher.scheduler.advanceUntilIdle()
+            viewModel = HomeViewModel(ingredientsRepository, recipeRepository)
+            // Advance to collect the local ingredients flow
+            testDispatcher.scheduler.advanceUntilIdle()
 
-        viewModel.uiState.test {
-            // Skip initial state
-            skipItems(1)
+            viewModel.uiState.test {
+                // Skip initial state
+                skipItems(1)
 
-            viewModel.onEvent(HomeEvent.OnQueryChanged("Tom"))
+                viewModel.onEvent(HomeEvent.OnQueryChanged("Tom"))
 
-            val state = awaitItem()
-            assertEquals("Tom", state.query)
-            // Note: This depends on your custom .ingredientsSuggestionsFlow logic
-            assert(state.suggestions.isNotEmpty())
+                val state = awaitItem()
+                assertEquals("Tom", state.query)
+                // Note: This depends on your custom .ingredientsSuggestionsFlow logic
+                assert(state.suggestions.isNotEmpty())
+            }
         }
-    }
 
     @Test
-    fun `onSuggestionSelected adds ingredient and clears query`() = runTest {
-        viewModel = HomeViewModel(ingredientsRepository, recipeRepository)
+    fun `onSuggestionSelected adds ingredient and clears query`() =
+        runTest {
+            viewModel = HomeViewModel(ingredientsRepository, recipeRepository)
 
-        viewModel.uiState.test {
-            skipItems(1)
+            viewModel.uiState.test {
+                skipItems(1)
 
-            viewModel.onEvent(HomeEvent.OnSuggestionSelected("Onion"))
+                viewModel.onEvent(HomeEvent.OnSuggestionSelected("Onion"))
 
-            val state = awaitItem()
-            assert(state.addedIngredients.contains("Onion"))
-            assertEquals("", state.query)
+                val state = awaitItem()
+                assert(state.addedIngredients.contains("Onion"))
+                assertEquals("", state.query)
+            }
         }
-    }
 
     @Test
-    fun `OnClearAll removes all added ingredients`() = runTest {
-        viewModel = HomeViewModel(ingredientsRepository, recipeRepository)
+    fun `OnClearAll removes all added ingredients`() =
+        runTest {
+            viewModel = HomeViewModel(ingredientsRepository, recipeRepository)
 
-        viewModel.uiState.test {
-            skipItems(1)
+            viewModel.uiState.test {
+                skipItems(1)
 
-            // Manually add one first or trigger event
-            viewModel.onEvent(HomeEvent.OnSuggestionSelected("Garlic"))
-            skipItems(1)
+                // Manually add one first or trigger event
+                viewModel.onEvent(HomeEvent.OnSuggestionSelected("Garlic"))
+                skipItems(1)
 
-            viewModel.onEvent(HomeEvent.OnClearAll)
-            val state = awaitItem()
-            assert(state.addedIngredients.isEmpty())
+                viewModel.onEvent(HomeEvent.OnClearAll)
+                val state = awaitItem()
+                assert(state.addedIngredients.isEmpty())
+            }
         }
-    }
 
     @Test
-    fun `OnIngredientRemoved remove ingredient`() = runTest {
-        viewModel = HomeViewModel(ingredientsRepository, recipeRepository)
+    fun `OnIngredientRemoved remove ingredient`() =
+        runTest {
+            viewModel = HomeViewModel(ingredientsRepository, recipeRepository)
 
-        viewModel.uiState.test {
-            skipItems(1)
+            viewModel.uiState.test {
+                skipItems(1)
 
-            viewModel.onEvent(HomeEvent.OnSuggestionSelected("Onion"))
-            skipItems(1)
+                viewModel.onEvent(HomeEvent.OnSuggestionSelected("Onion"))
+                skipItems(1)
 
-            viewModel.onEvent(HomeEvent.OnSuggestionSelected("Banana"))
-            skipItems(1)
+                viewModel.onEvent(HomeEvent.OnSuggestionSelected("Banana"))
+                skipItems(1)
 
-            viewModel.onEvent(HomeEvent.OnIngredientRemoved("Onion"))
-            val state = awaitItem()
+                viewModel.onEvent(HomeEvent.OnIngredientRemoved("Onion"))
+                val state = awaitItem()
 
-            assert(state.addedIngredients.size == 1)
-            assert(state.addedIngredients.contains("Banana"))
+                assert(state.addedIngredients.size == 1)
+                assert(state.addedIngredients.contains("Banana"))
+            }
         }
-    }
 }

@@ -31,51 +31,57 @@ fun IngredientSelectableChip(
     onChipClick: (String) -> Unit = {},
     onTrailingIconClick: ((String) -> Unit)? = null,
     textColor: Color = MaterialTheme.colorScheme.onPrimaryContainer,
-    colors: ButtonColors = ButtonDefaults.buttonColors().copy(
-        containerColor = MaterialTheme.colorScheme.primary.copy(
-            alpha = 0.1f
-        )
-    ),
-    enabled: Boolean = true
+    colors: ButtonColors =
+        ButtonDefaults.buttonColors().copy(
+            containerColor =
+                MaterialTheme.colorScheme.primary.copy(
+                    alpha = 0.1f,
+                ),
+        ),
+    enabled: Boolean = true,
 ) {
     OutlinedButton(
         shape = RoundedCornerShape(10.dp),
         onClick = { onChipClick(selectableItem.item) },
-        colors = colors.copy(
-            containerColor = if (selectableItem.isSelected) {
-                MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)
-            } else {
-                MaterialTheme.colorScheme.surface
-            }
-        ),
-        border = BorderStroke(
-            width = 0.5.dp,
-            color = MaterialTheme.colorScheme.outline
-        ),
+        colors =
+            colors.copy(
+                containerColor =
+                    if (selectableItem.isSelected) {
+                        MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)
+                    } else {
+                        MaterialTheme.colorScheme.surface
+                    },
+            ),
+        border =
+            BorderStroke(
+                width = 0.5.dp,
+                color = MaterialTheme.colorScheme.outline,
+            ),
         contentPadding = PaddingValues(horizontal = 12.dp, vertical = 8.dp),
-        enabled = enabled
+        enabled = enabled,
     ) {
         Row(
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             Text(
                 modifier = Modifier.alignByBaseline(),
                 text = selectableItem.item,
-                color = textColor
+                color = textColor,
             )
             AnimatedVisibility(selectableItem.isSelected) {
                 Icon(
-                    modifier = Modifier
-                        .size(22.dp)
-                        .align(Alignment.CenterVertically)
-                        .clickable(
-                            interactionSource = null,
-                            indication = null,
-                            onClick = { onTrailingIconClick?.invoke(selectableItem.item) ?: onChipClick(selectableItem.item) }
-                        ),
+                    modifier =
+                        Modifier
+                            .size(22.dp)
+                            .align(Alignment.CenterVertically)
+                            .clickable(
+                                interactionSource = null,
+                                indication = null,
+                                onClick = { onTrailingIconClick?.invoke(selectableItem.item) ?: onChipClick(selectableItem.item) },
+                            ),
                     imageVector = Icons.Default.Close,
                     contentDescription = "Close",
-                    tint = MaterialTheme.colorScheme.outline
+                    tint = MaterialTheme.colorScheme.outline,
                 )
             }
         }
@@ -89,7 +95,6 @@ private fun IngredientSelectableChipPreview() {
         IngredientSelectableChip(
             selectableItem = Selectable("Tomatoes", true),
             onChipClick = {},
-
         )
     }
 }

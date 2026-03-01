@@ -13,56 +13,59 @@ import androidx.work.WorkRequest
 import java.util.concurrent.TimeUnit
 
 class RecipeDailySyncScheduler(
-    private val workManager: WorkManager
+    private val workManager: WorkManager,
 ) {
-
     companion object {
         private const val SYNC_WORK_NAME = "daily_recipe_sync_task"
         private const val MANUAL_SYNC_NAME = "manual_recipe_sync_task"
     }
 
     fun schedule() {
-        val constraints = Constraints.Builder()
-            .setRequiredNetworkType(NetworkType.UNMETERED) // Wi-Fi
-            .setRequiresBatteryNotLow(true)
-            .build()
+        val constraints =
+            Constraints
+                .Builder()
+                .setRequiredNetworkType(NetworkType.UNMETERED) // Wi-Fi
+                .setRequiresBatteryNotLow(true)
+                .build()
 
-        val syncRequest = PeriodicWorkRequestBuilder<SyncRecipesRemoteWorker>(
-            repeatInterval = 24,
-            repeatIntervalTimeUnit = TimeUnit.HOURS,
-            flexTimeInterval = 4,
-            flexTimeIntervalUnit = TimeUnit.HOURS
-        )
-            .setConstraints(constraints)
-            .setBackoffCriteria(
-                BackoffPolicy.EXPONENTIAL,
-                WorkRequest.MIN_BACKOFF_MILLIS,
-                TimeUnit.MILLISECONDS
-            )
-            .build()
+        val syncRequest =
+            PeriodicWorkRequestBuilder<SyncRecipesRemoteWorker>(
+                repeatInterval = 24,
+                repeatIntervalTimeUnit = TimeUnit.HOURS,
+                flexTimeInterval = 4,
+                flexTimeIntervalUnit = TimeUnit.HOURS,
+            ).setConstraints(constraints)
+                .setBackoffCriteria(
+                    BackoffPolicy.EXPONENTIAL,
+                    WorkRequest.MIN_BACKOFF_MILLIS,
+                    TimeUnit.MILLISECONDS,
+                ).build()
 
         workManager.enqueueUniquePeriodicWork(
             SYNC_WORK_NAME,
             ExistingPeriodicWorkPolicy.KEEP,
-            syncRequest
+            syncRequest,
         )
     }
 
     fun syncNow() {
-        val constraints = Constraints.Builder()
-            .setRequiredNetworkType(NetworkType.CONNECTED) // Any connection (not just Wi-Fi)
-            .build()
+        val constraints =
+            Constraints
+                .Builder()
+                .setRequiredNetworkType(NetworkType.CONNECTED) // Any connection (not just Wi-Fi)
+                .build()
 
-        val oneTimeRequest = OneTimeWorkRequestBuilder<SyncRecipesRemoteWorker>()
-            .setConstraints(constraints)
-            .setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST) // Try to run immediately
-            .addTag(MANUAL_SYNC_NAME)
-            .build()
+        val oneTimeRequest =
+            OneTimeWorkRequestBuilder<SyncRecipesRemoteWorker>()
+                .setConstraints(constraints)
+                .setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST) // Try to run immediately
+                .addTag(MANUAL_SYNC_NAME)
+                .build()
 
         workManager.enqueueUniqueWork(
             MANUAL_SYNC_NAME,
             ExistingWorkPolicy.REPLACE, // Start a fresh one immediately
-            oneTimeRequest
+            oneTimeRequest,
         )
     }
 }

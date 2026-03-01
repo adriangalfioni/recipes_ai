@@ -38,43 +38,44 @@ interface RecipeDao {
 
     @Transaction
     suspend fun saveFullRecipes(recipes: List<Recipe>) {
-
-        val recipeEntities = recipes.map { recipe ->
-            RecipeEntity(
-                id = recipe.id,
-                title = recipe.title,
-                difficulty = recipe.difficulty,
-                minutesTime = recipe.minutesTime,
-                ingredientCoverage = recipe.ingredientCoverage,
-                calories = recipe.nutrition.calories,
-                createdAt = System.currentTimeMillis()
-            )
-        }
-
-        val ingredientEntities = recipes.flatMap { recipe ->
-            recipe.ingredients.map {
-                IngredientEntity(
-                    recipeId = recipe.id,
-                    name = it.name,
-                    quantity = it.quantity,
-                    unit = it.unit
+        val recipeEntities =
+            recipes.map { recipe ->
+                RecipeEntity(
+                    id = recipe.id,
+                    title = recipe.title,
+                    difficulty = recipe.difficulty,
+                    minutesTime = recipe.minutesTime,
+                    ingredientCoverage = recipe.ingredientCoverage,
+                    calories = recipe.nutrition.calories,
+                    createdAt = System.currentTimeMillis(),
                 )
             }
-        }
 
-        val instructionEntities = recipes.flatMap { recipe ->
-            recipe.instructions.map {
-                InstructionsEntity(
-                    recipeId = recipe.id,
-                    title = it.title,
-                    description = it.description
-                )
+        val ingredientEntities =
+            recipes.flatMap { recipe ->
+                recipe.ingredients.map {
+                    IngredientEntity(
+                        recipeId = recipe.id,
+                        name = it.name,
+                        quantity = it.quantity,
+                        unit = it.unit,
+                    )
+                }
             }
-        }
+
+        val instructionEntities =
+            recipes.flatMap { recipe ->
+                recipe.instructions.map {
+                    InstructionsEntity(
+                        recipeId = recipe.id,
+                        title = it.title,
+                        description = it.description,
+                    )
+                }
+            }
 
         insertRecipes(recipeEntities)
         insertIngredients(ingredientEntities)
         insertInstructions(instructionEntities)
     }
-
 }

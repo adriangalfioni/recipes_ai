@@ -12,5 +12,5 @@ enum class DataError : AppError {
     FAILED_PRECONDITION, // Invalid operation
     DEADLINE_EXCEEDED, // Timeout
 
-    USER_NOT_LOGGED_IN
+    USER_NOT_LOGGED_IN,
 }

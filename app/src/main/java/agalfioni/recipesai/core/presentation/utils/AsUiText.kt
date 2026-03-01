@@ -3,10 +3,10 @@ package agalfioni.recipesai.core.presentation.utils
 import agalfioni.recipesai.R
 import agalfioni.recipesai.core.domain.models.AppResult
 import agalfioni.recipesai.core.domain.models.DataError
-import agalfioni.recipesai.core.presentation.utils.UiText.*
+import agalfioni.recipesai.core.presentation.utils.UiText.StringResource
 
-fun DataError.asUiText(): UiText {
-    return when (this) {
+fun DataError.asUiText(): UiText =
+    when (this) {
         DataError.NETWORK_UNAVAILABLE -> StringResource(R.string.error_network_unavailable)
         DataError.SERVER_ERROR -> StringResource(R.string.error_server_error)
         DataError.ACCESS_DENIED -> StringResource(R.string.error_access_denied)
@@ -19,8 +19,5 @@ fun DataError.asUiText(): UiText {
         DataError.FAILED_PRECONDITION -> StringResource(R.string.error_failed_precondition)
         DataError.DEADLINE_EXCEEDED -> StringResource(R.string.error_deadline_exceeded)
     }
-}
 
-fun AppResult.Error<*, DataError>.asErrorUiText(): UiText {
-    return error.asUiText()
-}
+fun AppResult.Error<*, DataError>.asErrorUiText(): UiText = error.asUiText()

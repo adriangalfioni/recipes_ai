@@ -1,7 +1,6 @@
 package agalfioni.recipesai.recipe.domain.providers
 
 object GenerateRecipesPromptProvider {
-
     const val DEFAULT_RECIPE_NUMBER_TO_GENERATE = 4
 
     // Future task: use Firebase Remote Config
@@ -9,7 +8,7 @@ object GenerateRecipesPromptProvider {
     fun generateRecipePrompt(
         language: String,
         ingredients: List<String>,
-        recipesQty: Int? = null
+        recipesQty: Int? = null,
     ): String {
         val ingredientsString = ingredients.joinToString(", ")
         return """
@@ -82,7 +81,5 @@ object GenerateRecipesPromptProvider {
     - Nutrition values must be realistic and non-negative
     - Instructions must be ordered and actionable
     """
-
     }
-
 }

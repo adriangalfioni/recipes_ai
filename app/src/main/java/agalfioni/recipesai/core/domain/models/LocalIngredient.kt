@@ -4,5 +4,5 @@ data class LocalIngredient(
     val id: String,
     val en: String,
     val es: String,
-    val type: String
+    val type: String,
 )

@@ -1,6 +1,7 @@
 package agalfioni.recipesai.recipe.data.utils
 
-val fakeAIJsonRawResponse = """
+val fakeAIJsonRawResponse =
+    """
 generateRecipes: raw [
   {
     "title": "Lemon Herb Roasted Chicken & Potatoes",
@@ -647,4 +648,4 @@ generateRecipes: raw [
     ]
   }
 ]
-""".trimIndent()
+    """.trimIndent()

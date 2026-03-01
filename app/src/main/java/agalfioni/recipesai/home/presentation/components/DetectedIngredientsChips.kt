@@ -3,7 +3,7 @@ package agalfioni.recipesai.home.presentation.components
 import agalfioni.recipesai.core.presentation.models.Selectable
 import agalfioni.recipesai.core.presentation.models.toSelectableList
 import agalfioni.recipesai.core.presentation.theme.RecipesAITheme
-import agalfioni.recipesai.ingredients_detector.domain.models.IngredientsResult
+import agalfioni.recipesai.ingredientsdetector.domain.models.IngredientsResult
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -21,12 +21,13 @@ fun DetectedIngredientsChips(
     ingredients: List<Selectable<String>>,
     modifier: Modifier = Modifier,
     onIngredientChipClick: (String) -> Unit = {},
-    onTrailingIconClick: ((String) -> Unit)? = null
+    onTrailingIconClick: ((String) -> Unit)? = null,
 ) {
     FlowRow(
-        modifier = Modifier
-            .fillMaxWidth()
-            .animateContentSize(),
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .animateContentSize(),
         verticalArrangement = Arrangement.spacedBy(6.dp),
         horizontalArrangement = Arrangement.spacedBy(12.dp),
     ) {
@@ -34,7 +35,7 @@ fun DetectedIngredientsChips(
             IngredientSelectableChip(
                 selectableIngredient,
                 onChipClick = onIngredientChipClick,
-                onTrailingIconClick = onTrailingIconClick
+                onTrailingIconClick = onTrailingIconClick,
             )
         }
     }
@@ -51,7 +52,7 @@ private fun DetectedIngredientsChipsPreview() {
                     fruits = listOf("Apples", "Bananas", "Oranges"),
                     dairy = listOf("Milk", "Cheese", "Yogurt"),
                     meat = listOf("Beef", "Chicken", "Pork"),
-                    drinks = listOf("Water", "Juice", "Soda")
+                    drinks = listOf("Water", "Juice", "Soda"),
                 ).getAllIngredients().toSelectableList(true),
                 onIngredientChipClick = {},
             )

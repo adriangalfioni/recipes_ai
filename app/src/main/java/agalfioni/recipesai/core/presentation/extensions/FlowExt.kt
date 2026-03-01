@@ -10,10 +10,8 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapLatest
 
 @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
-fun Flow<String>.ingredientsSuggestions(
-    ingredientsProvider: () -> List<String>
-): Flow<List<String>> {
-    return debounce(300)
+fun Flow<String>.ingredientsSuggestions(ingredientsProvider: () -> List<String>): Flow<List<String>> =
+    debounce(300)
         .mapLatest { query ->
             if (query.isBlank()) {
                 emptyList()
@@ -23,13 +21,10 @@ fun Flow<String>.ingredientsSuggestions(
                     .take(4)
             }
         }
-}
 
 @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
-fun Flow<String>.ingredientsSuggestionsFlow(
-    ingredientsFlow: Flow<List<String>>
-): Flow<List<String>> {
-    return debounce(300)
+fun Flow<String>.ingredientsSuggestionsFlow(ingredientsFlow: Flow<List<String>>): Flow<List<String>> =
+    debounce(300)
         .flatMapLatest { query ->
             ingredientsFlow.map { ingredients ->
                 if (query.isBlank()) {
@@ -40,6 +35,4 @@ fun Flow<String>.ingredientsSuggestionsFlow(
                         .take(4)
                 }
             }
-
         }
-}

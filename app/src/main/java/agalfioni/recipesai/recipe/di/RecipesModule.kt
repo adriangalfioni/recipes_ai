@@ -9,27 +9,28 @@ import agalfioni.recipesai.recipe.domain.interfaces.AiRecipeGenerator
 import agalfioni.recipesai.recipe.domain.interfaces.RecipeRepository
 import agalfioni.recipesai.recipe.domain.interfaces.RecipesSyncRepository
 import agalfioni.recipesai.recipe.domain.usecase.GenerateRecipesUseCase
-import agalfioni.recipesai.recipe.presentation.recipe_details.RecipeDetailsViewModel
-import agalfioni.recipesai.recipe.presentation.recipe_list.AiProgressViewModel
-import agalfioni.recipesai.recipe.presentation.recipe_list.RecipesListViewModel
+import agalfioni.recipesai.recipe.presentation.recipedetails.RecipeDetailsViewModel
+import agalfioni.recipesai.recipe.presentation.recipelist.AiProgressViewModel
+import agalfioni.recipesai.recipe.presentation.recipelist.RecipesListViewModel
 import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.dsl.module
 
-val recipesModule = module {
+val recipesModule =
+    module {
 
-    single { AiRecipeGeneratorDataSource(get()) }
+        single { AiRecipeGeneratorDataSource(get()) }
 
-    single<AiRecipeGenerator> { AiRecipeGeneratorImpl(get(), get(), get()) }
+        single<AiRecipeGenerator> { AiRecipeGeneratorImpl(get(), get(), get()) }
 
-    single<RecipeRepository> { RecipeRepositoryImpl(get()) }
+        single<RecipeRepository> { RecipeRepositoryImpl(get()) }
 
-    single<RecipesSyncRepository> { RecipesSyncRepositoryImpl(get(), get()) }
+        single<RecipesSyncRepository> { RecipesSyncRepositoryImpl(get(), get()) }
 
-    single { GenerationTracker() }
+        single { GenerationTracker() }
 
-    factory<GenerateRecipesUseCase> { GenerateRecipesUseCase(get(), get(), get(), get()) }
+        factory<GenerateRecipesUseCase> { GenerateRecipesUseCase(get(), get(), get(), get()) }
 
-    viewModelOf(::AiProgressViewModel)
-    viewModelOf(::RecipesListViewModel)
-    viewModelOf(::RecipeDetailsViewModel)
-}
+        viewModelOf(::AiProgressViewModel)
+        viewModelOf(::RecipesListViewModel)
+        viewModelOf(::RecipeDetailsViewModel)
+    }

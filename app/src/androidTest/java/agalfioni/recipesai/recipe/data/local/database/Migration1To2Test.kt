@@ -13,44 +13,44 @@ import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 class Migration1To2Test {
-
-    private val TEST_DB = "migration-test"
+    private val migrationTestDbName = "migration-test"
 
     @get:Rule
-    val helper = MigrationTestHelper(
-        InstrumentationRegistry.getInstrumentation(),
-        AppDatabase::class.java
-    )
+    val helper =
+        MigrationTestHelper(
+            InstrumentationRegistry.getInstrumentation(),
+            AppDatabase::class.java,
+        )
 
     @Test
     fun migrate1To2_correctlyAddsColumnsAndTables() {
-
         // Create DB with version 1 schema
-        helper.createDatabase(TEST_DB, 1).apply {
-
+        helper.createDatabase(migrationTestDbName, 1).apply {
             // Insert sample row (v1 schema has no createdAt)
-            execSQL("""
+            execSQL(
+                """
                 INSERT INTO recipes (
                     id, title, difficulty, minutesTime, ingredientCoverage, calories
                 ) VALUES (
                     'r1', 'Pizza', 0, 30, 0.8, 500.0
                 )
-            """.trimIndent())
+                """.trimIndent(),
+            )
 
             close()
         }
 
         // Reopen DB with migration
-        val db = Room.databaseBuilder(
-            ApplicationProvider.getApplicationContext(),
-            AppDatabase::class.java,
-            TEST_DB
-        )
-            .addMigrations(MIGRATION_1_2)
-            .build()
+        val db =
+            Room
+                .databaseBuilder(
+                    ApplicationProvider.getApplicationContext(),
+                    AppDatabase::class.java,
+                    migrationTestDbName,
+                ).addMigrations(MIGRATION_1_2)
+                .build()
 
         db.openHelper.writableDatabase.apply {
-
             // Verify createdAt column exists
             val cursor = query("PRAGMA table_info(recipes)")
             var foundCreatedAt = false
@@ -73,10 +73,13 @@ class Migration1To2Test {
             assertEquals(0L, createdAtValue)
 
             // Verify recipes_sync table exists
-            val tableCursor = query("""
-                SELECT name FROM sqlite_master 
-                WHERE type='table' AND name='recipes_sync'
-            """.trimIndent())
+            val tableCursor =
+                query(
+                    """
+                    SELECT name FROM sqlite_master 
+                    WHERE type='table' AND name='recipes_sync'
+                    """.trimIndent(),
+                )
 
             assertTrue(tableCursor.count == 1)
             tableCursor.close()

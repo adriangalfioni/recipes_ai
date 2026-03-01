@@ -6,7 +6,7 @@ import agalfioni.recipesai.recipe.data.local.entity.IngredientEntity
 import agalfioni.recipesai.recipe.data.local.entity.InstructionsEntity
 import agalfioni.recipesai.recipe.data.local.entity.RecipeEntity
 import agalfioni.recipesai.recipe.data.local.entity.RecipeSyncEntity
-import agalfioni.recipesai.recipe.data.local.type_converters.RecipeConverters
+import agalfioni.recipesai.recipe.data.local.typeconverters.RecipeConverters
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
@@ -16,13 +16,14 @@ import androidx.room.TypeConverters
         RecipeEntity::class,
         IngredientEntity::class,
         InstructionsEntity::class,
-        RecipeSyncEntity::class
+        RecipeSyncEntity::class,
     ],
     version = 2,
-    exportSchema = true
+    exportSchema = true,
 )
 @TypeConverters(RecipeConverters::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun recipeDao(): RecipeDao
+
     abstract fun recipesSyncDao(): RecipesSyncDao
 }

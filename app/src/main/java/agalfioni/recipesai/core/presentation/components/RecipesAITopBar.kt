@@ -28,41 +28,46 @@ import androidx.compose.ui.unit.sp
 fun RecipesAiTopBar(
     onBackClick: () -> Unit,
     title: String,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val navigationIconSize = 40.dp
 
     TopAppBar(
-        modifier = Modifier
-            .padding(horizontal = 16.dp),
-        colors = TopAppBarDefaults.topAppBarColors().copy(
-            containerColor = MaterialTheme.colorScheme.background,
-        ),
+        modifier =
+            Modifier
+                .padding(horizontal = 16.dp),
+        colors =
+            TopAppBarDefaults.topAppBarColors().copy(
+                containerColor = MaterialTheme.colorScheme.background,
+            ),
         navigationIcon = {
             Icon(
-                modifier = Modifier.clickable(
-                    indication = null,
-                    interactionSource = null,
-                    onClick = onBackClick
-                ),
+                modifier =
+                    Modifier.clickable(
+                        indication = null,
+                        interactionSource = null,
+                        onClick = onBackClick,
+                    ),
                 imageVector = ImageVector.vectorResource(id = R.drawable.ic_arrow_left),
                 contentDescription = "Back",
-                tint = MaterialTheme.colorScheme.outline
+                tint = MaterialTheme.colorScheme.outline,
             )
         },
         title = {
             Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(end = navigationIconSize), // compensate nav icon
-                contentAlignment = Alignment.Center
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(end = navigationIconSize),
+                // compensate nav icon
+                contentAlignment = Alignment.Center,
             ) {
                 Text(
                     text = title,
                     fontFamily = GoogleSans,
                     fontWeight = FontWeight.SemiBold,
                     fontSize = 18.sp,
-                    color = MaterialTheme.colorScheme.onBackground
+                    color = MaterialTheme.colorScheme.onBackground,
                 )
             }
         },
@@ -75,7 +80,7 @@ private fun RecipeListTopBarPreview() {
     RecipesAITheme {
         RecipesAiTopBar(
             title = "Recipes AI",
-            onBackClick = {}
+            onBackClick = {},
         )
     }
 }

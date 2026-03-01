@@ -35,18 +35,18 @@ fun RecipeRoundedButton(
     modifier: Modifier = Modifier,
     colors: ButtonColors = ButtonDefaults.buttonColors(),
     leadingIcon: @Composable (() -> Unit)? = null,
-    enabled: Boolean = true
+    enabled: Boolean = true,
 ) {
     Button(
         modifier = modifier,
         shape = CircleShape,
         onClick = onClick,
         colors = colors,
-        enabled = enabled
+        enabled = enabled,
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             leadingIcon?.invoke()
             Text(
@@ -61,13 +61,13 @@ fun RecipeButton(
     text: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    colors: ButtonColors = ButtonDefaults.buttonColors()
+    colors: ButtonColors = ButtonDefaults.buttonColors(),
 ) {
     Button(
         modifier = modifier,
         shape = RoundedCornerShape(10.dp),
         onClick = onClick,
-        colors = colors
+        colors = colors,
     ) {
         Text(
             text = text,
@@ -80,19 +80,21 @@ fun RecipeSelectableButton(
     text: String,
     onClick: () -> Unit,
     isSelected: Boolean,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     RecipeButton(
         text = text,
         onClick = onClick,
         modifier = modifier,
-        colors = ButtonDefaults.buttonColors().copy(
-            containerColor = if (isSelected) {
-                MaterialTheme.colorScheme.primary
-            } else {
-                MaterialTheme.colorScheme.onSurfaceVariant
-            },
-        )
+        colors =
+            ButtonDefaults.buttonColors().copy(
+                containerColor =
+                    if (isSelected) {
+                        MaterialTheme.colorScheme.primary
+                    } else {
+                        MaterialTheme.colorScheme.onSurfaceVariant
+                    },
+            ),
     )
 }
 
@@ -102,24 +104,27 @@ fun RecipeOutlinedButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     textColor: Color = MaterialTheme.colorScheme.onPrimaryContainer,
-    colors: ButtonColors = ButtonDefaults.buttonColors().copy(
-        containerColor = MaterialTheme.colorScheme.primary.copy(
-            alpha = 0.1f
-        )
-    ),
+    colors: ButtonColors =
+        ButtonDefaults.buttonColors().copy(
+            containerColor =
+                MaterialTheme.colorScheme.primary.copy(
+                    alpha = 0.1f,
+                ),
+        ),
 ) {
     OutlinedButton(
         shape = RoundedCornerShape(10.dp),
         onClick = onClick,
         colors = colors,
-        border = BorderStroke(
-            width = 0.5.dp,
-            color = MaterialTheme.colorScheme.outline
-        )
+        border =
+            BorderStroke(
+                width = 0.5.dp,
+                color = MaterialTheme.colorScheme.outline,
+            ),
     ) {
         Text(
             text = text,
-            color = textColor
+            color = textColor,
         )
     }
 }
@@ -129,24 +134,27 @@ fun RecipeSelectableOutlinedButton(
     text: String,
     onClick: () -> Unit,
     isSelected: Boolean,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     RecipeOutlinedButton(
         text = text,
-        textColor = if (isSelected) {
-            MaterialTheme.colorScheme.onPrimaryContainer
-        } else {
-            MaterialTheme.colorScheme.outline
-        },
+        textColor =
+            if (isSelected) {
+                MaterialTheme.colorScheme.onPrimaryContainer
+            } else {
+                MaterialTheme.colorScheme.outline
+            },
         onClick = onClick,
         modifier = modifier,
-        colors = ButtonDefaults.buttonColors().copy(
-            containerColor = if (isSelected) {
-                MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)
-            } else {
-                MaterialTheme.colorScheme.surface
-            }
-        )
+        colors =
+            ButtonDefaults.buttonColors().copy(
+                containerColor =
+                    if (isSelected) {
+                        MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)
+                    } else {
+                        MaterialTheme.colorScheme.surface
+                    },
+            ),
     )
 }
 
@@ -158,14 +166,15 @@ private fun RecipeRoundedButtonPreview() {
             RecipeRoundedButton(
                 text = "15 mins (easy)",
                 onClick = {},
-                modifier = Modifier
-                    .width(250.dp)
-                    .height(60.dp),
+                modifier =
+                    Modifier
+                        .width(250.dp)
+                        .height(60.dp),
                 leadingIcon = {
                     Icon(
                         modifier = Modifier.size(24.dp),
                         imageVector = ImageVector.vectorResource(R.drawable.ic_ai_star),
-                        contentDescription = null
+                        contentDescription = null,
                     )
                 },
             )
@@ -193,7 +202,7 @@ private fun RecipeSelectableButtonPreview() {
         RecipeSelectableButton(
             text = "15 mins (easy)",
             onClick = {},
-            isSelected = true
+            isSelected = true,
         )
     }
 }
@@ -205,7 +214,7 @@ private fun RecipeSelectableButtonPreview2() {
         RecipeSelectableButton(
             text = "15 mins (easy)",
             onClick = {},
-            isSelected = false
+            isSelected = false,
         )
     }
 }
@@ -231,7 +240,7 @@ private fun RecipeOutlinedSelectableButtonPreview() {
             RecipeSelectableOutlinedButton(
                 text = "15 mins (easy)",
                 onClick = {},
-                isSelected = true
+                isSelected = true,
             )
         }
     }
@@ -245,7 +254,7 @@ private fun RecipeOutlinedSelectableButtonPreview2() {
             RecipeSelectableOutlinedButton(
                 text = "15 mins (easy)",
                 onClick = {},
-                isSelected = false
+                isSelected = false,
             )
         }
     }

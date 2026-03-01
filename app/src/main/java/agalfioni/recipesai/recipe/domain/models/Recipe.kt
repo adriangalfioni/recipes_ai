@@ -14,5 +14,5 @@ data class Recipe(
     val ingredientCoverage: Double,
     val instructions: List<RecipeInstruction>,
     val nutrition: Nutrition,
-    val ingredients: List<RecipeIngredient>
+    val ingredients: List<RecipeIngredient>,
 )

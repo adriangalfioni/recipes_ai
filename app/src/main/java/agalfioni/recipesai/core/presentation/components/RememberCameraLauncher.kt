@@ -21,22 +21,23 @@ import java.io.File
 @Composable
 fun rememberCameraLauncher(
     onImageCaptured: (Uri) -> Unit,
-    onError: () -> Unit = {}
+    onError: () -> Unit = {},
 ): () -> Unit {
     val context = LocalContext.current
 
     // Hold the URI internally so we remember where we asked the camera to save
     var tempUri by remember { mutableStateOf<Uri?>(null) }
 
-    val launcher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.TakePicture()
-    ) { success ->
-        if (success && tempUri != null) {
-            onImageCaptured(tempUri!!)
-        } else {
-            onError()
+    val launcher =
+        rememberLauncherForActivityResult(
+            contract = ActivityResultContracts.TakePicture(),
+        ) { success ->
+            if (success && tempUri != null) {
+                onImageCaptured(tempUri!!)
+            } else {
+                onError()
+            }
         }
-    }
 
     // Return a simple function that creates the file and launches the camera
     return remember(context, launcher) {
@@ -50,8 +51,9 @@ fun rememberCameraLauncher(
 
 // Helper function
 private fun createTempPictureUri(context: Context): Uri {
-    val tempFile = File.createTempFile("img_${System.currentTimeMillis()}", ".jpg", context.cacheDir).apply {
-        createNewFile()
-    }
+    val tempFile =
+        File.createTempFile("img_${System.currentTimeMillis()}", ".jpg", context.cacheDir).apply {
+            createNewFile()
+        }
     return FileProvider.getUriForFile(context, "${context.packageName}.provider", tempFile)
 }

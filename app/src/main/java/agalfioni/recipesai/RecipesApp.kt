@@ -8,7 +8,7 @@ import agalfioni.recipesai.core.di.firebaseModule
 import agalfioni.recipesai.core.di.jsonModule
 import agalfioni.recipesai.core.di.workManagerModule
 import agalfioni.recipesai.home.di.homeModule
-import agalfioni.recipesai.ingredients_detector.di.ingredientsModule
+import agalfioni.recipesai.ingredientsdetector.di.ingredientsModule
 import agalfioni.recipesai.recipe.data.sync.RecipeDailySyncScheduler
 import agalfioni.recipesai.recipe.di.recipesModule
 import android.app.Application
@@ -22,7 +22,6 @@ import org.koin.core.context.GlobalContext.startKoin
 import org.koin.java.KoinJavaComponent.getKoin
 
 class RecipesApp : Application() {
-
     override fun onCreate() {
         super.onCreate()
 
@@ -57,7 +56,7 @@ class RecipesApp : Application() {
                 // Features modules
                 homeModule,
                 recipesModule,
-                ingredientsModule
+                ingredientsModule,
             )
         }
 

@@ -19,7 +19,10 @@ class ResultStore {
         return result
     }
 
-    fun <T> setResult(key: Any, value: T) {
+    fun <T> setResult(
+        key: Any,
+        value: T,
+    ) {
         results[key] = value
     }
 
@@ -28,18 +31,22 @@ class ResultStore {
     }
 
     companion object {
-        val Saver = Saver<ResultStore, Map<Any, Any?>>(
-            save = { it.results.toMap() },
-            restore = { ResultStore().apply {
-                results.putAll(it)
-            } }
-        )
+        val Saver =
+            Saver<ResultStore, Map<Any, Any?>>(
+                save = { it.results.toMap() },
+                restore = {
+                    ResultStore().apply {
+                        results.putAll(it)
+                    }
+                },
+            )
     }
 }
 
 @Composable
-fun rememberResultStore() = rememberSaveable(
-    saver = ResultStore.Saver
-) {
-    ResultStore()
-}
+fun rememberResultStore() =
+    rememberSaveable(
+        saver = ResultStore.Saver,
+    ) {
+        ResultStore()
+    }

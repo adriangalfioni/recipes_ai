@@ -13,31 +13,28 @@ import kotlinx.coroutines.flow.map
 
 class RecipeRepositoryImpl(
     private val recipeDao: RecipeDao,
-): RecipeRepository {
-
+) : RecipeRepository {
     override suspend fun save(recipes: List<Recipe>) {
         recipeDao.saveFullRecipes(recipes)
     }
 
-    override fun getRecipes(): Flow<PagingData<Recipe>> {
-        return Pager(
-            config = PagingConfig(
-                pageSize = 20,
-                enablePlaceholders = false
-            ),
-            pagingSourceFactory = { recipeDao.getRecipes() }
-        )
-            .flow
+    override fun getRecipes(): Flow<PagingData<Recipe>> =
+        Pager(
+            config =
+                PagingConfig(
+                    pageSize = 20,
+                    enablePlaceholders = false,
+                ),
+            pagingSourceFactory = { recipeDao.getRecipes() },
+        ).flow
             .map { pagingData ->
                 pagingData.map {
                     it.toDomain()
                 }
             }
-    }
 
-    override fun getRecipeById(id: String): Flow<Recipe?> {
-        return recipeDao.getRecipeById(id).map {
+    override fun getRecipeById(id: String): Flow<Recipe?> =
+        recipeDao.getRecipeById(id).map {
             it?.toDomain()
         }
-    }
 }

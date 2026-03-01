@@ -10,12 +10,12 @@ data class RecipeWithIngredients(
     @Embedded val recipe: RecipeEntity,
     @Relation(
         parentColumn = "id",
-        entityColumn = "recipeId"
+        entityColumn = "recipeId",
     )
     val ingredients: List<IngredientEntity>,
     @Relation(
         parentColumn = "id",
-        entityColumn = "recipeId"
+        entityColumn = "recipeId",
     )
-    val instructions: List<InstructionsEntity>
+    val instructions: List<InstructionsEntity>,
 )

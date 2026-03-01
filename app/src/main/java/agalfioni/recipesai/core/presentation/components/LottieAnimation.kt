@@ -16,18 +16,18 @@ import com.airbnb.lottie.compose.rememberLottieComposition
 @Composable
 fun LottieAnimation(
     @RawRes animationRes: Int,
-    animationSize: Dp = 200.dp
+    animationSize: Dp = 200.dp,
 ) {
     val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(animationRes))
 
     val progress by animateLottieCompositionAsState(
         composition = composition,
-        iterations = LottieConstants.IterateForever
+        iterations = LottieConstants.IterateForever,
     )
 
     LottieAnimation(
         composition = composition,
         progress = { progress },
-        modifier = Modifier.size(animationSize)
+        modifier = Modifier.size(animationSize),
     )
 }

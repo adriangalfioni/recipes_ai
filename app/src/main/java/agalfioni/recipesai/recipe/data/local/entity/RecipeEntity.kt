@@ -12,8 +12,8 @@ data class RecipeEntity(
     val difficulty: Difficulty,
     val minutesTime: Int,
     val ingredientCoverage: Double,
-    val calories: Double,// Flattened from Nutrition
-    val createdAt: Long = System.currentTimeMillis()
+    val calories: Double, // Flattened from Nutrition
+    val createdAt: Long = System.currentTimeMillis(),
 )
 
 @Entity(
@@ -23,16 +23,16 @@ data class RecipeEntity(
             entity = RecipeEntity::class,
             parentColumns = ["id"],
             childColumns = ["recipeId"],
-            onDelete = ForeignKey.CASCADE
-        )
-    ]
+            onDelete = ForeignKey.CASCADE,
+        ),
+    ],
 )
 data class IngredientEntity(
     @PrimaryKey(autoGenerate = true) val ingredientId: Long = 0,
     val recipeId: String, // Link to parent
     val name: String,
     val quantity: Double,
-    val unit: String
+    val unit: String,
 )
 
 @Entity(
@@ -42,13 +42,13 @@ data class IngredientEntity(
             entity = RecipeEntity::class,
             parentColumns = ["id"],
             childColumns = ["recipeId"],
-            onDelete = ForeignKey.CASCADE
-        )
-    ]
+            onDelete = ForeignKey.CASCADE,
+        ),
+    ],
 )
 data class InstructionsEntity(
     @PrimaryKey(autoGenerate = true) val ingredientId: Long = 0,
     val recipeId: String, // Link to parent
     val title: String,
-    val description: String
+    val description: String,
 )

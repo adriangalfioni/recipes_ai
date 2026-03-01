@@ -35,49 +35,50 @@ import androidx.compose.ui.unit.dp
 fun GenerateRecipesBottomBar(
     selectedIngredientsQty: Int,
     onGenerateRecipesClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Surface(
-        modifier = modifier
-            //.navigationBarsPadding()
-            .fillMaxWidth(),
+        modifier =
+            modifier
+                // .navigationBarsPadding()
+                .fillMaxWidth(),
         color = MaterialTheme.colorScheme.surface,
         tonalElevation = 4.dp,
-        shadowElevation = 8.dp
-    )
-    {
+        shadowElevation = 8.dp,
+    ) {
         Column(
-            modifier = Modifier
-                .windowInsetsPadding(WindowInsets.navigationBars)
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(10.dp)
+            modifier =
+                Modifier
+                    .windowInsetsPadding(WindowInsets.navigationBars)
+                    .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(10.dp),
         ) {
             Text(
                 text = stringResource(R.string.selected_ingredients, selectedIngredientsQty),
-                style = MaterialTheme.typography.titleMedium
+                style = MaterialTheme.typography.titleMedium,
             )
             RecipeRoundedButton(
                 text = stringResource(R.string.generate_recipes),
                 onClick = onGenerateRecipesClick,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(40.dp)
-                    .shadow(
-                        elevation = 16.dp,     // Depth of the shadow
-                        shape = CircleShape,  // The shadow will follow this shape
-                        clip = false          // Set to false so the shadow isn't cut off
-                    ),
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .height(40.dp)
+                        .shadow(
+                            elevation = 16.dp, // Depth of the shadow
+                            shape = CircleShape, // The shadow will follow this shape
+                            clip = false, // Set to false so the shadow isn't cut off
+                        ),
                 leadingIcon = {
                     Icon(
                         modifier = Modifier.size(24.dp),
                         imageVector = ImageVector.vectorResource(R.drawable.ic_ai_star),
-                        contentDescription = null
+                        contentDescription = null,
                     )
                 },
-                enabled = selectedIngredientsQty > 0
+                enabled = selectedIngredientsQty > 0,
             )
         }
-
     }
 }
 
@@ -86,10 +87,9 @@ fun GenerateRecipesBottomBar(
 private fun GenerateRecipesToolbarPreview() {
     RecipesAITheme {
         Box(modifier = Modifier.background(color = Color.Blue)) {
-
             GenerateRecipesBottomBar(
                 selectedIngredientsQty = 6,
-                onGenerateRecipesClick = {}
+                onGenerateRecipesClick = {},
             )
         }
     }

@@ -20,5 +20,5 @@ data class SyncableRecipe(
     val instructions: List<RecipeInstruction>,
     val nutrition: Nutrition,
     val ingredients: List<RecipeIngredient>,
-    val ingredientNames: List<String>
+    val ingredientNames: List<String>,
 )

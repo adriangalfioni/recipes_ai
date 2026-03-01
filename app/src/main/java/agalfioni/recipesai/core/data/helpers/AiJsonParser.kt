@@ -3,9 +3,8 @@ package agalfioni.recipesai.core.data.helpers
 import kotlinx.serialization.json.Json
 
 class AiJsonParser(
-    val json: Json
+    val json: Json,
 ) {
-
     inline fun <reified T> parseOrNull(input: String): T? =
         runCatching {
             json.decodeFromString<T>(input.extractJsonArray())
@@ -21,13 +20,14 @@ class AiJsonParser(
 }
 
 fun String.extractJsonArray(): String {
-    val tempValue = trim()
-        .removePrefix("```json")
-        .removePrefix("```")
-        .removeSuffix("```")
-        .trim()
+    val tempValue =
+        trim()
+            .removePrefix("```json")
+            .removePrefix("```")
+            .removeSuffix("```")
+            .trim()
 
-    with (tempValue) {
+    with(tempValue) {
         val start = indexOf('[')
         val end = lastIndexOf(']')
         if (start == -1 || end == -1 || end <= start) return this

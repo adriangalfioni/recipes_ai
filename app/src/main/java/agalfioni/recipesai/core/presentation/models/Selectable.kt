@@ -2,11 +2,10 @@ package agalfioni.recipesai.core.presentation.models
 
 data class Selectable<T>(
     val item: T,
-    val isSelected: Boolean
+    val isSelected: Boolean,
 )
 
-fun <T> Collection<T>.toSelectableList(selected: Boolean): List<Selectable<T>>  =
-    this.map { Selectable(it, selected) }
+fun <T> Collection<T>.toSelectableList(selected: Boolean): List<Selectable<T>> = this.map { Selectable(it, selected) }
 
 fun <T> Collection<Selectable<T>>.selectOrAdd(element: T): List<Selectable<T>> =
     if (any { it.item == element }) {

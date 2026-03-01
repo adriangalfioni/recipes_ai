@@ -13,13 +13,12 @@ enum class Difficulty {
     MODERATE,
 
     @SerialName("elaborated")
-    ELABORATED
+    ELABORATED,
 }
 
-fun Difficulty.toDisplayString(): Int {
-    return when (this) {
+fun Difficulty.toDisplayString(): Int =
+    when (this) {
         Difficulty.EASY -> R.string.difficulty_easy
         Difficulty.MODERATE -> R.string.difficulty_medium
         Difficulty.ELABORATED -> R.string.difficulty_hard
     }
-}

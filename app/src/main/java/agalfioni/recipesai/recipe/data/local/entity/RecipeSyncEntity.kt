@@ -11,13 +11,13 @@ import androidx.room.PrimaryKey
             entity = RecipeEntity::class,
             parentColumns = ["id"],
             childColumns = ["recipeId"],
-            onDelete = ForeignKey.CASCADE
-        )
+            onDelete = ForeignKey.CASCADE,
+        ),
     ],
-    indices = [androidx.room.Index("recipeId")]
+    indices = [androidx.room.Index("recipeId")],
 )
 data class RecipeSyncEntity(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
     val synced: Boolean = false,
-    val recipeId: String
+    val recipeId: String,
 )
