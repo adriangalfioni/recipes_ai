@@ -53,4 +53,6 @@
     <string name="instructions">Instrucciones</string>
     <string name="ai_score">Puntaje IA: %d%%</string>
     <string name="retry">Reintentar</string>
+    <string name="recent_recipes">Recetas Recientes</string>
+    <string name="view_history">Ver Historial</string>
 </resources>

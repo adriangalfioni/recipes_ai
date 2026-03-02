@@ -43,6 +43,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -100,10 +101,11 @@ fun HomeScreenRoot(
             Modifier
                 .fillMaxSize(),
         bottomBar = {
+            val addedIngredients by rememberUpdatedState(uiState.addedIngredients)
             GenerateRecipesBottomBar(
                 selectedIngredientsQty = uiState.addedIngredients.size,
                 onGenerateRecipesClick = {
-                    onGenerateRecipesClick(uiState.addedIngredients.toList())
+                    onGenerateRecipesClick(addedIngredients)
                 },
             )
         },
@@ -198,8 +200,11 @@ fun HomeScreenRoot(
                 maxSuggestions = 4,
             )
             Spacer(modifier = Modifier.height(16.dp))
+            val selectableIngredients by rememberUpdatedState(
+                uiState.addedIngredients.toSelectableList(true),
+            )
             DetectedIngredientsChips(
-                ingredients = uiState.addedIngredients.toList().toSelectableList(true),
+                ingredients = selectableIngredients,
                 onTrailingIconClick = {
                     onEvent(HomeEvent.OnIngredientRemoved(it))
                 },

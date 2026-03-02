@@ -37,6 +37,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -114,7 +115,6 @@ fun ScanFridgeCard(
                     }
                 }
 
-                // Text Content
                 Column {
                     Text(
                         text = stringResource(R.string.scan_your_fridge),
@@ -127,11 +127,13 @@ fun ScanFridgeCard(
                     )
                     Spacer(Modifier.height(12.dp))
                     Text(
+                        modifier = Modifier.weight(1f),
+                        overflow = TextOverflow.Ellipsis,
                         text = stringResource(R.string.snap_photo_ai_identify_ingredients),
                         style = MaterialTheme.typography.bodyLarge,
                         color = Color.White.copy(alpha = 0.8f),
                     )
-                    Spacer(Modifier.height(32.dp))
+                    Spacer(Modifier.height(8.dp))
 
                     AttentionSeekerScale(
                         {
@@ -177,7 +179,7 @@ fun ScanFridgeCard(
     }
 }
 
-@Preview
+@Preview(locale = "es")
 @Composable
 private fun ScanFridgeCardPreview() {
     RecipesAITheme {
